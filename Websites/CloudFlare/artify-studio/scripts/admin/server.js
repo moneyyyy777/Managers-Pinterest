@@ -500,6 +500,33 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // 0.5 Безопасное обновление с GitHub (Git Pull All с авто-сохранением локальных товаров)
+    if (pathname === "/api/git/pull-all" && req.method === "POST") {
+        const scriptPath = path.join(WORKSPACE_ROOT, "sync_pull.py");
+        const cmd = `python3 "${scriptPath}"`;
+
+        try {
+            const { stdout, stderr } = await execAsync(cmd, { cwd: WORKSPACE_ROOT, timeout: 120000 });
+            const output = (stdout || "").trim() || (stderr || "").trim();
+            const isSuccess = output.includes("ВСЁ ГОТОВО") || !output.includes("Обнаружен конфликт");
+
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({
+                success: isSuccess,
+                output,
+                timestamp: new Date().toISOString()
+            }));
+        } catch (err) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({
+                success: false,
+                error: err.message,
+                output: (err.stdout || err.stderr || "").trim()
+            }));
+        }
+        return;
+    }
+
     // 1. API: Список категорий, подборок и их фильтров (с метаданными, сортировкой и описаниями)
     if (pathname === "/api/categories" && req.method === "GET") {
         try {

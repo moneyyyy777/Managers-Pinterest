@@ -64,6 +64,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const startAllServicesBtn = document.getElementById("startAllServicesBtn");
     const startAllBtnText = document.getElementById("startAllBtnText");
 
+    const gitPullAllBtn = document.getElementById("gitPullAllBtn");
+    const gitPullBtnText = document.getElementById("gitPullBtnText");
     const gitPushAllBtn = document.getElementById("gitPushAllBtn");
     const gitPushBtnText = document.getElementById("gitPushBtnText");
     const pushLogBox = document.getElementById("pushLogBox");
@@ -277,7 +279,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         refreshServicesBtn.addEventListener("click", checkAllServicesStatus);
     }
 
-    // Слушатель Git Push All
+    // Слушатели Git Sync
+    if (gitPullAllBtn) {
+        gitPullAllBtn.addEventListener("click", handleGitPullAll);
+    }
     if (gitPushAllBtn) {
         gitPushAllBtn.addEventListener("click", handleGitPushAll);
     }
@@ -1285,6 +1290,57 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (serviceName === "admin" && servicesState.admin) break;
         }
         await checkServerAndLoadCategories();
+    }
+
+    async function handleGitPullAll() {
+        if (!gitPullAllBtn) return;
+        gitPullAllBtn.disabled = true;
+        if (gitPullBtnText) gitPullBtnText.innerText = "Обновление...";
+
+        if (pushLogBox) pushLogBox.classList.remove("hidden");
+        if (pushLogTitle) pushLogTitle.innerText = "📥 Подтягивание обновлений с GitHub...";
+        if (pushLogContent) pushLogContent.innerText = "Сохраняем локальные товары и подтягиваем свежий код...\nЗапуск sync_pull.py...";
+
+        let pullRes = null;
+        const pullEndpoints = [
+            `${state.apiUrl}/api/git/pull-all`,
+            "http://127.0.0.1:3333/api/git/pull-all",
+            "http://localhost:3001/api/git/pull"
+        ];
+
+        for (const ep of pullEndpoints) {
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 90000);
+                const res = await fetch(ep, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    signal: controller.signal
+                });
+                clearTimeout(timer);
+                if (res.ok) {
+                    pullRes = await res.json();
+                    break;
+                }
+            } catch {}
+        }
+
+        if (pullRes && pullRes.success) {
+            if (pushLogTitle) pushLogTitle.innerText = "✅ Проект успешно обновлен!";
+            if (pushLogContent) pushLogContent.innerText = pullRes.output || pullRes.message || "ВСЁ ГОТОВО! Свежий код подтянут, все локальные товары сохранены!";
+            if (gitPullBtnText) gitPullBtnText.innerText = "✅ Обновлено!";
+            showToast("🎉 Проект обновлен, товары на месте!", 4000);
+            await checkServerAndLoadCategories();
+            setTimeout(() => {
+                if (gitPullBtnText) gitPullBtnText.innerText = "Обновить (Pull)";
+                gitPullAllBtn.disabled = false;
+            }, 4000);
+        } else {
+            if (pushLogTitle) pushLogTitle.innerText = "⚠️ Внимание при обновлении:";
+            if (pushLogContent) pushLogContent.innerText = pullRes ? (pullRes.output || pullRes.message || pullRes.error) : "Не удалось связаться с сервером. Убедитесь, что админка запущена.";
+            if (gitPullBtnText) gitPullBtnText.innerText = "⚠️ Ошибка";
+            gitPullAllBtn.disabled = false;
+        }
     }
 
     async function handleGitPushAll() {
