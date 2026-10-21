@@ -9,6 +9,7 @@
 
 import os
 import sys
+import shutil
 import subprocess
 from datetime import datetime
 
@@ -23,11 +24,31 @@ def run(cmd, cwd=ROOT_DIR):
     res = subprocess.run(cmd, shell=True, cwd=cwd, text=True, capture_output=True)
     return res.returncode == 0, res.stdout.strip(), res.stderr.strip()
 
+def ensure_artify_git():
+    if os.path.isdir(ARTIFY_DIR) and not os.path.isdir(ARTIFY_GIT_DIR):
+        print("   📦 Первоначальная привязка Git для Artify Studio...")
+        temp_dir = os.path.join(ROOT_DIR, "_temp_artify_git")
+        try:
+            ok, _, err = run(f'git clone --no-checkout https://github.com/moneyyyy777/artify-studio.git "{temp_dir}"')
+            git_src = os.path.join(temp_dir, ".git")
+            if os.path.isdir(git_src):
+                if os.path.exists(ARTIFY_GIT_DIR):
+                    shutil.rmtree(ARTIFY_GIT_DIR, ignore_errors=True)
+                os.rename(git_src, ARTIFY_GIT_DIR)
+                print("   ✅ Git для Artify Studio настроен автоматически!")
+        except Exception as e:
+            print(f"   ⚠️ Предупреждение настройки Artify Git: {e}")
+        finally:
+            if os.path.exists(temp_dir):
+                shutil.rmtree(temp_dir, ignore_errors=True)
+
 def sync_artify(commit_msg):
     log("Шаг 1/2: Синхронизация вложенного репозитория Artify Studio...", "🎨")
     if not os.path.isdir(ARTIFY_DIR):
         print("   ⚠️ Папка artify-studio не найдена, пропускаем.")
         return True
+
+    ensure_artify_git()
 
     git_cmd_base = "git"
     if os.path.isdir(ARTIFY_GIT_DIR):
