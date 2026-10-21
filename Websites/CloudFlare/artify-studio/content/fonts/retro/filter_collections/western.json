@@ -1,0 +1,15 @@
+{
+  "filterId": "western",
+  "label": "Western",
+  "items": [
+    "retro-cowboy-3",
+    "retro-riders",
+    "retro-ranch",
+    "retro-western",
+    "wild-retro",
+    "retro-guns",
+    "retro-chicken"
+  ],
+  "excludedItems": [],
+  "updatedAt": "2026-10-11T21:21:12.122Z"
+}

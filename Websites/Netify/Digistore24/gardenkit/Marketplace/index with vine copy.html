@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nature's Harmony | Premium Natural Remedies</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QQHZMRM6PW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QQHZMRM6PW');
+</script>
+
+<style>
+/* ── БАЗОВЫЕ СТИЛИ ── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --forest: #23400f; --moss: #4a7c2f; --sage: #7aad52; --mint: #b8d99a;
+  --cream: #f6f1e6; --parchment: #ede5d0; --gold: #c8a84b; --white: #ffffff;
+  --ink: #1e2a14; --muted: #5c6b4a; --clay: #b5623a; --clay-dark: #8f4527;
+}
+body {
+  font-family: 'Inter', sans-serif; color: var(--ink);
+  background-color: var(--cream);
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(45,80,22,0.05) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
+
+/* ── ВИНОВАЯ ЛИНИЯ-РАЗДЕЛИТЕЛЬ ── */
+.vine-divider { display: flex; justify-content: center; margin: 6px 0 44px; overflow: hidden; }
+.vine-divider svg { width: min(560px, 90%); height: auto; }
+.vine-path { fill: none; stroke: var(--moss); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 900; stroke-dashoffset: 900; transition: stroke-dashoffset 1.6s cubic-bezier(0.65,0,0.35,1); }
+.vine-leaf { opacity: 0; transform: scale(0.4); transform-origin: center; transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+.vine-divider.in-view .vine-path { stroke-dashoffset: 0; }
+.vine-divider.in-view .vine-leaf { opacity: 1; transform: scale(1); }
+.vine-divider.in-view .vine-leaf:nth-child(2) { transition-delay: 0.5s; }
+.vine-divider.in-view .vine-leaf:nth-child(3) { transition-delay: 0.75s; }
+.vine-divider.in-view .vine-leaf:nth-child(4) { transition-delay: 1s; }
+.vine-divider.in-view .vine-leaf:nth-child(5) { transition-delay: 1.2s; }
+
+
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+.product-grid .reveal:nth-child(1) { transition-delay: 0s; }
+.product-grid .reveal:nth-child(2) { transition-delay: 0.1s; }
+.product-grid .reveal:nth-child(3) { transition-delay: 0.2s; }
+.product-grid .reveal:nth-child(4) { transition-delay: 0.3s; }
+
+/* ── TELEGRAM TOP BAR & FLOATING WIDGET ── */
+.tg-top-bar { display: flex; align-items: center; justify-content: center; text-align: center; gap: 10px; background: linear-gradient(90deg, #1d92d1 0%, #2AABEE 100%); color: #ffffff; text-decoration: none; padding: 12px 16px; font-size: 12px; letter-spacing: 0.5px; transition: background 0.3s ease; width: 100%; }
+.tg-top-bar:hover { background: linear-gradient(90deg, #157cb3 0%, #229ED9 100%); }
+.tg-top-bar img { width: 22px; height: 22px; flex-shrink: 0; }
+.tg-top-bar strong { color: #ffde59; font-weight: 700; }
+.tg-floating-btn { position: fixed; bottom: 24px; right: 24px; background: #2AABEE; color: #fff; width: 96px; height: 96px; border-radius: 50%; text-decoration: none; box-shadow: 0 10px 30px rgba(42, 171, 238, 0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; animation: tgPulse 2s infinite; text-align: center; }
+.tg-floating-btn img { width: 36px; height: 36px; margin-bottom: 4px; }
+.tg-floating-btn span { font-size: 10px; font-weight: 700; text-transform: uppercase; }
+@keyframes tgPulse { 0% { box-shadow: 0 0 0 0 rgba(42, 171, 238, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(42, 171, 238, 0); } 100% { box-shadow: 0 0 0 0 rgba(42, 171, 238, 0); } }
+@media (max-width: 400px) { .tg-top-bar { font-size: 9px; padding: 8px 12px; } }
+
+/* ── СЕТКА ТОВАРОВ И КАРТОЧКИ ── */
+.marketplace-container { max-width: 1200px; margin: 0 auto; padding: 10px 24px 60px; }
+.scroll-section { scroll-margin-top: 90px; margin-bottom: 60px; } 
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+.product-card { 
+  background: var(--white); 
+  border-radius: 20px; 
+  overflow: hidden; 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06); 
+  border: 1px solid #f0ebe1; 
+  display: flex; 
+  flex-direction: column; 
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease, border-color 0.35s ease; 
+  position: relative; 
+  height: 100%; 
+  cursor: pointer; /* <--- ИСПРАВЛЕНО: Теперь вся карточка кликабельна */
+}
+.product-card:hover { transform: translateY(-7px); box-shadow: 0 20px 45px rgba(45, 80, 22, 0.18); border-color: var(--gold); }
+.badge { position: absolute; top: 16px; left: 16px; background: #ff4757; color: #fff; font-size: 12px; font-weight: 700; text-transform: uppercase; padding: 6px 12px; border-radius: 50px; z-index: 10; box-shadow: 0 4px 10px rgba(255, 71, 87, 0.3); }
+.badge.bestseller { background: var(--forest); box-shadow: 0 4px 10px rgba(45, 80, 22, 0.3); }
+.product-img-wrap { background: #fcfbfa; padding: 30px 20px; text-align: center; border-bottom: 1px solid #f0ebe1; height: 240px; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+.product-img-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; transition: transform 0.3s ease; }
+.product-card:hover .product-img-wrap img { transform: scale(1.05); }
+
+/* Зона текста в карточке */
+.product-info { padding: 24px; display: flex; flex-direction: column; flex-grow: 1; }
+.product-tag { font-size: 12px; color: var(--sage); font-weight: 700; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+.product-title { font-family: 'Lora', serif; font-size: 22px; color: var(--ink); font-weight: 700; margin-bottom: 12px; line-height: 1.3; }
+.product-title a { color: inherit; text-decoration: none; transition: color 0.2s ease; }
+.product-title a:hover { color: var(--moss); } 
+
+/* Краткое превью в карточке */
+.product-preview { font-size: 14px; color: var(--muted); margin-bottom: 16px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Кнопка открытия окна */
+.read-more-btn { background: transparent !important; border: none !important; box-shadow: none !important; outline: none !important; color: var(--sage); font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 20px; text-align: left; text-decoration: underline; text-underline-offset: 4px; padding: 0; display: inline-block; font-family: inherit; }
+.read-more-btn:hover { color: var(--forest); }
+
+/* Кнопка покупки */
+.action-area { margin-top: auto; width: 100%; }
+.btn-buy { display: block; width: 100%; text-align: center; background: linear-gradient(135deg, #fff366 0%, #ffca28 50%, #ff9800 100%); color: #1a3009; font-size: 16px; font-weight: 800; padding: 16px 20px; border-radius: 50px; text-decoration: none; box-shadow: 0 10px 25px rgba(255, 152, 0, 0.3); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
+.btn-buy::after { content: ''; position: absolute; top: 0; left: -75%; width: 50%; height: 100%; background: linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent); transform: skewX(-20deg); transition: left 0.6s ease; }
+.btn-buy:hover::after { left: 130%; }
+.btn-buy:hover { transform: translateY(-2px) scale(1.02); background: linear-gradient(135deg, #ffff8d 0%, #ffd54f 50%, #ffb300 100%); box-shadow: 0 15px 35px rgba(255, 152, 0, 0.4); }
+.btn-secure { display: block; text-align: center; font-size: 11px; color: #8ba37b; margin-top: 10px; }
+
+/* ── БЛОК ТЕЛЕГРАМ VIP ── */
+.tg-invite-section { background: linear-gradient(135deg, #f5f0e8 0%, #e6f2fc 100%); padding: 50px 24px; margin: 40px 0; border-top: 2px dashed #2AABEE; border-bottom: 2px dashed #2AABEE; }
+.tg-invite-box { max-width: 1000px; margin: 0 auto; background: #ffffff; border-radius: 24px; padding: 45px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); position: relative; overflow: hidden; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 40px; align-items: center; }
+.tg-invite-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 8px; background: #2AABEE; }
+.tg-desc { font-size: 16px; color: var(--muted); line-height: 1.6; margin-bottom: 10px; text-align: left; }
+.tg-header-row { display: flex; align-items: center; gap: 18px; margin-bottom: 16px; }
+.tg-icon-small { width: 56px !important; height: 56px !important; min-width: 56px !important; flex-shrink: 0; object-fit: contain; }
+.btn-telegram { display: block; width: 100%; text-align: center; background: #2AABEE; color: #fff; padding: 18px 24px; border-radius: 50px; font-size: 16px; font-weight: 800; text-decoration: none; box-shadow: 0 8px 24px rgba(42, 171, 238, 0.4); transition: all 0.3s; }
+.btn-telegram:hover { background: #229ED9; transform: translateY(-2px); }
+
+/* Логотип */
+.section-heading { text-align: center; margin: 30px auto 10px; padding: 0 20px; }
+.section-eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+.section-heading h2 { font-family: 'Lora', serif; font-weight: 700; color: var(--forest); font-size: 44px; margin-bottom: 14px; line-height: 1.2; letter-spacing: -0.5px; }
+.section-heading p { font-size: 15px; color: var(--muted); max-width: 600px; margin: 0 auto; line-height: 1.5; }
+
+/* ── МОДАЛЬНОЕ ОКНО И ГАЛЕРЕЯ (POPUP) ── */
+/* ── МОДАЛЬНОЕ ОКНО (ПОЛНОСТЬЮ ФИКСИРОВАННЫЙ КРЕСТИК) ── */
+.modal { 
+  border: none; 
+  border-radius: 24px; 
+  background: var(--white); 
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); 
+  margin: auto; 
+  max-width: 950px; 
+  width: 95%; 
+  max-height: 95vh; 
+  overflow: visible !important; /* <--- ИСПРАВЛЕНО: Запретили скролл самого окна */
+  padding: 0; 
+}
+.modal::backdrop { background: rgba(30, 42, 20, 0.7); backdrop-filter: blur(4px); }
+
+/* Обертка (запрещаем скролл) */
+.modal-content { 
+  position: relative; 
+  display: flex; 
+  flex-direction: column; 
+  max-height: 95vh;
+  overflow: visible !important; /* <--- ИСПРАВЛЕНО: Запретили скролл обертки */
+}
+
+/* КРЕСТИК: Теперь он намертво прибит и не уедет при скролле! */
+.modal-close { 
+  position: absolute !important; 
+  top: 15px !important; 
+  right: 15px !important; 
+  background: var(--forest) !important; 
+  color: #fff !important; 
+  border: none !important; 
+  width: 36px !important; 
+  height: 36px !important; 
+  border-radius: 50% !important; 
+  font-size: 20px !important; 
+  cursor: pointer; 
+  z-index: 999999 !important; /* Поверх всего */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+  display: flex !important; 
+  align-items: center; 
+  justify-content: center; 
+  transition: transform 0.2s, background 0.2s; 
+}
+.modal-close:hover { transform: scale(1.1); background: var(--sage) !important; }
+
+/* ТЕЛО МОДАЛКИ (ТЕПЕРЬ ЭТО ЕДИНСТВЕННАЯ ЗОНА ДЛЯ СКРОЛЛА) */
+.modal-body { 
+  display: grid; 
+  grid-template-columns: 1.1fr 0.9fr; 
+  gap: 0; 
+  max-height: 95vh; /* Ограничиваем высоту тела */
+  overflow-y: auto !important; /* <--- ТЕПЕРЬ ВСЁ СКРОЛЛИТСЯ СТРОГО ТУТ! */
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-body { 
+  display: grid; 
+  grid-template-columns: 1.1fr 0.9fr; 
+  gap: 0; 
+  max-height: 95vh; 
+  overflow: hidden !important; 
+  border-radius: 24px; /* <--- ИСПРАВЛЕНО: Теперь скролл внутри обрезается по форме карточки */
+}
+
+/* Галерея на ПК (Миниатюры СНИЗУ для максимальной ширины фото) */
+.modal-gallery { 
+  background: #fcfbfa; 
+  padding: 24px; 
+  display: flex; 
+  flex-direction: column; /* Вернули вертикальный стек: фото сверху, превью снизу */
+  gap: 16px; 
+  border-radius: 24px 0 0 24px; 
+  border-right: 1px solid #f0ebe1; 
+  align-items: center;
+  height: 100%;
+}
+
+/* Инфо зона на ПК (ТЕПЕРЬ ТЕКСТ СКРОЛЛИТСЯ НЕЗАВИСИМО ОТ ФОТО) */
+.modal-info { 
+  padding: 40px 40px 20px 40px; 
+  display: flex; 
+  flex-direction: column; 
+  position: relative; 
+  max-height: 95vh; /* Ограничиваем высоту текстовой колонки */
+  overflow-y: auto !important; /* <--- ТЕПЕРЬ СКРОЛЛИТСЯ ТОЛЬКО ТЕКСТ! */
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-main-img-wrap { 
+  position: relative; 
+  width: 100%; 
+  height: 520px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  background: transparent; 
+  border: none; 
+  padding: 0; 
+}
+.modal-main-img-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; transition: opacity 0.2s ease; }
+
+/* Красивые стрелочки */
+.gallery-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: #ffffff; color: var(--forest); border: 1px solid #f0ebe1; width: 40px; height: 40px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: all 0.2s; z-index: 10; }
+.gallery-arrow:hover { background: var(--forest); color: #fff; border-color: var(--forest); }
+.prev-arrow { left: 10px; }
+.next-arrow { right: 10px; }
+
+/* Центрированные миниатюры */
+/* Горизонтальный список миниатюр на ПК снизу */
+/* Горизонтальный список миниатюр на ПК со скроллом */
+/* Горизонтальный список миниатюр на ПК со скроллом (СЖАЛИ ДО 4-5 ШТУК) */
+.modal-thumbnails { 
+  display: flex; 
+  flex-direction: row; 
+  gap: 12px; 
+  justify-content: start; /* Выравниваем по левому краю для плавной прокрутки */
+  align-items: center; 
+  max-width: 360px; /* <--- ИСПРАВЛЕНО: Ограничили ширину под 4-5 картинок */
+  width: 100%;
+  margin: 0 auto; /* <--- ИСПРАВЛЕНО: Отцентрировали всю плашку под главным фото */
+  overflow-x: auto !important; /* Включили горизонтальный скролл на ПК */
+  scroll-behavior: smooth;
+  padding: 6px 0;
+}
+.modal-thumbnails::-webkit-scrollbar { display: none; } /* Прячем полосу скролла */
+.modal-thumbnails { -ms-overflow-style: none; scrollbar-width: none; }
+.thumb-img { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; opacity: 0.5; transition: all 0.2s; background: #fff; }
+.thumb-img:hover { opacity: 1; }
+.thumb-img.active { border-color: var(--sage); opacity: 1; box-shadow: 0 4px 12px rgba(122, 173, 82, 0.3); }
+
+/* Инфо зона */
+.modal-info { padding: 40px; display: flex; flex-direction: column; }
+.modal-desc ul { list-style: none; margin-bottom: 20px; }
+.modal-desc li { font-size: 14.5px; color: var(--muted); margin-bottom: 12px; display: flex; gap: 8px; line-height: 1.5; }
+.modal-desc li::before { content: '🌿'; font-size: 14px; margin-top: 2px; }
+
+/* Красивый, салатово-зеленый приятный блок Маркетолога */
+.marketing-note { 
+  background: #f3f8ee; 
+  border-left: 3px solid var(--sage); 
+  padding: 12px 14px; 
+  border-radius: 8px;
+  margin-bottom: 20px;
+  max-width: 100%; /* Защита ширины */
+  overflow-wrap: break-word; /* Перенос слишком длинных слов */
+  word-wrap: break-word;
+}
+
+/* Заголовок "MY NOTE" (глубокий темно-зеленый) */
+.marketing-note > strong { 
+  display: block; 
+  color: var(--forest); /* Темно-зеленый цвет для заголовка */
+  font-size: 13px; 
+  font-weight: 700; 
+  text-transform: uppercase; 
+  margin-bottom: 4px; 
+}
+
+/* Текст описания (темно-оливковый для идеальной читаемости) */
+.marketing-note p { 
+  font-size: 13px; 
+  color: #2b3a20; /* Темно-оливковый цвет для отличного контраста и чтения */
+  line-height: 1.5; 
+  margin: 0; 
+}
+
+/* Обычный жирный текст внутри параграфа */
+.marketing-note p strong {
+  display: inline !important;
+  color: var(--forest) !important; /* Выделенные жирным слова красим в глубокий лесной зеленый */
+  text-transform: none !important;
+  font-size: inherit !important;
+}
+
+/* Уменьшили маргин финального абзаца на ПК, чтобы убрать лишний пустой зазор снизу */
+.modal-closing-text {
+  font-size: 14.5px;
+  color: var(--black);
+  line-height: 1.6;
+  margin-bottom: 20px; /* <--- ИСПРАВЛЕНО: уменьшили с 100px до 45px */
+}
+
+/* ── ТИПОГРАФИКА ВНУТРИ ПОПАПА (UX УЛУЧШЕНИЯ) ── */
+.popup-tag {
+  font-size: 13.5px !important; 
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+  display: inline-block;
+}
+.popup-title {
+  font-size: 30px !important; 
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+.popup-title a {
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.popup-title a:hover {
+  color: var(--moss); 
+}
+
+/* ── ЛИПКАЯ КНОПКА ВНИЗУ (STICKY BOTTOM) ── */
+/* Инфо зона на ПК (сжали нижний отступ до 20px) */
+.modal-info { 
+  padding: 40px 40px 35px 40px; /* <--- ИСПРАВЛЕНО: Увеличили отступ снизу до 55px для еще большего объема воздуха */
+  display: flex; 
+  flex-direction: column; 
+  position: relative; 
+}
+
+.modal-sticky-bottom {
+  position: sticky;
+  bottom: -40px; 
+  margin-top: auto; 
+  background: rgba(255, 255, 255, 0.95); 
+  backdrop-filter: blur(10px); 
+  padding: 20px 0;
+  z-index: 100;
+  box-shadow: 0 -15px 25px rgba(255, 255, 255, 0.9);
+  border-top: 1px solid rgba(0,0,0,0.03);
+}
+.modal-sticky-bottom .btn-buy {
+  font-size: 19px;
+  padding: 18px 24px;
+  box-shadow: 0 10px 25px rgba(255, 152, 0, 0.3);
+}
+
+/* Если у товара только 1 фото — убираем пустую колонку справа и центрируем фото на 100% */
+.modal-gallery.single-image-gallery {
+  grid-template-columns: 1fr !important;
+}
+
+/* ── СУПЕР-КОНВЕРСИОННЫЙ СЕЛЕКТОР ПАКЕТОВ (CHECKOUT MODAL НА ПК) ── */
+.checkout-modal {
+  max-width: 550px !important; /* Узкое, аккуратное окно специально под выбор пакета */
+  width: 90%;
+  border-radius: 24px;
+  background: var(--white);
+  padding: 0;
+  overflow: visible !important;
+}
+.checkout-modal-body {
+  padding: 35px 30px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.checkout-modal-title {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  color: var(--forest);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.checkout-modal-subtitle {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+/* Сетка тарифов */
+.checkout-packages-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.checkout-package-card {
+  background: var(--cream);
+  border: 1px solid var(--parchment);
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.25s ease;
+  text-align: left;
+}
+.checkout-package-card:hover {
+  border-color: var(--sage);
+}
+.checkout-package-card.active {
+  background: var(--white);
+  border-color: var(--forest);
+  box-shadow: 0 8px 24px rgba(35, 64, 15, 0.12);
+  border-width: 2px;
+}
+.checkout-package-card .package-badge {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background: var(--clay);
+  color: var(--white);
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 10px rgba(181, 98, 58, 0.2);
+}
+.checkout-package-card .package-badge.popular {
+  background: var(--forest);
+  box-shadow: 0 4px 10px rgba(35, 64, 15, 0.2);
+}
+.checkout-package-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.checkout-package-desc {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+.checkout-action-area {
+  margin-top: 10px;
+  width: 100%;
+}
+.checkout-action-area .btn-buy {
+  font-size: 16px;
+  padding: 16px 24px;
+}
+
+/* Адаптивность селектора чекаута под телефоны */
+@media (max-width: 768px) {
+  .checkout-modal-body { padding: 25px 20px; gap: 15px; }
+  .checkout-modal-title { font-size: 22px; }
+  .checkout-modal-subtitle { font-size: 12.5px; }
+  .checkout-package-card { padding: 12px 14px; border-radius: 12px; }
+  .checkout-package-name { font-size: 13px; }
+  .checkout-package-desc { font-size: 10px; }
+
+  /* Заметка на мобильном (сжали отступ) */
+  .marketing-note { 
+    padding: 8px 10px; 
+    margin-bottom: 15px; 
+  }
+  .marketing-note > strong { font-size: 10px; margin-bottom: 2px; }
+
+  /* Финальный абзац на мобильном */
+  .modal-closing-text {
+    font-size: 13.5px;
+    line-height: 1.4;
+    margin-bottom: 20px; /* Отступ для липкой кнопки на телефонах */
+  }
+  
+  .popup-title { font-size: 20px !important; margin-bottom: 12px; }
+  .popup-tag { font-size: 11px !important; margin-bottom: 8px; }
+  
+  /* Идеально выровненная и центрированная липкая зона кнопки */
+/* Липкая зона кнопки на мобильном (Плавающий прозрачный эффект) */
+  .modal-sticky-bottom {
+    bottom: -24px; 
+    padding: 12px 16px; 
+    margin-left: -16px; 
+    margin-right: -16px;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-sticky-bottom .btn-buy {
+    width: 100% !important; /* Кнопка занимает всю ширину и центрируется */
+    text-align: center;
+    font-size: 16px;
+    padding: 12px 20px;
+    border-radius: 50px; /* Фирменная круглая кнопка */
+  }
+  
+/* Тело модалки на мобильном */
+  .modal-body { 
+    grid-template-columns: 1fr; 
+    max-height: 95vh; 
+    overflow-y: auto !important; 
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    
+    /* Делаем углы точно такими же, как у самого окна (24px) */
+    border-radius: 24px; 
+    
+    /* МАГИЧЕСКИЙ ХАК ДЛЯ SAFARI/iOS: Жестко обрезает всё по форме углов при скролле */
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: radial-gradient(white, black);
+    
+    transform: translateZ(0); 
+  }
+
+  /* Инфо зона на мобильном (отключаем раздельный скролл) */
+  .modal-info {
+    max-height: none !important;
+    overflow-y: visible !important; /* <--- Отключаем независимый скролл текста на телефоне */
+    padding: 20px 16px 12px 16px;
+  }
+  
+  
+  /* ПАРАМЕТР 1: Пропорции ширины (Фото / Миниатюры) */
+  /* Компактная галерея на мобильных (Фото слева, Миниатюры вертикально справа) */
+  .modal-gallery { 
+    border-radius: 24px 24px 0 0; 
+    padding: 12px; 
+    display: grid;
+    /* 1fr — это ширина фото (занимает всё свободное место) */
+    /* 52px — это ширина колонки миниатюр справа. */
+    /* ЕСЛИ ХОЧЕШЬ ДАТЬ БОЛЬШЕ МЕСТА ФОТО: уменьши 52px до 46px */
+    grid-template-columns: 1fr 52px; /* Главное фото слева, миниатюры справа в колонку */
+    gap: 12px;  /* Зазор между фото и миниатюрами */
+    border-right: none; 
+    border-bottom: 1px solid #f0ebe1; 
+    align-items: center; 
+  }
+
+    /* ПАРАМЕТР 2: Высота главного фото */
+    /* Компактный контейнер фото на мобильных (убрали рамки) */
+  .modal-main-img-wrap { 
+    /* МЕНЯЙ ЦИФРУ НИЖЕ, ЧТОБЫ СДЕЛАТЬ ФОТО ВЫШЕ ИЛИ НИЖЕ: */
+    /* Например: 180px (компактнее), 220px (крупнее), 240px (очень крупно) */
+    height: 300px; 
+    padding: 0;
+    background: transparent; /* Сделали прозрачным на мобилках */
+    border: none; /* Убрали рамку на мобилках */
+  } 
+  
+  .gallery-arrow { width: 32px; height: 32px; font-size: 12px; }
+  
+  /* ПАРАМЕТР 3: Размер превью-картинок (миниатюр) */
+  /* Вертикальные миниатюры на мобильном (добавили padding-top, чтобы уйти от крестика) */
+  /* Вертикальные миниатюры на мобильном со скроллом */
+  .modal-thumbnails { 
+    display: flex;
+    flex-direction: column; 
+    gap: 8px;
+    justify-content: start; /* Выравниваем по верху для плавной прокрутки */
+    align-items: center;
+    padding-top: 30px; 
+    max-height: 200px; /* <--- ИСПРАВЛЕНО: Ограничили высоту под высоту главного фото */
+    overflow-y: auto !important; /* <--- ИСПРАВЛЕНО: Включили вертикальный скролл */
+    scroll-behavior: smooth;
+  }
+  .modal-thumbnails::-webkit-scrollbar { display: none; } /* Прячем полосу скролла на мобилках */
+  .modal-thumbnails { -ms-overflow-style: none; scrollbar-width: none; }
+  .thumb-img { width: 40px; height: 40px; } /* Удобный компактный размер */
+  
+  /* Инфо зона: добавили 85px отступа снизу, чтобы текст прокручивался НАД кнопкой */
+  .modal-info { padding: 20px 16px 15px 16px; } 
+  .modal-close { top: 12px; right: 12px; width: 34px; height: 34px; background: rgba(35, 64, 15, 0.8); border: 2px solid #fff; }
+
+  .section-heading { margin: 20px auto 5px; }
+  .section-eyebrow { font-size: 11px; margin-bottom: 8px; }
+  .section-heading h2 { font-size: 32px !important; margin-bottom: 8px; }
+  .section-heading p { font-size: 12px; }
+  .tg-top-bar { padding: 8px 10px; font-size: 9.5px; }
+  .tg-top-bar img { width: 16px; height: 16px; }
+  .marketplace-container { padding: 0px 12px 24px; }
+  
+  /* Сетка карточек */
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 40px; }
+  .product-card { border-radius: 16px; }
+  .product-img-wrap { height: 180px; padding: 12px 8px; }
+  .product-info { padding: 12px 10px; }
+  .product-tag { font-size: 9px; margin-bottom: 4px; }
+  .product-title { font-size: 16px; margin-bottom: 10px; line-height: 1.5; }
+  .product-preview { font-size: 11px; margin-bottom: 8px; }
+  .read-more-btn { font-size: 12px; margin-bottom: 10px; }
+  .btn-buy { font-size: 12.5px; padding: 11px 4px; border-radius: 12px; }
+  .btn-secure { display: none; }
+  .badge { font-size: 8px; padding: 4px 8px; top: 8px; left: 8px; }
+
+  /* Телеграм блок */
+  .tg-invite-section { padding: 24px 12px; margin: 10px 0; }
+  .tg-invite-box { grid-template-columns: 1fr; padding: 20px 14px; gap: 10px; border-radius: 16px; }
+  .tg-header-row { gap: 10px; margin-bottom: 14px; align-items: center; }
+  .tg-icon-small { width: 38px !important; height: 38px !important; }
+  .tg-title { font-size: 18.5px !important; line-height: 1.25; }
+  .tg-desc { font-size: 12px !important; line-height: 1.45; margin-bottom: 14px !important; }
+  .btn-telegram { padding: 12px 18px; font-size: 13.5px; }
+}
+
+/* ── ФИКС СЪЕЗЖАЮЩЕГО ТЕКСТА И СЛОВ В ПОПАПЕ ── */
+.product-bullets li, .modal-desc li {
+  display: block !important; /* ИСПРАВЛЕНО: убрали flex, из-за которого слова ложились в колонки */
+  position: relative;
+  padding-left: 24px !important;
+  line-height: 1.5;
+}
+.product-bullets li::before, .modal-desc li::before {
+  content: '🌿';
+  position: absolute;
+  left: 0;
+  top: 3px;
+  font-size: 12px;
+}
+
+/* Убираем автоматические листики-маркеры для списков, где мы вручную пишем свои эмодзи (🌱, 🌼, ☕, 🏡) */
+.modal-desc .product-bullets li {
+  padding-left: 0 !important;
+}
+.modal-desc .product-bullets li::before {
+  content: none !important; /* Убираем авто-листик, чтобы не было двойных эмодзи */
+}
+</style>
+
+</head>
+<body>
+
+<!-- ТЕЛЕГРАМ ШАПКА -->
+<a href="https://t.me/+DBM4ReYIBQU4YjAy" class="tg-top-bar" target="_blank" onclick="gtag('event', 'click_tg_top_bar');">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram">
+  <span><strong>🔓 UNLOCK PRIVATE CHANNEL FOR FREE:</strong> Daily wellness tips & hidden herbal archives inside! Click to Join 👈</span>
+</a>
+
+<main class="marketplace-container">
+
+  <!-- =============================== -->
+  <!-- КАТЕГОРИЯ 1: HEALING KITS       -->
+  <!-- =============================== -->
+  <section class="scroll-section" id="healing-kits">
+    <div class="section-heading reveal">
+      <div class="section-eyebrow">🌿 Curated Collection</div>
+      <h2>Nature’s Harmony</h2>
+      <p>Your marketplace for holistic healthy lifestyle, organic homesteading essentials, nervous system repair and more.</p>
+    </div>
+    <div class="vine-divider" aria-hidden="true">
+      <svg viewBox="0 0 560 40"><path class="vine-path" d="M5 20 Q 140 0, 280 20 T 555 20"/><circle class="vine-leaf" cx="90" cy="9" r="4" fill="var(--sage)"/><circle class="vine-leaf" cx="220" cy="30" r="4" fill="var(--gold)"/><circle class="vine-leaf" cx="340" cy="8" r="4" fill="var(--sage)"/><circle class="vine-leaf" cx="470" cy="30" r="4" fill="var(--gold)"/></svg>
+    </div>
+    
+    <div class="product-grid">
+
+      <!-- КАРТОЧКА 1: GARDEN KIT -->
+      <article class="product-card reveal" 
+        data-tag="🌿 🏡 Homesteading & Herbs"
+        data-title="Medicinal Herb Growing Kit"
+        data-bullets="<p style='font-size: 14.5px; margin-bottom: 15px; color: var(--muted); line-height: 1.6;'>Grow your own beautiful herbal garden right at home — on your <strong>kitchen windowsill, balcony, patio, terrace, backyard, garden, or homestead</strong>.</p>
+                <p style='font-weight: 700; margin-bottom: 12px; color: var(--forest); font-size: 15px;'>✅ What's included:</p>
+                <ul class='product-bullets' style='margin-bottom: 20px;'>
+                  <li>🌱 <strong>4,818 high-quality non-GMO seeds</strong></li>
+                  <li>🌼 <strong>10 popular medicinal herbs</strong> for homemade herbal teas and natural self-care.</li>
+                  <li>☕ Enjoy fresh herbs year-round and create your own tea blends with plants such as <strong>chamomile, lemon balm, peppermint, lavender, thyme, echinacea, sage, oregano, rosemary, calendula, lemongrass, and more</strong>.<br><br>These traditional herbs are commonly used in herbal tea rituals to support <strong>relaxation, seasonal wellness, comfortable digestion, freshness, energy, and overall well-being</strong>.</li>
+                  <li>🏡 Perfect for <strong>beginners and experienced gardeners alike</strong>.</li>
+                </ul>"
+        data-note="More and more people are choosing <strong>natural, homegrown options instead of relying only on store-bought products</strong>. A home herbal garden gives you fresh plants right at your fingertips throughout the year. You know how they were grown, what goes into your tea, and you can enjoy the satisfaction of growing something yourself.<br><br>Fresh <strong>chamomile, lemon balm, peppermint, lavender, thyme, sage, oregano, and other herbs</strong> offer wonderful flavors and aromas while creating a daily opportunity to enjoy homemade herbal teas, support your well-being, lift your mood, feel more energized, and stay focused throughout the day."
+        data-closing="🌿 <strong>This is more than just a seed kit — it’s an opportunity to create your own natural wellness garden, grow useful herbs for your family, enjoy fresh herbal teas all year long, and take a step toward a healthier, more self-sufficient lifestyle.</strong>"
+        data-link="https://www.checkout-ds24.com/product/379812?aff=KylieJean"
+        data-secure="🌱 Proudly Sourced & Non-GMO">
+        
+        <!-- УДОБНОЕ ХРАНИЛИЩЕ ФОТОГРАФИЙ КАРТОЧКИ (Добавляй новые картинки на отдельных строчках ниже!) -->
+        <div class="product-images-source" style="display: none;">
+          <span>https://www.digistore24.com/pb/img/merchant_982786/image/product/84XFZ6C3.png?o=440</span>
+          <span>https://www.digistore24.com/pb/img/merchant_982786/image/orderform_image/W95IWD0O.jpg?o=1460</span>
+          <span>https://www.digistore24.com/pb/img/merchant_982786/image/orderform_image/27BXQA61.jpg?o=780</span>
+          <span>https://lh3.googleusercontent.com/WPdup4TexETdLEk-wuHD13MGVJTRCF1G4XSEKbjod2UXCOJINY7vs3WQDxJ7kLyK5Te_FG_FHaYxFyapj5q8JmkANz0tSaTQeMAw=w1060</span>
+          <span>https://lh3.googleusercontent.com/DTojZXTCapdhQc4C5FomI4EbmVvDQzuL-tyrAYy7myjmLX8SjgwqAygOIBuSOjYI0D_glnihJ2tFBxU4Djkuf1Sq9xWzENtDoeM=w1060</span>
+          <span>https://lh3.googleusercontent.com/jRE25kkXcbZ8YFX31CcAzQkqu-e7fwQ8BETdeWS1ICgz03pVX5PT2N2IilxUwMW7v8XHmthfP2kIVTrGHnxm=w992</span>
+          <span>https://lh3.googleusercontent.com/z0YL9gRXXWSK8JWIsEHTd_Yhm2_mlwypxViikEP4T5uyGcJFGjObDIsq8WIhh4LX1veSO8cmkE0RAI1Crqm_RkexmXoyN3uvTnE=w760</span>
+          <span>https://lh3.googleusercontent.com/114xYDOSHT-m9tiDfjgGi5udJsJ7vTpirbR3q6oFSL0MCIs_c5reb2d5Aj5IQRpYMCaRILJ26Q4YoW10SrQZ5LfGnWAsSIu14t0o=w760</span>
+          <span>https://lh3.googleusercontent.com/tlZuUpISb7r75h8u0pKkY6LE544zK_RIFSQ2aIn4520h45oYI0-8a2kp_2Fz8l6vJFLb38tfI1lpPbdeY0UpFXUHNYSXVN5WmA=w760</span>
+          <span>https://lh3.googleusercontent.com/-ykZCS7zYdEeIUgvoyne5mt0kJ1GHizmpGG9MUjR9e3bDkK7umueXRYVqAk1CFS2P5sI3jR_1x7CrbYEakHrtPKU5KQqzHXTYg=w760</span>
+          <span>https://lh3.googleusercontent.com/2vOTdaIwAozh68ZQZflhubW33i0RovbmOQbSWpju9luUV1oLYxPGzx82fyYc_M8OO4y3K4dHKMlSl2MQKmAknu0zSjJDOPe6jW1N=w760</span>
+          <span>https://lh3.googleusercontent.com/StrmCic5jnEns9798ZGI-BS6zCOIOQihVEnxmSOR6f9vMDrtfp4-4lGBjULQlr7DKVlSo9llHAmWq1_Rst9xRup9vmr7Mg5o4LQ=w760</span>
+          <span>https://lh3.googleusercontent.com/xlDLf4EwcxdnSO_4JdTFeAvzeKCMpq4voyeiCSluFRxT7_Ewy1fRh-phbSRnMlqnH1ytHN_q4gkt0fezrixUT4ZjRUazDA6Dqw=w760</span>
+          <span>https://lh3.googleusercontent.com/zLoMNKDGCN9DF2wDpUNfwgCBEcj8rRXlcsakZBU7Jnki_YGqZT11hJ-MqHMEVsJ0LCvapDESLcPNy-auv2j0NdKYaDMwLOCwt6c=w760</span>
+        </div>
+
+        <div class="badge bestseller">#1 Bestseller</div>
+        <a href="#" class="product-img-wrap modal-trigger">
+          <img src="https://www.digistore24.com/pb/img/merchant_982786/image/product/84XFZ6C3.png?o=440" alt="Medicinal Garden Kit">
+        </a>
+        <div class="product-info">
+          <span class="product-tag">🌿 🏡 Homesteading & Herbs</span>
+          <h3 class="product-title">
+            <a href="#" class="modal-trigger">Medicinal Garden Kit</a>
+          </h3>
+          <p class="product-preview">Grow your own beautiful herbal garden right at home — on your kitchen windowsill, balcony, patio, terrace, backyard, garden, or homestead.</p>
+          <button class="read-more-btn modal-trigger">Read More 👈</button>
+          <div class="action-area">
+            <a href="https://www.checkout-ds24.com/product/379812?aff=KylieJean" class="btn-buy" target="_blank" onclick="event.stopPropagation();">🌿 Claim Garden Kit Now</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- КАРТОЧКА 8: HOMESTEADERS HANDBOOK -->
+      <article class="product-card reveal"
+        data-tag="🏡 🌿 Homesteading & Lifestyle"
+        data-title="Homesteaders Handbook"
+        data-bullets="<p style='font-size: 14.5px; margin-bottom: 15px; color: var(--muted); line-height: 1.6;'>Turn your <strong>backyard, garden, or homestead</strong> into a source of fresh, homegrown food for you and your family.<br><br>Whether you're just getting started or looking to expand your homesteading skills, this practical guide helps you build a more independent lifestyle—one step at a time.</p>
+                <p style='font-weight: 700; margin-bottom: 12px; color: var(--forest); font-size: 15px;'>✅ Inside you'll learn how to:</p>
+                <ul class='product-bullets' style='margin-bottom: 0;'>
+                  <li>🌱 <strong>Grow your own vegetables, herbs, fruits, and edible plants.</strong></li>
+                  <li>🥫 <strong>Preserve your harvest</strong> through canning, drying, fermenting, and long-term food storage.</li>
+                  <li>🍞 <strong>Bake from scratch, prepare wholesome homemade meals</strong>, and rediscover traditional kitchen skills.</li>
+                  <li>🐔 <strong>Build a productive homestead</strong> with practical tips for sustainable living and everyday self-reliance.</li>
+                  <li>💰 <strong>Save money</strong> by producing more of your own food and relying less on grocery stores.</li>
+                  <li>🌿 <strong>Create a healthier, more natural lifestyle</strong> and pass valuable skills on to future generations.</li>
+                </ul>"
+        data-note="These skills are more valuable today than ever before. More people want to know exactly where their food comes from, reduce their dependence on rising grocery prices, and enjoy the satisfaction of growing and making things themselves.<br><br>What I love most about this book is that it feels like learning from an experienced mentor. It breaks homesteading into simple, practical steps that anyone can follow—from planting your first garden to preserving your own harvest and creating a more resilient home."
+        data-closing="🌾 <strong>This isn't just a book—it's a roadmap to a healthier, more self-sufficient, and rewarding way of life. Start growing, preserving, and living with confidence.</strong>"
+        data-link="https://digi.homesteadingbook.com/#aff=KylieJean"
+        data-secure="🌱 100% Sustainable Living Wisdom">
+
+        <div class="product-images-source" style="display: none;">
+          <span>https://digi.homesteadingbook.com/wp-content/uploads/sites/22/2023/09/front-cover.png</span>
+          <span>https://digi.homesteadingbook.com/wp-content/uploads/sites/22/2023/09/image-05.jpg</span>
+          <span>https://digi.homesteadingbook.com/wp-content/uploads/sites/22/2023/08/shutterstock_606759695.jpg</span>
+          <span>https://digi.homesteadingbook.com/wp-content/uploads/sites/22/2023/09/image-01.png</span>
+          <span>https://digi.homesteadingbook.com/wp-content/uploads/sites/22/2023/08/shutterstock_1479298661.jpg</span>
+          <span>https://digi.homesteadingbook.com/wp-content/uploads/sites/22/2023/09/The-Homesteaders-Handbook-3D-Mockup.png</span>
+          <span>https://digi.homesteadingbook.com/wp-content/uploads/sites/22/2023/10/image-02-copy.jpg</span>
+        </div>
+        
+        <!-- >>> ВОТ ЭТОТ БЛОК ТАРИФОВ МЫ ДОБАВИЛИ СЮДА! <<< -->
+        <!-- ВНИМАНИЕ: Замени ССЫЛКА_ОПЛАТЫ_1 и ССЫЛКА_ОПЛАТЫ_2 на свои партнерские ссылки Дигистора на эти тарифы -->
+        <div class="product-packages-source" style="display: none;">
+          <div data-name="📖 Book + Digital"  data-desc="Physical book shipped + Instant PDF access" data-link="https://www.checkout-ds24.com/product/516929?aff=KylieJean" data-badge="Best Seller" data-popular="true"></div>
+          <div data-name="📱 Digital Only" data-desc="Instant PDF access, readable on any device" data-link="https://www.checkout-ds24.com/product/516930?aff=KylieJean" data-badge=""></div>
+        </div>
+        
+        <div class="badge">Essential Guide</div>
+        <a href="#" class="product-img-wrap modal-trigger" onclick="gtag('event', 'click_buy_homesteadershandbook_img');">
+          <img src="https://digi.homesteadingbook.com/wp-content/uploads/sites/22/2023/09/front-cover.png" alt="Homesteaders Handbook">
+        </a>
+        <div class="product-info">
+          <span class="product-tag">🏡 🌿 Homesteading & Lifestyle</span>
+          <h3 class="product-title">
+            <a href="#" class="modal-trigger" onclick="gtag('event', 'click_buy_homesteadershandbook_title');">Homesteaders Handbook</a>
+          </h3>
+          <p class="product-preview">Turn your backyard, garden, or homestead into a source of fresh, homegrown food for you and your family. Build an independent lifestyle...</p>
+          <button class="read-more-btn modal-trigger">Read More 👈</button>
+          <div class="action-area">
+            <a href="https://digi.homesteadingbook.com/#aff=KylieJean" class="btn-buy" target="_blank" onclick="gtag('event', 'click_buy_homesteadershandbook_btn');">🌿 Get Homesteaders Book</a>
+          </div>
+        </div>
+      </article>
+            
+<!-- КАРТОЧКА 7: THE LOST SUPERFOODS -->
+      <article class="product-card reveal"
+        data-tag="🥫 🌾 Homesteading & Pantry"
+        data-title="The Lost SuperFoods Book"
+        data-bullets="<p style='font-size: 14.5px; margin-bottom: 15px; color: var(--muted); line-height: 1.6;'>Discover <strong>126+ forgotten recipes and traditional preservation methods</strong> that helped generations store nutritious food long before modern refrigeration.<br><br>Learn how some foods can last <strong>for years—or even decades—when properly prepared and stored using time-tested techniques.</strong></p>
+                <p style='font-weight: 700; margin-bottom: 12px; color: var(--forest); font-size: 15px;'>✅ Inside you'll discover how to:</p>
+                <ul class='product-bullets' style='margin-bottom: 0;'>
+                  <li>🥫 <strong>Build a well-stocked pantry</strong> with long-lasting homemade foods.</li>
+                  <li>🍞 <strong>Master traditional food preservation methods</strong>, including canning, dehydrating, fermenting, smoking, curing, and more.</li>
+                  <li>🌾 <strong>Store your harvest naturally</strong> and reduce reliance on refrigeration whenever appropriate.</li>
+                  <li>🥕 <strong>Reduce food waste, stretch your grocery budget</strong>, and make the most of every harvest.</li>
+                  <li>🏡 <strong>Create a reliable pantry</strong> that helps keep your family prepared throughout the year.</li>
+                </ul>"
+        data-note="In today's world, knowing how to preserve food is one of the most valuable skills you can have. A well-stocked pantry isn't just about storing food—it's about peace of mind, saving money, reducing waste, and having wholesome homemade meals available whenever you need them.<br><br>What I love most about this book is how it brings back forgotten wisdom and traditional food-preservation techniques that have stood the test of time. It encourages a more self-reliant lifestyle while helping you make the most of the food you grow or buy."
+        data-closing="🌿 <strong>This isn't just a cookbook—it's a practical guide to building a resilient pantry, preserving real food, and creating long-term food security for your family.</strong>"
+        data-link="https://ultimatesurvivalfoods.com/book/#aff=KylieJean"
+        data-secure="🌿 100% Natural Homesteading Wisdom">
+
+        <div class="product-images-source" style="display: none;">
+          <span>https://lh3.googleusercontent.com/Ucto1k3DpnVALSBxyR0JdBEXSJhJfcAKjFpHMdCnOSyZzv1lnNBLy0SW-rgVn_nC-f7ZiviLebng01CWGt7xF9qjQ3QIDDQMKR9t=w578</span>
+          <span>https://lh3.googleusercontent.com/DWfEvuHo8MQzPe9dWsYCIW_cQo3NhLrCkBJwqb2e31-S5hapm1T1TL0xNwtuyfKxZD1fPG9kgCYZ9PpDUZlpXg=w1036</span>
+          <span>https://lh3.googleusercontent.com/iluDyvwuDYvsPbtQ21I6UQE3pFRSz3B7jx3cNSvYfetkinnCoUdovzjJwMV2ppBMzsEQxH1B6ZLRCjyC4Qtl9A=w828</span>
+          <span>https://lh3.googleusercontent.com/8xyGzveswZ7qC1YmxajNJiF6Zi5nIeOd4y6F6xPKsfs2-3rzOW8o-XF3G78dkMzT0i7yqpM2pmCd6IWstsXi=s0</span>
+          <span>https://lh3.googleusercontent.com/AKseL-YI-LaDZWHJkPKYaXsYar8VJLZTW9kUIu9l6dvYY-JC99R7kJPhvC02dV-28pHUQSqnb3EXdiHwMsFjOg=s0</span>
+          <span>https://lh3.googleusercontent.com/Ah2OAslU2kIw8ZhUTiCmx_CKknbyuqpYWaAlruIJbsGYVMsp3gxygGQacnh75Iq6ncP-aT-RwLpf9LXWdOQqsw=w828</span>
+          <span>https://lh3.googleusercontent.com/LyHxLiPkwq36GPjL9aefjm2Tmzucvhv6n8TeLhIuRsNHeXFGtvPjnawBiWWX3LvfGmmEieWW1MEKjDt51dXSRw=s0</span>
+          <span>https://lh3.googleusercontent.com/8hSlTCNgGnvFc8UhAtg0sVe5LjaJtBog9yUHiuKRpGF86NmF-ftLzOL8TofTvilIt1c7qMuPyRlmXIi34Tz7ROs=w1036</span>
+          <span>https://lh3.googleusercontent.com/XXAmPq31Enu83WMukrisQe2Y5mxy8wl6f68rWGJtatbRiqARroVYbr9ec8kZARuzWhXsR6cL08j_RmRMeaJWl0xbSyJZrMNL4NPC=w854</span>
+        </div>
+        
+        <!-- НАШИ ВАРИАНТЫ ПАКЕТОВ ПОКУПКИ (Удобно добавлять, менять цены и ссылки!) -->
+        <div class="product-packages-source" style="display: none;">
+          <div data-name="📖 Book + Digital" data-desc="Physical book shipped to your door + Instant digital access" data-link="https://www.checkout-ds24.com/product/377301?aff=KylieJean" data-badge="Best Value" data-popular="true"></div>
+          <div data-name="📱 Digital Only" data-desc="Instant PDF access, readable on any device" data-link="https://www.checkout-ds24.com/product/377300?aff=KylieJean" data-badge=""></div>
+        </div>
+
+        <div class="badge bestseller">Top Choice</div>
+        <a href="#" class="product-img-wrap modal-trigger" onclick="gtag('event', 'click_buy_lostsuperfoods_img');">
+          <img src="https://lh3.googleusercontent.com/Ucto1k3DpnVALSBxyR0JdBEXSJhJfcAKjFpHMdCnOSyZzv1lnNBLy0SW-rgVn_nC-f7ZiviLebng01CWGt7xF9qjQ3QIDDQMKR9t=w578" alt="The Lost SuperFoods Book">
+        </a>
+        <div class="product-info">
+          <span class="product-tag">🥫 🌾 Homesteading & Pantry</span>
+          <h3 class="product-title">
+            <a href="#" class="modal-trigger" onclick="gtag('event', 'click_buy_lostsuperfoods_title');">The Lost SuperFoods Book</a>
+          </h3>
+          <p class="product-preview">Discover 126+ forgotten recipes and traditional preservation methods that helped generations store nutritious food long before modern refrigeration...</p>
+          <button class="read-more-btn modal-trigger">Read More 👈</button>
+          <div class="action-area">
+            <a href="https://ultimatesurvivalfoods.com/book/#aff=KylieJean" class="btn-buy" target="_blank" onclick="gtag('event', 'click_buy_lostsuperfoods_btn');">📚 Get SuperFoods Now</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- КАРТОЧКА 2: HERBS FOR HEALTH -->
+      <article class="product-card reveal"
+        data-tag="🌿✨ Herbal Wellness"
+        data-title="Herbs for Health"
+        data-bullets="<p style='font-size: 14.5px; margin-bottom: 15px; color: var(--muted); line-height: 1.6;'>Discover the remarkable benefits of <strong>45+ medicinal herbs</strong> and learn how to create simple, natural herbal remedies that support everyday wellness for you and your family. 🌼🍃<br><br>Whether you're just beginning your herbal journey or looking to expand your knowledge, this practical guide makes herbal wellness easy to understand with step-by-step instructions anyone can follow.<br><br>No complicated formulas. No previous experience required. Just trusted herbal knowledge inspired by traditional plant-based wellness.</p>
+                <p style='font-weight: 700; margin-bottom: 12px; color: var(--forest); font-size: 15px;'>✅ What Makes Herbs for Health So Valuable:</p>
+                <ul class='product-bullets' style='margin-bottom: 0;'>
+                  <li>🌿 <strong>Learn About 45+ Powerful Medicinal Herbs</strong><br>Discover the traditional uses, unique properties, and everyday benefits of some of nature's most trusted healing plants.</li>
+                  <li>🍵 <strong>Create Your Own Herbal Teas</strong><br>Learn how to blend delicious herbal teas for relaxation, seasonal wellness, digestion, daily balance, and overall well-being.</li>
+                  <li>🌼 <strong>Make Natural Salves & Herbal Remedies</strong><br>Follow simple recipes to create herbal salves, infused oils, balms, tinctures, and wellness preparations using natural ingredients.</li>
+                  <li>🌱 <strong>Build Your Own Home Herbal Apothecary</strong><br>Create a collection of practical herbal remedies that are ready whenever you and your family need natural plant-based support.</li>
+                  <li>🌸 <strong>Support Everyday Wellness Naturally</strong><br>Discover gentle herbal traditions that have been used for generations to promote comfort, relaxation, vitality, and daily wellness.</li>
+                  <li>🌿 <strong>Grow and Use Your Own Herbs</strong><br>Learn how fresh or dried herbs can become valuable additions to your kitchen, garden, and natural wellness routine.</li>
+                  <li>💰 <strong>Save Money with Homemade Herbal Preparations</strong><br>Create your own herbal products at home using simple ingredients instead of relying entirely on expensive commercial products.</li>
+                  <li>📖 <strong>Beginner-Friendly Step-by-Step Guidance</strong><br>Easy instructions and practical explanations make herbal wellness accessible even if you've never worked with medicinal herbs before.</li>
+                  <li>🌎 <strong>A More Natural & Sustainable Lifestyle</strong><br>Reconnect with nature while learning practical skills that can benefit your home, garden, and everyday life.</li>
+                </ul>"
+        data-note="This book is one of the most practical herbal guides I've come across. What I love most is how it takes traditional herbal knowledge and makes it simple enough for anyone to use. 🌿✨<br><br>Instead of feeling overwhelmed by dozens of herbs and recipes, you'll learn exactly how to prepare herbal teas, salves, infused oils, and other natural remedies with confidence.<br><br>There is something incredibly rewarding about growing herbs, preparing your own natural wellness products, and knowing exactly what goes into them. Every cup of herbal tea and every handmade remedy brings you one step closer to a healthier, more natural lifestyle."
+        data-closing="🌱 <strong>This is more than just a herbal guide—it's an opportunity to build your own natural home apothecary, learn valuable lifelong skills, support your family's everyday wellness, and reconnect with the healing power of plants.</strong><br><br><strong>✨ Perfect For Those Who Love:</strong><br>✔️ Herbal wellness<br>✔️ Medicinal herbs<br>✔️ Herbal teas<br>✔️ Natural remedies<br>✔️ Homemade salves and infused oils<br>✔️ Holistic living<br>✔️ Growing medicinal plants<br>✔️ Sustainable lifestyles<br>✔️ Learning traditional herbal skills<br>✔️ Building a home herbal apothecary<br><br>🌿✨ <strong>Grow it. Brew it. Create it. Discover the timeless wisdom of medicinal herbs and bring the power of nature into your everyday life.</strong> ✨🍵"
+        data-link="https://www.digistore24.com/product/466293?aff=KylieJean"
+        data-secure="🌱 Sustainable Healing & Wellness">
+        
+        <!-- УДОБНОЕ ХРАНИЛИЩЕ ФОТОГРАФИЙ КАРТОЧКИ -->
+        <div class="product-images-source" style="display: none;">
+          <span>https://images.groovetech.io/abUJmXOUC0PGmsYBeHx6-OXNr6QX6QtlrbQ3npLpDJQ/rs:fit:0:0:0/g:no:0:0/c:0:0/aHR0cHM6Ly9hc3NldHMuZ3Jvb3ZlYXBwcy5jb20vaW1hZ2VzLzFlNjU1NzI2LWZlNjEtNDAxNy1hNzZmLWM3M2NjOThmZTA2YS8xNzY1NDcwODkyX0ZvcklsbHVzdHJhdGlvblB1cnBvc2VzMS5wbmc.webp</span>
+        </div>
+        
+        <div class="badge">Staff Pick</div>
+        <a href="#" class="product-img-wrap modal-trigger" onclick="gtag('event', 'click_buy_herbsforhealth_img');">
+          <img src="https://images.groovetech.io/abUJmXOUC0PGmsYBeHx6-OXNr6QX6QtlrbQ3npLpDJQ/rs:fit:0:0:0/g:no:0:0/c:0:0/aHR0cHM6Ly9hc3NldHMuZ3Jvb3ZlYXBwcy5jb20vaW1hZ2VzLzFlNjU1NzI2LWZlNjEtNDAxNy1hNzZmLWM3M2NjOThmZTA2YS8xNzY1NDcwODkyX0ZvcklsbHVzdHJhdGlvblB1cnBvc2VzMS5wbmc.webp" alt="Herbs for Health Book">
+        </a>
+        <div class="product-info">
+          <span class="product-tag">🌿✨ Herbal Wellness</span>
+          <h3 class="product-title">
+            <a href="#" class="modal-trigger" onclick="gtag('event', 'click_buy_herbsforhealth_title');">Herbs for Health</a>
+          </h3>
+          <p class="product-preview">Discover the remarkable benefits of 45+ medicinal herbs and learn how to create simple, natural herbal remedies that support everyday wellness...</p>
+          <button class="read-more-btn modal-trigger">Read More 👈</button>
+          <div class="action-area">
+            <a href="https://www.digistore24.com/product/466293?aff=KylieJean" class="btn-buy" target="_blank" onclick="event.stopPropagation(); gtag('event', 'click_buy_herbsforhealth_btn');">🌿 Claim Book</a>
+          </div>
+        </div>
+      </article>
+
+            <!-- КАРТОЧКА 10: THE SELF-SUFFICIENT BACKYARD -->
+      <article class="product-card reveal"
+        data-tag="🌿 ✨ Homesteading, DIY & Self-Sufficient Living"
+        data-title="🏡 Self-Sufficient Backyard"
+        data-bullets="<p style='font-size: 14.5px; margin-bottom: 15px; color: var(--muted); line-height: 1.6;'>Transform your backyard into a thriving, self-sufficient homestead with <strong>100+ practical DIY projects</strong> designed to help you grow more food, save money, become more independent, and make the most of the space you already have. 🌱🏡<br><br>Whether you own a large property or just a small backyard, this step-by-step illustrated guide shows you how to create a productive homestead using affordable materials and beginner-friendly projects.<br><br>No expensive equipment. No advanced construction skills. Just practical ideas that help you build a more sustainable lifestyle—one project at a time. 🌿✨</p>
+                <p style='font-weight: 700; margin-bottom: 12px; color: var(--forest); font-size: 15px;'>✅ What Makes Self-Sufficient Backyard So Valuable:</p>
+                <ul class='product-bullets' style='margin-bottom: 0;'>
+                  <li>🛠 <strong>100+ Practical DIY Projects</strong><br>Build useful backyard structures that help you grow food, raise animals, conserve resources, and create a more self-reliant home.</li>
+                  <li>🌱 <strong>Perfect for Small Properties</strong><br>Designed for backyards as small as ¼ acre, making it ideal for suburban homes, compact lots, and anyone who wants to maximize every square foot.</li>
+                  <li>🌡 <strong>Build a Self-Heating Greenhouse</strong><br>Learn how to extend your growing season and protect your plants with an energy-efficient greenhouse that works naturally.</li>
+                  <li>🐔 <strong>Construct Functional Mini Chicken Coops</strong><br>Easy-to-follow plans help you raise backyard chickens and enjoy fresh eggs—even with limited space.</li>
+                  <li>💧 <strong>Create Rainwater Collection Systems</strong><br>Harvest rainwater for your garden and reduce water waste with practical, eco-friendly solutions.</li>
+                  <li>🥕 <strong>Grow More of Your Own Food</strong><br>Produce fresh vegetables, herbs, and fruits while reducing your dependence on grocery stores and enjoying healthier homegrown harvests.</li>
+                  <li>💰 <strong>Save Money Every Season</strong><br>Many projects are designed to lower everyday expenses by producing food at home, reusing natural resources, and building affordable backyard solutions yourself.</li>
+                  <li>📖 <strong>Beginner-Friendly Step-by-Step Plans</strong><br>Every project includes clear instructions and full-color illustrations, making it easy to follow—even if you've never built anything before.</li>
+                  <li>🌎 <strong>Learn Real Homesteading Skills</strong><br>Gain practical knowledge that can serve you for years, from gardening and food production to water conservation and backyard sustainability.</li>
+                  <li>🌿 <strong>Create a More Self-Sufficient Lifestyle</strong><br>Take meaningful steps toward greater independence by learning how to produce more of what your family needs right at home.</li>
+                </ul>"
+        data-note="What I love most about this guide is how practical it is for everyday people. You don't need acres of land or thousands of dollars to start living more independently.<br><br>The projects are simple, realistic, and designed to help you turn even an ordinary backyard into a productive space that provides fresh food, saves money, and gives you valuable life skills.<br><br>Today, more people than ever are choosing to grow their own food, reduce everyday expenses, and become less dependent on outside resources. This guide makes that goal feel achievable, even if you're starting from scratch."
+        data-closing="🌱 <strong>This is more than just a collection of DIY projects—it's a complete roadmap to building a backyard that works for you. Grow your own food, harvest rainwater, build practical structures, learn valuable skills, and create a healthier, more sustainable future for yourself and your family.</strong><br><br><strong>✨ Perfect For Those Who Love:</strong><br>✔️ Homesteading<br>✔️ DIY projects<br>✔️ Growing their own food<br>✔️ Backyard living<br>✔️ Water conservation<br>✔️ Backyard chickens<br>✔️ Gardening and greenhouses<br>✔️ Sustainable living<br>✔️ Saving money naturally<br>✔️ Becoming more self-sufficient<br><br>🌿✨ <strong>Grow more. Build more. Waste less. Save more. Create the self-sufficient backyard you've always dreamed of and enjoy the confidence that comes from providing more for yourself and your family.</strong> ✨🏡"
+        data-link="https://www.checkout-ds24.com/product/379127?aff=KylieJean&ga_cid=987911885.1783935555&ga_sid=1784044978"
+        data-secure="🌱 100% Sustainable Living Wisdom">
+        
+        <!-- УДОБНОЕ ХРАНИЛИЩЕ ФОТОГРАФИЙ КАРТОЧКИ -->
+        <div class="product-images-source" style="display: none;">
+          <span>https://www.digistore24-app.com/pb/img/merchant_972962/image/product/CB0AV3HH.png</span>
+          <span>https://www.digistore24.com/pb/img/merchant_972962/image/orderform_image/BTWUHJ9W.png?o=2640</span>
+          <span>https://www.digistore24.com/pb/img/merchant_972962/image/orderform_image/5RW6S5SC.png?o=2640</span>
+          <span>https://www.digistore24.com/pb/img/merchant_972962/image/orderform_image/LJD68RMF.png?o=2640</span>
+        </div>
+
+        <!-- НАШИ ВАРИАНТЫ ПАКЕТОВ ПОКУПКИ (Физическая версия vs. Digital copy) -->
+        <div class="product-packages-source" style="display: none;">
+          <div data-name="📖 Book + Digital" data-desc="Physical book shipped to your door + Instant digital access" data-link="https://www.checkout-ds24.com/product/379127?aff=KylieJean&ga_cid=987911885.1783935555&ga_sid=1784044978" data-badge="Best Value" data-popular="true"></div>
+          <div data-name="📱 Digital Only" data-desc="Instant PDF access, readable on any device" data-link="https://www.digistore24.com/product/379125?aff=KylieJean&ga_cid=1055565242.1784284182&ga_sid=1784284182" data-badge=""></div>
+        </div>
+        
+        <div class="badge bestseller">Bestseller</div>
+        <a href="#" class="product-img-wrap modal-trigger" onclick="gtag('event', 'click_buy_selfsufficient_img');">
+          <img src="https://www.digistore24-app.com/pb/img/merchant_972962/image/product/CB0AV3HH.png" alt="The Self-Sufficient Backyard Book">
+        </a>
+        <div class="product-info">
+          <span class="product-tag">🌿 ✨ Homesteading, DIY & Self-Sufficient Living</span>
+          <h3 class="product-title">
+            <a href="#" class="modal-trigger" onclick="gtag('event', 'click_buy_selfsufficient_title');">Self-Sufficient Backyard</a>
+          </h3>
+          <p class="product-preview">Transform your backyard into a thriving, self-sufficient homestead with 100+ practical DIY projects designed to help you grow more food, save money...</p>
+          <button class="read-more-btn modal-trigger">Read More 👈</button>
+          <div class="action-area">
+            <a href="https://independentbackyard.com/my-book/#aff=KylieJean" class="btn-buy" target="_blank" onclick="gtag('event', 'click_buy_selfsufficient_btn');">🌿 Get Backyard Guide</a>
+          </div>
+        </div>
+      </article>
+    
+<!-- КАРТОЧКА 5: THE 5-MINUTE GARDEN -->
+      <article class="product-card reveal"
+        data-imgs="https://lh3.googleusercontent.com/d/1V3FQYg0qzheWnTKOHIZxil0msHXM608K"
+        data-tag="🌿 ✨ Organic Gardening & Natural Home Harvest"
+        data-title="🌱 The 5-Minute Garden"
+        data-bullets="<p style='font-size: 14.5px; margin-bottom: 15px; color: var(--muted); line-height: 1.6;'>Grow your own fresh, vibrant produce with a simple gardening method designed for busy people who want to enjoy homegrown food without spending hours working in the garden. 🥬✨<br><br>🌱 Create your own beautiful edible garden with just a few minutes of care each day — perfect for small yards, patios, balconies, terraces, or any cozy outdoor space.<br><br>No heavy digging. No complicated gardening skills. Just a simple, natural way to grow fresh vegetables, herbs, and greens right at home. 🌿🏡</p>
+                <p style='font-weight: 700; margin-bottom: 12px; color: var(--forest); font-size: 15px;'>🌱 What Makes The 5-Minute Garden Special:</p>
+                <ul class='product-bullets' style='margin-bottom: 0;'>
+                  <li>🥬 <strong>Fresh Homegrown Food at Your Fingertips</strong><br>Enjoy the satisfaction of harvesting your own fresh produce whenever you need it. From garden to table, you know exactly where your food comes from and how it was grown. 🌱✨</li>
+                  <li>🏡 <strong>Perfect for Small Spaces</strong><br>Whether you have a backyard, balcony, patio, or tiny outdoor area, this simple gardening method helps you create a productive green space almost anywhere. 🌿🌸</li>
+                  <li>⏰ <strong>Only Minutes of Care Each Day</strong><br>Designed for modern lifestyles, The 5-Minute Garden makes growing your own food simple and manageable — even for beginners with busy schedules.</li>
+                  <li>🌱 <strong>No Heavy Digging or Complicated Setup</strong><br>Enjoy gardening without exhausting work. This easy approach helps you spend more time enjoying your plants and less time struggling with traditional gardening tasks.</li>
+                  <li>🥕 <strong>Grow Fresh, Natural Produce at Home</strong><br>Experience the joy of growing your own vegetables, herbs, and greens while creating a healthier, more self-sufficient lifestyle.</li>
+                  <li>🌿 <strong>A More Natural Way to Live</strong><br>Many people are returning to home gardening because they want more control over what they grow, what they eat, and how they care for their families.</li>
+                  <li><strong>💚 Growing your own food allows you to:</strong><br>✔️ Know how your produce is grown<br>✔️ Reduce dependence on store-bought vegetables<br>✔️ Enjoy fresh flavors and better quality<br>✔️ Create a relaxing connection with nature<br>✔️ Build a more sustainable lifestyle<br><br><strong></li>
+                </ul>"
+        data-note="There is something truly special about stepping outside and picking fresh greens right from your own garden. 🌱🥬<br><br>The simplicity of this method is what makes it so beautiful — no overwhelming projects, no complicated techniques, just a few peaceful minutes each day watching something you planted grow.<br><br>There is a unique feeling of pride and happiness that comes from growing your own food. It turns your outdoor space into a little natural sanctuary where fresh harvests, beautiful plants, and everyday wellness come together. 🌿✨"
+        data-closing="🌱 <strong>This is more than just a gardening method — it’s an opportunity to create your own homegrown food source, enjoy fresh harvests throughout the season, and take a step toward a healthier, more self-sufficient lifestyle.</strong><br><br><strong>✨ Perfect For Those Who Love:</strong><br>✔️ 🌿 Organic gardening<br>✔️ 🥬 Fresh homegrown vegetables<br>✔️ 🏡 Small-space gardening<br>✔️ 🌱 Natural and sustainable living<br>✔️ 🌸 Relaxing outdoor hobbies<br>✔️ 🍃 Healthy lifestyle choices<br>✔️ 🌻 Growing your own food at home<br><br>🌿✨ <strong>Start small, grow naturally, and enjoy the simple joy of harvesting something you created yourself.</strong> ✨🌿"
+        data-link="http://www.betterdailyguide.site/ds24/5-minute-garden#aff=KylieJean"
+        data-secure="🌱 Effortless Homesteading Wisdom">
+        
+        <div class="badge">Easy Setup</div>
+        <a href="#" class="product-img-wrap modal-trigger" onclick="gtag('event', 'click_buy_5mingarden_img');">
+          <img src="https://lh3.googleusercontent.com/d/1V3FQYg0qzheWnTKOHIZxil0msHXM608K" alt="The 5-Minute Garden">
+        </a>
+        <div class="product-info">
+          <span class="product-tag">🌿 ✨ Organic Gardening</span>
+          <h3 class="product-title">
+            <a href="#" class="modal-trigger" onclick="gtag('event', 'click_buy_5mingarden_title');">The 5-Minute Garden</a>
+          </h3>
+          <p class="product-preview">Grow your own fresh, vibrant produce with a simple gardening method designed for busy people who want to enjoy homegrown food without spending hours working in the garden...</p>
+          <button class="read-more-btn modal-trigger">Read More 👈</button>
+          <div class="action-area">
+            <a href="http://www.betterdailyguide.site/ds24/5-minute-garden#aff=KylieJean" class="btn-buy" target="_blank" onclick="gtag('event', 'click_buy_5mingarden_btn');">🌿 Start Mini Garden</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- =============================== -->
+  <!-- TELEGRAM VIP БЛОК               -->
+  <!-- =============================== -->
+  <section class="tg-invite-section scroll-section" id="telegram">
+    <div class="tg-invite-box reveal">
+      <div class="tg-left">
+        <div class="tg-header-row">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram" class="tg-icon-small">
+          <h2 class="tg-title">Want the Secrets We Don't Share <em>Anywhere Else?</em></h2>
+        </div>
+        <p class="tg-desc">🌿 Step away from the noise. Join our private sanctuary where we share natural nervous system reset methods and daily herbal wisdom.</p>
+        <a href="https://t.me/+DBM4ReYIBQU4YjAy" class="btn-telegram" target="_blank">Join to Unlock Private Channel (Free)</a>
+      </div>
+      <div class="tg-right">
+        <div class="tg-list" style="padding:20px; background:#f4f9fd; border-radius:14px; display:flex; flex-direction:column; gap:12px;">
+          <p style="font-size:14px; display:flex; align-items:center; gap:10px;"><span>❤️</span> Best wellness tips & reset</p>
+          <p style="font-size:14px; display:flex; align-items:center; gap:10px;"><span>🌱</span> Forgotten potent remedies</p>
+          <p style="font-size:14px; display:flex; align-items:center; gap:10px;"><span>🏡</span> Somatic & holistic lifestyle</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================== -->
+  <!-- КАТЕГОРИЯ 2: SUPPLEMENTS        -->
+  <!-- =============================== -->
+  <section class="scroll-section" id="supplements">
+    <div class="product-grid">
+
+      <!-- КАРТОЧКА: DOG POTTY TRAINING (ОБНОВЛЕННАЯ ВЕРСИЯ) -->
+      <article class="product-card reveal"
+        data-tag="🐶 ✨ Happy Dog, Happy Home"
+        data-title="🏡 Dog Potty Training in 7 Days"
+        data-bullets="<p style='font-size: 14.5px; margin-bottom: 15px; color: var(--muted); line-height: 1.6;'>Help your dog learn where to go with a simple, gentle, and positive training system designed to build good habits in just 7 days—without fear, punishment, or frustration. ❤️🐾<br><br>Whether you've welcomed an energetic puppy or adopted an older rescue dog, this step-by-step guide makes potty training easier, less stressful, and more enjoyable for both of you.<br><br>No yelling. No harsh corrections. Just kind, effective methods that help your dog learn naturally while building trust and confidence. 🌿🐕</p>
+                <p style='font-weight: 700; margin-bottom: 12px; color: var(--forest); font-size: 15px;'>✅ What Makes This Guide So Valuable:</p>
+                <ul class='product-bullets' style='margin-bottom: 0;'>
+                  <li>🐶 <strong>A Simple 7-Day Potty Training Plan</strong><br>Follow an easy day-by-day system that helps your dog understand where and when to go, making training clear and consistent.</li>
+                  <li>🏡 <strong>Create a Cleaner, Accident-Free Home</strong><br>Establish healthy daily routines that reduce indoor accidents and help keep your home fresh, clean, and organized.</li>
+                  <li>❤️ <strong>Positive Reinforcement That Builds Trust</strong><br>Learn gentle reward-based techniques that strengthen your relationship while encouraging your dog to repeat good behaviors.</li>
+                  <li>🧠 <strong>Understand How Dogs Naturally Learn</strong><br>Discover practical canine psychology that helps your dog understand your expectations with less confusion and greater success.</li>
+                  <li>🐾 <strong>Perfect for Puppies and Rescue Dogs</strong><br>Whether your dog is young or older, these easy-to-follow methods can be adapted to different ages, breeds, and personalities.</li>
+                  <li>🌿 <strong>A Calm, Stress-Free Training Experience</strong><br>Replace frustration with patience and confidence while creating a peaceful learning environment for both you and your dog.</li>
+                  <li>💚 <strong>Build Healthy Habits That Last</strong><br>Consistent routines and positive guidance help create lifelong habits that benefit both you and your furry companion.</li>
+                </ul>"
+        data-note="Bringing a new dog into your home is one of life's greatest joys, but potty training can often feel overwhelming at first.<br><br>What I love most about this guide is that it completely avoids punishment and instead focuses on kindness, patience, and understanding. Watching your dog succeed through encouragement rather than fear creates an incredible bond that lasts for years.<br><br>Instead of turning potty training into a daily struggle, this guide helps transform it into a positive experience that brings you and your dog even closer together. 🐶❤️"
+        data-closing="🌿 <strong>This is more than just a potty training guide—it's a simple solution for creating a cleaner home, raising a confident and well-behaved dog, and building a lifelong relationship based on trust, love, and mutual understanding.</strong><br><br><strong>✨ Perfect For Dog Owners Who Want To:</strong><br>✔️ Potty train their dog without punishment<br>✔️ Create a clean, accident-free home<br>✔️ Build trust through positive reinforcement<br>✔️ Understand their dog's behavior<br>✔️ Raise a happy and confident companion<br>✔️ Reduce stress for both owner and pet<br>✔️ Strengthen the bond with their furry best friend<br><br><strong>🐾✨ A few days of gentle training can lead to years of happier living together. Start building better habits today. ✨🐾</strong>"
+        data-link="http://www.betterdailyguide.site/ds24/potty-training-in-7-days#aff=KylieJean"
+        data-secure="🐾 Gentle & Fear-Free Training">
+        
+        <!-- УДОБНОЕ ХРАНИЛИЩЕ ФОТОГРАФИЙ КАРТОЧКИ -->
+        <div class="product-images-source" style="display: none;">
+          <span>https://lh3.googleusercontent.com/d/1Ibr8yxKd9lVFSFRnyMgcJKc96a4S5XV7</span>
+          <span>https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=1068&auto=format&fit=crop</span>
+          <span>https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=1169&auto=format&fit=crop</span>
+        </div>
+
+        <div class="badge">Pet Parent Favorite</div>
+        
+        <a href="#" class="product-img-wrap modal-trigger" onclick="gtag('event', 'click_buy_dogtraining_img');">
+          <img src="https://lh3.googleusercontent.com/d/1Ibr8yxKd9lVFSFRnyMgcJKc96a4S5XV7" alt="Dog Potty Training Guide">
+        </a>
+        <div class="product-info">
+          <span class="product-tag">🐶 ✨ Happy Dog, Happy Home</span>
+          <h3 class="product-title">
+            <a href="#" class="modal-trigger" onclick="gtag('event', 'click_buy_dogtraining_title');">Dog Potty Training in 7 Days</a>
+          </h3>
+          <p class="product-preview">Help your dog learn where to go with a simple, gentle, and positive training system designed to build good habits in just 7 days...</p>
+          <button class="read-more-btn modal-trigger">Read More 👈</button>
+          <div class="action-area">
+            <a href="http://www.betterdailyguide.site/ds24/potty-training-in-7-days#aff=KylieJean" class="btn-buy" target="_blank" onclick="event.stopPropagation(); gtag('event', 'click_buy_dogtraining_btn');">🐾 Get Your Training Guide</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- КАРТОЧКА 11: CHICKEN KEEPER -->
+      <article class="product-card reveal"
+        data-tag="🐔 🌿 Backyard Homesteading & Fresh Farm Eggs"
+        data-title="🥚 Chicken Keeper's Guide"
+        data-bullets="<p style='font-size: 14.5px; margin-bottom: 15px; color: var(--muted); line-height: 1.6;'>Raise healthy, productive chickens with confidence using a simple step-by-step guide designed for both beginners and experienced backyard chicken keepers. Enjoy fresh, farm-fresh eggs every day while creating a safe, comfortable environment for your flock. 🏡🐔<br><br>Whether you're looking to become more self-sufficient, provide your family with wholesome food, or simply enjoy the rewarding experience of raising chickens, this guide makes getting started easy while helping you avoid common beginner mistakes.<br><br>No confusing advice. No costly trial and error. Just practical, easy-to-follow guidance to help you raise healthy chickens with confidence. 🌿✨</p>
+                <p style='font-weight: 700; margin-bottom: 12px; color: var(--forest); font-size: 15px;'>✅ What Makes the Chicken Keeper's Guide So Valuable:</p>
+                <ul class='product-bullets' style='margin-bottom: 0;'>
+                  <li>🥚 <strong>Fresh Farm Eggs Every Day</strong><br>Enjoy collecting fresh, delicious eggs straight from your own backyard while knowing exactly where your family's food comes from.</li>
+                  <li>🐔 <strong>Healthy Chickens That Thrive</strong><br>Learn how to provide the right housing, nutrition, daily care, and environment to keep your flock healthy, comfortable, and productive.</li>
+                  <li>🏡 <strong>Perfect for Beginners</strong><br>Simple, step-by-step instructions take the guesswork out of raising chickens, giving you confidence from your very first day.</li>
+                  <li>🌿 <strong>A More Self-Sufficient Lifestyle</strong><br>Keeping backyard chickens helps reduce dependence on store-bought eggs while providing a reliable source of fresh food for your family.</li>
+                  <li>💰 <strong>Save Money Over Time</strong><br>Producing your own eggs can help lower grocery costs while giving you fresh, high-quality eggs every single day.</li>
+                  <li>🌎 <strong>Know Exactly What You're Feeding Your Family</strong><br>Take control of your food by raising your own flock and understanding how your eggs are produced from start to finish.</li>
+                  <li>🌱 <strong>Natural Fertilizer for Your Garden</strong><br>Chicken manure can be composted and used as a nutrient-rich organic fertilizer, helping your vegetables, flowers, and garden thrive naturally.</li>
+                  <li>❤️ <strong>A Relaxing and Rewarding Hobby</strong><br>Keeping chickens is enjoyable, educational, and a wonderful way to reconnect with nature while creating lasting family memories.</li>
+                </ul>"
+        data-note="There is something incredibly peaceful about stepping outside on a quiet morning and collecting warm, fresh eggs straight from your own coop. 🥚☀️<br><br>What I love most about this guide is how it removes the uncertainty for beginners. Instead of wondering if you're doing everything correctly, you'll have a clear roadmap that helps you feel confident from day one.<br><br>Raising chickens is about so much more than fresh eggs. It's about providing wholesome food for your family, becoming more self-sufficient, saving money, caring for your backyard, and enjoying the simple pleasures of homesteading every day. 🌿🐔"
+        data-closing="🌱 <strong>This is more than just a chicken-keeping guide—it's your opportunity to build a thriving backyard flock, enjoy fresh eggs every day, and create a healthier, more sustainable lifestyle for you and your family.</strong><br><br><strong>✨ Perfect For Those Who Love:</strong><br>✔️ Backyard homesteading<br>✔️ Fresh farm eggs<br>✔️ Raising healthy chickens<br>✔️ Self-sufficient living<br>✔️ Learning practical homesteading skills<br>✔️ Providing wholesome food for the family<br>✔️ Living closer to nature<br><br>🐔✨ <strong>Healthy chickens. Fresh farm eggs. Natural food for your family. Start your backyard homesteading journey today!</strong> ✨🥚"
+        data-link="http://www.betterdailyguide.site/ds24/the-first-time-chicken-keepers-checklist#aff=KylieJean"
+        data-secure="🐣 Gentle & Joyful Homesteading">
+        
+        <!-- УДОБНОЕ ХРАНИЛИЩЕ ФОТОГРАФИЙ КАРТОЧКИ (Добавил красивые фото для галереи) -->
+        <div class="product-images-source" style="display: none;">
+          <span>https://lh3.googleusercontent.com/d/17lkqjpLH213yU3yydgYMUG-gtSNGOjHF</span>
+        </div>
+
+        <div class="badge">Beginner Friendly</div>
+        <a href="#" class="product-img-wrap modal-trigger" onclick="gtag('event', 'click_buy_chickenkeeper_img');">
+          <img src="https://lh3.googleusercontent.com/d/17lkqjpLH213yU3yydgYMUG-gtSNGOjHF" alt="The First-Time Chicken Keeper's">
+        </a>
+        <div class="product-info">
+          <span class="product-tag">🐔 🌿 Backyard Homesteading & Fresh Farm Eggs</span>
+          <h3 class="product-title">
+            <a href="#" class="modal-trigger" onclick="gtag('event', 'click_buy_chickenkeeper_title');">Chicken Keeper's Guide</a>
+          </h3>
+          <p class="product-preview">Raise healthy, productive chickens with confidence using a simple step-by-step guide designed for both beginners and experienced backyard chicken keepers...</p>
+          <button class="read-more-btn modal-trigger">Read More 👈</button>
+          <div class="action-area">
+            <a href="http://www.betterdailyguide.site/ds24/the-first-time-chicken-keepers-checklist#aff=KylieJean" class="btn-buy" target="_blank" onclick="event.stopPropagation(); gtag('event', 'click_buy_chickenkeeper_btn');">🌿 Start Journey</a>
+          </div>
+        </div>
+      </article>
+
+
+      <!-- КАРТОЧКА 6: THE 5 FOOT FARM -->
+      <article class="product-card reveal"
+        data-imgs="https://www.digistore24-app.com/pb/img/merchant_751214/image/product/HZCD6E10.png"
+        data-tag="🌿 ✨ Urban Homesteading"
+        data-title="The 5 Foot Farm"
+        data-bullets="<p style='font-size: 14.5px; margin-bottom: 15px; color: var(--muted); line-height: 1.6;'>Create your own lush, productive garden in just a tiny 5-foot space and enjoy fresh, organic greens right from your balcony, patio, terrace, or small outdoor area. 🥬✨<br><br>🌱 The 5 Foot Farm makes it possible to grow an abundant harvest even when you don’t have a large backyard. This simple urban gardening solution helps you transform small spaces into beautiful, thriving food gardens.<br><br>No huge yard. No complicated gardening experience. Just a smart and simple way to grow fresh food wherever you live. 🌿🏡</p>
+                <p style='font-weight: 700; margin-bottom: 12px; color: var(--forest); font-size: 15px;'>✅ What Makes The 5 Foot Farm Special:</p>
+                <ul class='product-bullets' style='margin-bottom: 0;'>
+                  <li>🥬 <strong>Grow More in Less Space</strong><br>Designed for small-space living, this method helps you create a productive garden in a compact 5-foot footprint while making the most of your growing area.</li>
+                  <li>🏙 <strong>Perfect for City Living</strong><br>Whether you live in an apartment, townhouse, or urban home, you can enjoy the beauty and benefits of gardening without needing a large backyard.</li>
+                  <li>🌱 <strong>Fresh Organic Greens Right at Home</strong><br>Imagine stepping outside and harvesting fresh greens whenever you need them. Enjoy the taste and satisfaction of food grown by your own hands.</li>
+                  <li>🌿 <strong>A Continuous Harvest Throughout the Season</strong><br>Create a garden that keeps producing fresh vegetables, herbs, and greens so you can enjoy homegrown goodness again and again.</li>
+                  <li>💚 <strong>A More Sustainable Lifestyle</strong><br>Growing your own food helps you become more self-sufficient, reduce reliance on store-bought produce, and reconnect with nature.</li>
+                  <li>🌎 <strong>Better Control Over What You Eat</strong><br>You know where your food comes from, how it was grown, and the care that goes into every harvest.</li>
+                  <li>🌸 <strong>Beautiful and Functional Home Garden</strong><br>Turn your balcony, patio, or outdoor corner into a vibrant green space that brings beauty, relaxation, and fresh food together.</li>
+                </ul>"
+        data-note="I was absolutely amazed at how much fresh, vibrant produce you can grow in such a small space! 🌱🥬<br><br>The 5 Foot Farm is the perfect solution for anyone living in the city or anyone who has always dreamed of having a garden but doesn’t have a large backyard.<br><br>There is something incredibly rewarding about walking outside and picking fresh greens you grew yourself. It creates a feeling of independence, connection with nature, and simple everyday joy. 🌿✨"
+        data-closing="🌱 <strong>This is more than just a small garden — it’s an opportunity to create your own fresh food source, enjoy sustainable living, and bring the beauty of nature into your everyday life.</strong><br><br><strong>✨ Perfect For Those Who Love:</strong><br>✔️ 🌿 Urban homesteading<br>✔️ 🥬 Fresh homegrown vegetables<br>✔️ 🏡 Balcony and patio gardening<br>✔️ 🌱 Organic and sustainable living<br>✔️ 🌸 Beautiful green spaces at home<br>✔️ 🍃 Healthy lifestyle choices<br>✔️ 🌻 Growing your own food anywhere<br><br>🌿✨ <strong>Small space. Big harvest. Endless satisfaction. Start growing your own fresh garden today.</strong> ✨🌿"
+        data-link="https://cf.5footfarm.com/vsl-v1-live-h3jk4-e4f19-fp-nv#aff=KylieJean"
+        data-secure="🌱 Innovative Space-Saving Design">
+        
+        <div class="badge">Space Saver</div>
+        <a href="#" class="product-img-wrap modal-trigger" onclick="gtag('event', 'click_buy_5footfarm_img');">
+          <img src="https://www.digistore24-app.com/pb/img/merchant_751214/image/product/HZCD6E10.png" alt="The 5 Foot Farm">
+        </a>
+        <div class="product-info">
+          <span class="product-tag">🌿 ✨ Urban Homesteading</span>
+          <h3 class="product-title">
+            <a href="#" class="modal-trigger" onclick="gtag('event', 'click_buy_5footfarm_title');">The 5 Foot Farm</a>
+          </h3>
+          <p class="product-preview">Create your own lush, productive garden in just a tiny 5-foot space and enjoy fresh, organic greens right from your balcony, patio, terrace, or small outdoor area...</p>
+          <button class="read-more-btn modal-trigger">Read More 👈</button>
+          <div class="action-area">
+            <a href="https://cf.5footfarm.com/vsl-v1-live-h3jk4-e4f19-fp-nv#aff=KylieJean" class="btn-buy" target="_blank" onclick="gtag('event', 'click_buy_5footfarm_btn');">🌿 Build Micro Farm</a>
+          </div>
+        </div>
+      </article>
+
+            <!-- КАРТОЧКА 3: PRODENTIM
+      <article class="product-card reveal"
+        data-imgs="https://prodentim24.com//statics/img/introducting_prodentim.png"
+        data-tag="Oral Wellness & Probiotics"
+        data-title="ProDentim Advanced"
+        data-bullets="<ul><li>Repopulate your mouth with 3.5 billion beneficial probiotics for a naturally balanced oral microbiome.</li><li>Enjoy long-lasting fresh breath and support strong, radiant teeth with pure plant-based nutrients.</li><li>A delicious, melting daily ritual that boosts your overall holistic wellness starting from your smile.</li></ul>"
+        data-note="A healthy mouth is the gateway to a healthy body! I love letting one of these soft probiotics melt in my mouth after brushing. It makes my smile feel incredibly radiant and confident!"
+        data-link="https://prodentim24.com/text.php#aff=KylieJean"
+        data-secure="🌱 3.5 Billion Beneficial Strains">
+        
+        <div class="badge">Radiant Smile</div>
+        <a href="#" class="product-img-wrap modal-trigger">
+          <img src="https://prodentim24.com//statics/img/introducting_prodentim.png" alt="ProDentim Oral Probiotic">
+        </a>
+        <div class="product-info">
+          <span class="product-tag">Oral Wellness & Probiotics</span>
+          <h3 class="product-title">
+            <a href="#" class="modal-trigger">ProDentim Advanced</a>
+          </h3>
+          <p class="product-preview">Repopulate your mouth with 3.5 billion beneficial probiotics for a naturally balanced oral microbiome...</p>
+          <button class="read-more-btn modal-trigger">Read More 👈</button>
+          <div class="action-area">
+            <a href="https://prodentim24.com/text.php#aff=KylieJean" class="btn-buy" target="_blank" onclick="event.stopPropagation();">🌿 Claim Radiant Smile</a>
+          </div>
+        </div>
+      </article> -->
+
+  <!-- КАРТОЧКА 12: WOODWORKING -->
+      <article class="product-card reveal"
+        data-tag="🪵✨ Woodworking & DIY"
+        data-title="🪚 Woodworking Guide"
+        data-bullets="<p style='font-size: 14.5px; margin-bottom: 15px; color: var(--muted); line-height: 1.6;'>Discover the timeless art of woodworking and learn how to build beautiful, practical projects with your own hands. Whether you're a complete beginner or simply looking to develop a valuable new skill, this step-by-step guide makes woodworking simple, enjoyable, and rewarding. 🌲🏡<br><br>Turn ordinary pieces of wood into furniture, home décor, garden projects, storage solutions, and handmade creations you'll enjoy for years.<br><br>No expensive workshop. No professional experience. Just practical techniques, clear instructions, and projects designed to help anyone succeed.</p>
+                <p style='font-weight: 700; margin-bottom: 12px; color: var(--forest); font-size: 15px;'>✅ What Makes the Woodworking Guide So Valuable:</p>
+                <ul class='product-bullets' style='margin-bottom: 0;'>
+                  <li>🪵 <strong>Learn Woodworking from the Ground Up</strong><br>Master the fundamentals with beginner-friendly lessons that build your confidence from your very first project.</li>
+                  <li>🛠 <strong>Step-by-Step DIY Projects</strong><br>Follow easy instructions to create beautiful, practical wooden projects for your home, workshop, garden, and homestead.</li>
+                  <li>🌲 <strong>No Expensive Equipment Required</strong><br>Learn how to build quality projects using simple, affordable hand tools that are accessible to almost everyone.</li>
+                  <li>🏡 <strong>Add Rustic Beauty to Your Home</strong><br>Create handmade furniture, shelves, organizers, outdoor projects, and decorative pieces that add warmth and character to any space.</li>
+                  <li>💰 <strong>Save Money by Building It Yourself</strong><br>Instead of buying expensive wooden products, learn how to make durable, high-quality pieces yourself while developing valuable lifelong skills.</li>
+                  <li>🎯 <strong>Develop Practical Skills You'll Use Forever</strong><br>Woodworking is one of the most rewarding DIY hobbies, giving you the confidence to repair, build, customize, and create whenever you need.</li>
+                  <li>🌿 <strong>Relax, Unplug & Create</strong><br>Step away from screens and experience the calming satisfaction of working with natural wood. Every project becomes a creative, hands-on experience.</li>
+                  <li>♻️ <strong>Make the Most of Natural Materials</strong><br>Transform simple lumber into useful, long-lasting projects while embracing traditional craftsmanship and reducing waste.</li>
+                  <li>📖 <strong>Perfect for Complete Beginners</strong><br>Clear explanations and detailed guidance make every lesson easy to follow—even if you've never picked up a saw before.</li>
+                  <li>🌱 <strong>A Skill That Keeps Giving Back</strong><br>Every project teaches something new, helping you build confidence, creativity, and practical abilities that will serve you for years to come.</li>
+                </ul>"
+        data-note="There is something incredibly satisfying about creating something with your own hands. Watching a simple piece of wood become a beautiful, useful project brings a sense of accomplishment that few hobbies can match. 🪵✨<br><br>What I love most is that this guide makes woodworking feel approachable for everyone. You don't need years of experience or a fully equipped workshop to start creating projects you'll truly be proud of.<br><br>Every finished piece becomes more than just another DIY project—it's a reflection of your creativity, patience, and growing skills. The more you build, the more confident and capable you become."
+        data-closing="🌱 <strong>This is more than just a woodworking guide—it's an opportunity to learn a timeless craft, create lasting projects, save money, develop practical skills, and experience the pride of building something with your own hands.</strong><br><br><strong>✨ Perfect For Those Who Love:</strong><br>✔️ Woodworking<br>✔️ DIY projects<br>✔️ Homesteading<br>✔️ Handmade furniture and décor<br>✔️ Learning practical skills<br>✔️ Traditional craftsmanship<br>✔️ Creative hobbies<br>✔️ Building with natural materials<br>✔️ Saving money through DIY<br>✔️ Creating lasting projects<br><br>🪵✨ <strong>Build with confidence. Create with purpose. Learn skills that last a lifetime and enjoy the satisfaction of making something truly your own.</strong> ✨🌲"
+        data-link="http://www.betterdailyguide.site/ds24/the-beginners-guide-to-woodworking#aff=KylieJean"
+        data-secure="🌲 Sustainable & Mindful Craftsmanship">
+        
+        <!-- УДОБНОЕ ХРАНИЛИЩЕ ФОТОГРАФИЙ КАРТОЧКИ (Добавил книгу + 3 тематические качественные картинки) -->
+        <div class="product-images-source" style="display: none;">
+          <span>https://www.digistore24-app.com/pb/img/merchant_4776295/image/product/L3TC3BCJ.png</span>
+        </div>
+        
+        <div class="badge">Mindful Crafting</div>
+        <a href="#" class="product-img-wrap modal-trigger" onclick="gtag('event', 'click_buy_woodworking_img');">
+          <img src="https://www.digistore24-app.com/pb/img/merchant_4776295/image/product/L3TC3BCJ.png" alt="The Beginner's Guide to Woodworking">
+        </a>
+        <div class="product-info">
+          <span class="product-tag">🪵✨ Woodworking & DIY</span>
+          <h3 class="product-title">
+            <a href="#" class="modal-trigger" onclick="gtag('event', 'click_buy_woodworking_title');">Woodworking Guide</a>
+          </h3>
+          <p class="product-preview">Discover the timeless art of woodworking and learn how to build beautiful, practical projects with your own hands...</p>
+          <button class="read-more-btn modal-trigger">Read More 👈</button>
+          <div class="action-area">
+            <a href="http://www.betterdailyguide.site/ds24/the-beginners-guide-to-woodworking#aff=KylieJean" class="btn-buy" target="_blank" onclick="event.stopPropagation(); gtag('event', 'click_buy_woodworking_btn');">🌿 Start Crafting</a>
+          </div>
+        </div>
+      </article>
+
+
+<!-- КАРТОЧКА 4: KERASSENTIALS -->
+      <article class="product-card reveal"
+        data-imgs="https://mykerassentials24.com//statics/img/introducting_kerassentials-new.png"
+        data-tag="🌿 ✨ Natural Nail Care"
+        data-title="💧 Kerassentials Botanical Nail Oil"
+        data-bullets="<p style='font-size: 14.5px; margin-bottom: 15px; color: var(--muted); line-height: 1.6;'>Give your nails and cuticles the natural care they deserve with a powerful plant-based oil formula designed to support beautiful-looking nails, soft skin, and well-groomed hands. ✨💅<br><br>🌱 A luxurious botanical blend featuring carefully selected ingredients such as Tea Tree Oil, Lavender Oil, Lemongrass Oil, Almond Oil, Flaxseed Oil, Aloe Vera, and Vitamin E — created to nourish your nails and care for the skin around them.</p>
+                <p style='font-weight: 700; margin-bottom: 12px; color: var(--forest); font-size: 15px;'>✅ What Makes Kerassentials Special:</p>
+                <ul class='product-bullets' style='margin-bottom: 0;'>
+                  <li>🌿 <strong>Tea Tree Oil</strong><br>A natural botanical ingredient widely used in nail and skincare routines for its cleansing properties. Known for its antifungal qualities, it helps support a clean and healthy-looking nail environment.</li>
+                  <li>💜 <strong>Lavender Oil</strong><br>Creates a calming aromatherapy experience while helping maintain soft cuticles and beautifully cared-for nails.</li>
+                  <li>🍋 <strong>Lemongrass Oil</strong><br>Provides a refreshing natural scent and helps support the appearance of clean, healthy-looking skin around the nails. Traditionally used in botanical care formulas for its natural antifungal properties.</li>
+                  <li>🌰 <strong>Almond & Flaxseed Oils</strong><br>Nourishing oils that help moisturize dry cuticles, soften the skin, and support smooth, healthy-looking nails.</li>
+                  <li>🌱 <strong>Aloe Vera & Vitamin E</strong><br>Help hydrate the skin, protect against dryness, and maintain softness and comfort.</li>
+                  <li>🍃 <strong>Support for Nail Fungus Concerns</strong><br>Kerassentials contains natural ingredients such as Tea Tree Oil, Lemongrass Oil, and Undecylenic Acid, which are commonly used in nail care formulas for their antifungal properties. This unique blend helps support a healthy nail environment, maintain a well-cared-for appearance, and protect against factors that may affect the look and condition of the nail plate.</li>
+                  <li>💅 <strong>Simple Daily Care Ritual:</strong><br>Apply a few drops of oil to your nails and cuticles, gently massage, and enjoy a relaxing moment of natural care — especially soothing as part of your nighttime beauty routine. 🌙🌿</li>
+                </ul>"
+        data-note="I absolutely love how luxurious this oil feels! The combination of lavender, lemongrass, and tea tree creates an incredibly fresh, clean botanical scent. Massaging this oil into my cuticles before bed has become one of my favorite little self-care rituals. ✨<br><br>There is something special about using simple natural ingredients and taking a few peaceful minutes each day to care for yourself. Beautiful nails are not only about appearance — they are about confidence, comfort, and feeling your best every day. 💜"
+        data-closing="🌿 <strong>This is more than just a nail oil — it’s a small daily beauty ritual that helps care for your hands, cuticles, and support healthy-looking nails through the power of natural botanical ingredients.</strong><br><br><strong>✨ Perfect For Those Who Love:</strong><br>✔️ Natural beauty care<br>✔️ Plant-based skincare<br>✔️ Dry cuticle care<br>✔️ Supporting beautiful-looking nails<br>✔️ Beautiful hands and feet<br>✔️ Relaxing at-home self-care routines<br>✔️ Natural oils and botanical formulas<br><br>🌿✨ <strong>Beautiful nails begin with thoughtful care — make natural nail wellness part of your everyday routine.</strong> ✨🌿"
+        data-link="https://www.checkout-ds24.com/redir/533765/KylieJean/"
+        data-secure="🌱 100% Pure Plant Extracts">
+        
+        <div class="badge">Beauty Ritual</div>
+        <a href="#" class="product-img-wrap modal-trigger" onclick="gtag('event', 'click_buy_kerassentials_img');">
+          <img src="https://mykerassentials24.com//statics/img/introducting_kerassentials-new.png" alt="Kerassentials Botanical Oil">
+        </a>
+        <div class="product-info">
+          <span class="product-tag">🌿 ✨ Natural Nail Care</span>
+          <h3 class="product-title">
+            <a href="#" class="modal-trigger" onclick="gtag('event', 'click_buy_kerassentials_title');">Kerassentials Botanical Nail Oil</a>
+          </h3>
+          <p class="product-preview">Give your nails and cuticles the natural care they deserve with a powerful plant-based oil formula designed to support beautiful-looking nails, soft skin, and well-groomed hands...</p>
+          <button class="read-more-btn modal-trigger">Read More 👈</button>
+          <div class="action-area">
+            <a href="https://www.checkout-ds24.com/redir/533765/KylieJean/" class="btn-buy" target="_blank" onclick="gtag('event', 'click_buy_kerassentials_btn');">🌿 Claim Botanical Oil</a>
+          </div>
+        </div>
+      </article>
+      
+<!-- КАРТОЧКА 9: DENTITOX PRO -->
+      <article class="product-card reveal"
+        data-tag="🦷 🌿 Oral Wellness"
+        data-title="🌱 Dentitox PRO"
+        data-bullets="<p style='font-size: 14.5px; margin-bottom: 15px; color: var(--muted); line-height: 1.6;'>Your smile is one of the first things people notice—and taking care of it every day has never been easier. Dentitox Drops combine <strong>essential vitamins, minerals, and powerful botanical extracts</strong> in one convenient liquid formula designed to support healthy teeth, healthy gums, and long-lasting fresh breath. 🌿✨<br><br>If you're looking for a simple way to upgrade your daily oral care routine with nature-inspired ingredients, Dentitox Drops are an excellent addition to your everyday wellness habits.<br><br>No harsh alcohol. No burning mouthwash. Just a refreshing botanical formula you can enjoy every day.</p>
+                <p style='font-weight: 700; margin-bottom: 12px; color: var(--forest); font-size: 15px;'>✅ Why So Many People Choose Dentitox Drops:</p>
+                <ul class='product-bullets' style='margin-bottom: 0;'>
+                  <li>🦷 <strong>Supports Healthy Teeth & Strong Gums</strong><br>Provides daily nutritional support for healthy-looking teeth and gums using a carefully selected blend of vitamins and plant-based ingredients.</li>
+                  <li>🌿 <strong>Powerful Botanical Formula</strong><br>Features nature-inspired ingredients including peppermint, spearmint, berberine, elderberry, xylitol, and other botanical extracts traditionally used in oral wellness.</li>
+                  <li>🍃 <strong>Naturally Fresh Breath</strong><br>Refreshing peppermint and spearmint essential oils leave your mouth feeling clean, cool, and fresh throughout the day.</li>
+                  <li>💧 <strong>Fast & Easy Daily Routine</strong><br>Simply add a few drops to your daily routine in seconds—no complicated steps required.</li>
+                  <li>✨ <strong>Supports a Healthy-Looking Smile</strong><br>Helps maintain a clean, fresh mouth and supports healthy-looking teeth and gums as part of your regular oral care routine.</li>
+                  <li>🛡 <strong>Perfect Alongside Brushing & Flossing</strong><br>Works as a convenient addition to your everyday brushing and flossing routine for complete oral care.</li>
+                  <li>🌱 <strong>Plant-Based Wellness</strong><br>Ideal for people who prefer natural ingredients and botanical wellness as part of their daily lifestyle.</li>
+                  <li>💚 <strong>Daily Care That Fits Your Lifestyle</strong><br>A small daily habit that helps you care for your smile with refreshing, nature-inspired ingredients.</li>
+                </ul>"
+        data-note="I love products that make healthy habits simple, and Dentitox Drops are exactly that. Instead of adding another complicated routine, you simply use a few drops each day and enjoy the refreshing botanical formula. 🌿🦷<br><br>A healthy smile can boost confidence, make daily interactions more enjoyable, and become an important part of your overall wellness routine. That's why I appreciate products that combine convenience with carefully selected natural ingredients."
+        data-closing="🌱 <strong>This is more than just an oral care formula—it's an easy way to support your daily routine, enjoy naturally fresh breath, care for your teeth and gums, and make your smile part of your overall wellness journey.</strong><br><br><strong>✨ Perfect For Those Who Love:</strong><br>✔️ Natural oral care<br>✔️ Healthy teeth and gums<br>✔️ Fresh breath all day<br>✔️ Botanical wellness products<br>✔️ Peppermint and spearmint freshness<br>✔️ Daily self-care routines<br>✔️ Plant-based ingredients<br>✔️ Vitamin-enriched formulas<br>✔️ Holistic wellness<br>✔️ A naturally confident smile<br><br>🦷✨ <strong>Healthy gums. Strong-looking teeth. Naturally fresh breath. Give your smile the daily care it deserves with the refreshing power of botanical ingredients.</strong> ✨🌿"
+        data-link="https://www.checkout-ds24.com/product/552602?_b=bnVsbDtkZW50aXRveDI0LmNvbS90ZXh0LnBocDt1bmRlZmluZWQ7dGV4dDsyOzE3NztmZTt1bmRlZmluZWQ%3D&_ga=540805379.1780063865&aff=KylieJean&ga_cid=540805379.1780063865&ga_sid=1780063864"
+        data-secure="🌱 100% Natural & Non-GMO">
+        
+        <!-- УДОБНОЕ ХРАНИЛИЩЕ ФОТОГРАФИЙ КАРТОЧКИ -->
+        <div class="product-images-source" style="display: none;">
+          <span>https://dentitox24.com//statics/img/tsl-main-min.png</span>
+        </div>
+
+        <!-- ТАРИФЫ ДЛЯ ВСПЛЫВАЮЩЕГО ОКНА (1, 3 и 6 флаконов) -->
+        <div class="product-packages-source" style="display: none;">
+          <div data-name="📦 1 Bottle" data-desc="Basic Daily Care Plan (30-Day Supply)" data-link="https://www.checkout-ds24.com/product/552601?_b=bnVsbDtkZW50aXRveDI0LmNvbS90ZXh0LnBocDt1bmRlZmluZWQ7dGV4dDsxOzY5O2ZlO3VuZGVmaW5lZA%3D%3D&_ga=540805379.1780063865&aff=KylieJean&ga_cid=540805379.1780063865&ga_sid=1780063864" data-badge="Basic" data-popular="false"></div>
+          <div data-name="📦📦📦 3 Bottles" data-desc="Most Popular Wellness Plan (90-Day Supply)" data-link="https://www.checkout-ds24.com/product/552602?_b=bnVsbDtkZW50aXRveDI0LmNvbS90ZXh0LnBocDt1bmRlZmluZWQ7dGV4dDsyOzE3NztmZTt1bmRlZmluZWQ%3D&_ga=540805379.1780063865&aff=KylieJean&ga_cid=540805379.1780063865&ga_sid=1780063864" data-badge="Most Popular" data-popular="true"></div>
+          <div data-name="📦📦📦📦📦📦 6 Bottles" data-desc="Best Value Complete Restoration Plan (180-Day Supply)" data-link="https://www.checkout-ds24.com/product/552603?_b=bnVsbDtkZW50aXRveDI0LmNvbS90ZXh0LnBocDt1bmRlZmluZWQ7dGV4dDM7Mjk0O2ZlO3VuZGVmaW5lZA%3D%3D&_ga=540805379.1780063865&aff=KylieJean&ga_cid=540805379.1780063865&ga_sid=1780063864" data-badge="Best Value" data-popular="false"></div>
+        </div>
+        
+        <div class="badge">Herbal Care</div>
+        <a href="#" class="product-img-wrap modal-trigger" onclick="gtag('event', 'click_buy_dentitox_img');">
+          <img src="https://dentitox24.com//statics/img/tsl-main-min.png" alt="Dentitox Pro Herbal Drops">
+        </a>
+        <div class="product-info">
+          <span class="product-tag">🦷🌿 Oral Wellness</span>
+          <h3 class="product-title">
+            <a href="#" class="modal-trigger" onclick="gtag('event', 'click_buy_dentitox_title');">Dentitox PRO</a>
+          </h3>
+          <p class="product-preview">Your smile is one of the first things people notice—and taking care of it every day has never been easier. Dentitox Drops combine essential vitamins...</p>
+          <button class="read-more-btn modal-trigger">Read More 👈</button>
+          <div class="action-area">
+            <a href="https://www.checkout-ds24.com/product/552602?_b=bnVsbDtkZW50aXRveDI0LmNvbS90ZXh0LnBocDt1bmRlZmluZWQ7dGV4dDsyOzE3NztmZTt1bmRlZmluZWQ%3D&_ga=540805379.1780063865&aff=KylieJean&ga_cid=540805379.1780063865&ga_sid=1780063864" class="btn-buy" target="_blank" onclick="gtag('event', 'click_buy_dentitox_btn');">🌿 Claim Drops</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- КАРТОЧКА 13: NERVE FRESH -->
+      <article class="product-card reveal"
+        data-imgs="https://nervefresh.com/hosted/images/80/c3ac36ed0541728e36c1a4c0eac1ec/Nerve-Fresh-1-Bottle-180-Days-Guarantee.png"
+        data-tag="Nervous System & Comfort"
+        data-title="Nerve Fresh"
+        data-bullets="<ul><li>Soothes overactive nerves and quiets physical tingling or pins-and-needles.</li><li>Powered by 5 bio-available extracts including calming Passionflower and Prickly Pear.</li><li>Promotes daily somatic vitality and deep, uninterrupted sleep.</li></ul>"
+        data-note="I am incredibly impressed by the somatic support this formula offers. Combining California Poppy and Passionflower is a brilliant way to quiet overactive nerve endings!"
+        data-link="https://secure.nervefresh24.com/index-nf-ds#aff=KylieJean"
+        data-secure="🌱 100% Natural Nerve Support">
+        
+        <div class="badge">Top Choice</div>
+        <a href="#" class="product-img-wrap modal-trigger">
+          <img src="https://nervefresh.com/hosted/images/80/c3ac36ed0541728e36c1a4c0eac1ec/Nerve-Fresh-1-Bottle-180-Days-Guarantee.png" alt="Nerve Fresh Bottle">
+        </a>
+        <div class="product-info">
+          <span class="product-tag">Nervous System & Comfort</span>
+          <h3 class="product-title">
+            <a href="#" class="modal-trigger">Nerve Fresh</a>
+          </h3>
+          <p class="product-preview">Soothes overactive nerves and quiets physical tingling or pins-and-needles. Powered by 5 extracts...</p>
+          <button class="read-more-btn modal-trigger">Read More 👈</button>
+          <div class="action-area">
+            <a href="https://secure.nervefresh24.com/index-nf-ds#aff=KylieJean" class="btn-buy" target="_blank" onclick="event.stopPropagation();">🌿 Claim Nerve Fresh</a>
+          </div>
+        </div>
+      </article>
+      
+<!-- КАРТОЧКА 14: VERTIGENICS -->
+      <article class="product-card reveal"
+        data-tag="🌿 ✨ Balance, Mobility & Everyday Confidence"
+        data-title="🌱 Vertigenics Formula"
+        data-bullets="<p style='font-size: 14.5px; margin-bottom: 15px; color: var(--muted); line-height: 1.6;'>Move through life with greater confidence by supporting your body's natural balance, coordination, and spatial awareness. Vertigenics Formula combines 10 carefully selected nutrients and botanical extracts, including Korean Ginseng, to help support inner ear health, cognitive function, and everyday stability. 🌿🧠<br><br>Whether you're enjoying an active lifestyle, spending time with family, or simply wanting to feel more confident in your daily movements, Vertigenics is designed to help support your body's natural balance with science-inspired nutrition and plant-based ingredients.<br><br>No complicated routines. Just targeted daily support for balance, mobility, and confidence.</p>
+                <p style='font-weight: 700; margin-bottom: 12px; color: var(--forest); font-size: 15px;'>✅ What Makes Vertigenics Formula So Valuable:</p>
+                <ul class='product-bullets' style='margin-bottom: 0;'>
+                  <li>👂 <strong>Supports Inner Ear Balance</strong><br>Formulated with carefully selected nutrients that help support healthy inner ear function—an important part of maintaining natural balance.</li>
+                  <li>🧠 <strong>Supports Cognitive Coordination</strong><br>Helps support the connection between your brain and body for smooth, coordinated daily movement.</li>
+                  <li>🌿 <strong>Powered by 10 Premium Ingredients</strong><br>Features Korean Ginseng and other carefully selected nutrients chosen to support balance, focus, and overall wellness.</li>
+                  <li>🚶 <strong>Feel More Steady Throughout the Day</strong><br>Supports natural stability and confident movement so you can enjoy everyday activities with greater ease.</li>
+                  <li>💚 <strong>Supports Independence & Active Living</strong><br>Stay active and enjoy doing the things you love while supporting your body's natural mobility and balance.</li>
+                  <li>⚡️ <strong>Everyday Energy & Vitality</strong><br>Designed to help you feel more energized, focused, and ready for daily life.</li>
+                  <li>🌎 <strong>Natural Daily Wellness Support</strong><br>Plant-based ingredients work together to support overall well-being as part of a healthy lifestyle.</li>
+                  <li>💊 <strong>Easy to Add to Your Daily Routine</strong><br>A simple daily supplement that fits easily into your wellness habits.</li>
+                  <li>✨ <strong>Confidence Begins with Stability</strong><br>Feeling balanced allows you to move through life with greater comfort, confidence, and peace of mind.</li>
+                </ul>"
+        data-note="One of the things we often don't appreciate until it's challenged is the simple confidence of feeling steady on our feet. 🌿<br><br>What I like most about Vertigenics is that it focuses on supporting the body's natural balance using carefully selected nutrients and botanicals like Korean Ginseng. It's an easy addition to a daily wellness routine that helps you feel more confident in your everyday movement.<br><br>Being able to walk comfortably, stay active, enjoy travel, spend time outdoors, and live independently is something truly valuable. Taking care of your balance today is an investment in your confidence for tomorrow."
+        data-closing="🌱 <strong>This is more than just a wellness supplement—it's daily support for your balance, coordination, mobility, and confidence, helping you enjoy life with greater freedom and peace of mind.</strong><br><br><strong>✨ Perfect For Those Who Love:</strong><br>✔️ Supporting healthy balance<br>✔️ Active lifestyles<br>✔️ Natural wellness<br>✔️ Plant-based supplements<br>✔️ Daily mobility support<br>✔️ Healthy aging<br>✔️ Cognitive wellness<br>✔️ Feeling steady and confident<br>✔️ Korean Ginseng and botanical ingredients<br>✔️ Living life to the fullest<br><br>🌿✨ <strong>Support your balance. Move with confidence. Stay active. Enjoy every step with the natural power of carefully selected botanical ingredients.</strong> 🚶💚"
+        data-link="https://getmyvertigenics24.com/text.php#aff=KylieJean"
+        data-secure="🌱 100% Natural Stability Support">
+        
+        <!-- УДОБНОЕ ХРАНИЛИЩЕ ФОТОГРАФИЙ КАРТОЧКИ (Добавил флакон + 3 тематические картинки гармонии и баланса) -->
+        <div class="product-images-source" style="display: none;">
+          <span>https://getmyvertigenics24.com/statics/img/prod_1_bottle.png</span>
+          <span>https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1000&auto=format&fit=crop</span>
+          <span>https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?q=80&w=1000&auto=format&fit=crop</span>
+          <span>https://images.unsplash.com/photo-1444491741275-3747c53c99b4?q=80&w=1000&auto=format&fit=crop</span>
+        </div>
+        
+        <div class="badge">Staff Pick</div>
+        <a href="#" class="product-img-wrap modal-trigger" onclick="gtag('event', 'click_buy_vertigenics_img');">
+          <img src="https://getmyvertigenics24.com/statics/img/prod_1_bottle.png" alt="Vertigenics Bottle">
+        </a>
+        <div class="product-info">
+          <span class="product-tag">🌿 ✨ Balance & Mobility</span>
+          <h3 class="product-title">
+            <a href="#" class="modal-trigger" onclick="gtag('event', 'click_buy_vertigenics_title');">Vertigenics Formula</a>
+          </h3>
+          <p class="product-preview">Move through life with greater confidence by supporting your body's natural balance, coordination, and spatial awareness...</p>
+          <button class="read-more-btn modal-trigger">Read More 👈</button>
+          <div class="action-area">
+            <a href="https://getmyvertigenics24.com/text.php#aff=KylieJean" class="btn-buy" target="_blank" onclick="event.stopPropagation(); gtag('event', 'click_buy_vertigenics_btn');">🌿 Claim Formula Now</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+</main>
+
+<!-- ПЛАВАЮЩИЙ WIDGET TELEGRAM -->
+<a href="https://t.me/+DBM4ReYIBQU4YjAy" class="tg-floating-btn" target="_blank">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram">
+  <span>FREE Private Channel</span>
+</a>
+
+<!-- === ВСПЛЫВАЮЩЕЕ ОКНО (QUICK VIEW) === -->
+<dialog id="product-modal" class="modal">
+  <div class="modal-content">
+    <button class="modal-close" id="close-modal">&times;</button>
+    
+    <div class="modal-body">
+      <!-- Зона фотографий (Карусель) -->
+      <div class="modal-gallery">
+        <div class="modal-main-img-wrap">
+          <button class="gallery-arrow prev-arrow" id="prev-img">❮</button>
+          <img id="modal-img" src="" alt="Product">
+          <button class="gallery-arrow next-arrow" id="next-img">❯</button>
+        </div>
+        <div class="modal-thumbnails" id="modal-thumbnails"></div>
+      </div>
+      
+      <!-- Зона информации -->
+      <div class="modal-info">
+        <!-- Увеличенная категория -->
+        <span id="modal-tag" class="product-tag popup-tag"></span>
+        
+        <!-- Увеличенный и кликабельный заголовок -->
+        <h3 class="product-title popup-title">
+          <a href="#" id="modal-title-link" target="_blank"></a>
+        </h3>
+        
+        <!-- Описание -->
+        <div class="modal-desc" id="modal-desc"></div>
+        
+        <!-- Заметка -->
+        <div class="marketing-note" id="modal-note-container">
+          <strong>💡 My Note:</strong>
+          <p id="modal-note"></p>
+        </div>
+
+        <p id="modal-closing-text" class="modal-closing-text"></p>
+
+        <!-- ЛИПКАЯ КНОПКА В САМОМ НИЗУ -->
+        <div class="action-area modal-sticky-bottom">
+          <a href="#" id="modal-buy-btn" class="btn-buy" target="_blank">🌿 Claim Offer Now</a>
+          <span class="btn-secure" id="modal-secure-text" style="text-align: center; display: block; margin-top: 10px; font-size: 11px; color: #8ba37b;">🌱 100% Natural</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<!-- === ВСПЛЫВАЮЩЕЕ ОКНО ВЫБОРА ТАРИФА (CHECKOUT MODAL) === -->
+<dialog id="checkout-modal" class="modal checkout-modal">
+  <div class="modal-content">
+    <button class="modal-close" id="close-checkout-modal">&times;</button>
+    
+    <div class="checkout-modal-body">
+      <h3 class="checkout-modal-title">Select Your Option</h3>
+      <p class="checkout-modal-subtitle">Choose the package that best fits your natural lifestyle journey:</p>
+      
+      <!-- Сюда динамически будут генерироваться варианты покупки -->
+      <div id="checkout-packages-grid" class="checkout-packages-grid"></div>
+      
+      <div class="checkout-action-area">
+        <a href="#" id="checkout-final-btn" class="btn-buy" target="_blank">🌿 Proceed to Secure Checkout</a>
+        <!--  <span class="btn-secure" style="text-align: center; display: block; margin-top: 10px; font-size: 11px; color: #8ba37b;">🔒 Secure 256-bit Encry</span> -->
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  // 1. Появление элементов при скролле
+  document.addEventListener('DOMContentLoaded', function() {
+    const revealTargets = document.querySelectorAll('.reveal, .vine-divider');
+    if ('IntersectionObserver' in window) {
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+      revealTargets.forEach(el => revealObserver.observe(el));
+    } else {
+      revealTargets.forEach(el => el.classList.add('in-view'));
+    }
+  });
+// 2. Логика всплывающих окон (Quick View + Окно выбора пакетов)
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('product-modal');
+    const closeBtn = document.getElementById('close-modal');
+    
+    const checkoutModal = document.getElementById('checkout-modal');
+    const closeCheckoutBtn = document.getElementById('close-checkout-modal');
+    const checkoutGrid = document.getElementById('checkout-packages-grid');
+    const checkoutFinalBtn = document.getElementById('checkout-final-btn');
+
+    if (!modal || !checkoutModal) return; 
+
+    // Элементы галереи Quick View
+    const mGallery = document.querySelector('.modal-gallery'); 
+    const mMainImg = document.getElementById('modal-img');
+    const mThumbnails = document.getElementById('modal-thumbnails');
+    const prevBtn = document.getElementById('prev-img');
+    const nextBtn = document.getElementById('next-img');
+    
+    // Элементы текста Quick View
+    const mTag = document.getElementById('modal-tag');
+    const mTitleLink = document.getElementById('modal-title-link');
+    const mDesc = document.getElementById('modal-desc');
+    const mNote = document.getElementById('modal-note');
+    const mNoteContainer = document.getElementById('modal-note-container');
+    const mClosing = document.getElementById('modal-closing-text'); 
+    const mBuyBtn = document.getElementById('modal-buy-btn');
+    const mSecureText = document.getElementById('modal-secure-text');
+
+    let currentImages = [];
+    let currentIndex = 0;
+    let activeCard = null; // Храним активную открытую карточку
+
+    function updateGallery() {
+      if (!mMainImg || currentImages.length === 0) return;
+      mMainImg.style.opacity = '0.4'; 
+      setTimeout(() => {
+        mMainImg.src = currentImages[currentIndex];
+        mMainImg.style.opacity = '1';
+      }, 150);
+
+      if (mThumbnails) {
+        const thumbs = mThumbnails.querySelectorAll('.thumb-img');
+        thumbs.forEach((t, index) => {
+          if (index === currentIndex) {
+            t.classList.add('active');
+            t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+          } else {
+            t.classList.remove('active');
+          }
+        });
+      }
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+        updateGallery();
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % currentImages.length;
+        updateGallery();
+      });
+    }
+
+    // ДИНАМИЧЕСКАЯ ОТРИСОВКА И ОТКРЫТИЕ ОКНА ВЫБОРОВ ТАРИФА (CHECKOUT MODAL)
+// ДИНАМИЧЕСКАЯ ОТРИСОВКА И ОТКРЫТИЕ ОКНА ВЫБОРОВ ТАРИФА (CHECKOUT MODAL)
+    function openCheckoutModal(card) {
+      const packagesSource = card.querySelector('.product-packages-source');
+      if (!packagesSource || !checkoutGrid) return;
+
+      checkoutGrid.innerHTML = ''; // Очищаем старые тарифы
+      const pkgElements = packagesSource.querySelectorAll('div');
+      
+      if (pkgElements.length > 0) {
+        let defaultLink = '';
+
+        // ИСПРАВЛЕНО: Сначала находим, какой именно тариф должен быть выбран по умолчанию
+        let activeIndex = 0;
+        pkgElements.forEach((pkg, index) => {
+          if (pkg.getAttribute('data-popular') === 'true') {
+            activeIndex = index;
+          }
+        });
+
+        pkgElements.forEach((pkg, index) => {
+          const name = pkg.getAttribute('data-name');
+          const desc = pkg.getAttribute('data-desc');
+          const link = pkg.getAttribute('data-link');
+          const badge = pkg.getAttribute('data-badge');
+          const popular = pkg.getAttribute('data-popular') === 'true';
+
+          const cardEl = document.createElement('div');
+          cardEl.className = 'checkout-package-card';
+          
+          // ИСПРАВЛЕНО: Активируем строго ОДИН выбранный по умолчанию элемент
+          if (index === activeIndex) {
+            cardEl.classList.add('active');
+            defaultLink = link;
+          }
+
+          cardEl.setAttribute('data-link', link);
+          let badgeHtml = badge ? `<span class="package-badge ${popular ? 'popular' : ''}">${badge}</span>` : '';
+
+          // ИСПРАВЛЕНО: Убрали блок цены .package-card-right, растянули и отцентрировали текст на 100%
+          cardEl.innerHTML = `
+            ${badgeHtml}
+            <div class="package-card-left" style="width: 100%; text-align: center;">
+              <div class="checkout-package-name" style="font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 4px;">${name}</div>
+              <div class="checkout-package-desc" style="font-size: 11px; color: var(--muted); line-height: 1.3;">${desc}</div>
+            </div>
+          `;
+
+          // Клик по карточке тарифа
+          cardEl.addEventListener('click', function(e) {
+            e.stopPropagation();
+            checkoutGrid.querySelectorAll('.checkout-package-card').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            if (checkoutFinalBtn) checkoutFinalBtn.href = this.getAttribute('data-link');
+            gtag('event', 'checkout_select_package_' + name.replace(/\s+/g, '_').toLowerCase());
+          });
+
+          checkoutGrid.appendChild(cardEl);
+        });
+
+        if (checkoutFinalBtn) checkoutFinalBtn.href = defaultLink;
+        
+        // Открываем окно выбора тарифов
+        checkoutModal.showModal();
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    // НАЖАТИЕ НА КАРТОЧКУ ТОВАРА НА ВИТРИНЕ
+    const cards = document.querySelectorAll('.product-card');
+
+    cards.forEach(card => {
+      card.addEventListener('click', function(e) {
+        const isBuyBtn = e.target.closest('.btn-buy');
+        const packagesSource = card.querySelector('.product-packages-source');
+        
+        // Клик по желтой кнопке на главной витрине
+        if (isBuyBtn) {
+          if (packagesSource) {
+            e.preventDefault();
+            e.stopPropagation();
+            openCheckoutModal(card); // Если есть тарифы — СРАЗУ открываем окно выбора тарифов (в обход Quick View!)
+            return;
+          }
+          return; // Если тарифов нет — разрешаем стандартный переход на Digistore
+        }
+        
+        e.preventDefault(); 
+        activeCard = card; // Запоминаем текущую карточку
+        
+        // НАСТРОЙКА ГАЛЕРЕИ QUICK VIEW
+        currentImages = [];
+        const hiddenImgSpans = card.querySelectorAll('.product-images-source span');
+        
+        if (hiddenImgSpans.length > 0) {
+          hiddenImgSpans.forEach(span => {
+            currentImages.push(span.textContent.trim());
+          });
+        } else {
+          const imagesStr = card.getAttribute('data-imgs');
+          currentImages = imagesStr ? imagesStr.split(',').map(s => s.trim()) : [];
+        }
+        
+        currentIndex = 0;
+        if (mThumbnails) mThumbnails.innerHTML = '';
+        
+        if (currentImages.length > 0 && mMainImg) {
+          mMainImg.src = currentImages[0];
+          if (currentImages.length > 1) {
+            if (mGallery) mGallery.classList.remove('single-image-gallery');
+            if (prevBtn) prevBtn.style.display = 'flex';
+            if (nextBtn) nextBtn.style.display = 'flex';
+            if (mThumbnails) mThumbnails.style.display = 'flex';
+            
+            currentImages.forEach((imgUrl, index) => {
+              const thumb = document.createElement('img');
+              thumb.src = imgUrl;
+              thumb.classList.add('thumb-img');
+              if (index === 0) thumb.classList.add('active');
+              
+              thumb.addEventListener('click', () => {
+                currentIndex = index;
+                updateGallery();
+              });
+              if (mThumbnails) mThumbnails.appendChild(thumb);
+            });
+          } else {
+            if (mGallery) mGallery.classList.add('single-image-gallery');
+            if (prevBtn) prevBtn.style.display = 'none';
+            if (nextBtn) nextBtn.style.display = 'none';
+            if (mThumbnails) mThumbnails.style.display = 'none';
+          }
+        }
+
+        // ПОДСТАНОВКА ТЕКСТА QUICK VIEW
+        if (mTag) mTag.textContent = card.getAttribute('data-tag');
+        if (mTitleLink) {
+          mTitleLink.textContent = card.getAttribute('data-title');
+          mTitleLink.href = card.getAttribute('data-link');
+        }
+        if (mDesc) mDesc.innerHTML = card.getAttribute('data-bullets');
+        
+        const closingText = card.getAttribute('data-closing');
+        const noteContainer = document.getElementById('modal-note-container');
+        
+        if (mClosing) {
+          if (closingText) {
+            mClosing.innerHTML = closingText;
+            mClosing.style.display = 'block';
+            
+            if (noteContainer) {
+              if (window.innerWidth <= 768) {
+                noteContainer.style.setProperty('margin-bottom', '15px', 'important');
+              } else {
+                noteContainer.style.setProperty('margin-bottom', '20px', 'important');
+              }
+            }
+          } else {
+            mClosing.style.display = 'none';
+            
+            if (noteContainer) {
+              if (window.innerWidth <= 768) {
+                noteContainer.style.setProperty('margin-bottom', '75px', 'important');
+              } else {
+                noteContainer.style.setProperty('margin-bottom', '100px', 'important');
+              }
+            }
+          }
+        }
+
+        const noteText = card.getAttribute('data-note');
+        if (mNoteContainer && mNote) {
+          if (noteText) {
+            mNote.innerHTML = noteText;
+            mNoteContainer.style.display = 'block';
+          } else {
+            mNoteContainer.style.display = 'none';
+          }
+        }
+
+        // АВТОМАТИЧЕСКАЯ СИНХРОНИЗАЦИЯ ТЕКСТА И ССЫЛКИ КНОПКИ В QUICK VIEW
+        const cardBuyBtn = card.querySelector('.btn-buy');
+        if (cardBuyBtn && mBuyBtn) {
+          mBuyBtn.innerHTML = cardBuyBtn.innerHTML; 
+          mBuyBtn.href = cardBuyBtn.getAttribute('href'); 
+        }
+        
+        if (mSecureText) mSecureText.textContent = card.getAttribute('data-secure');
+
+        modal.showModal();
+        document.body.style.overflow = 'hidden';
+
+        setTimeout(() => {
+          const mInfo = document.querySelector('.modal-info');
+          const mBody = document.querySelector('.modal-body');
+          const mContent = document.querySelector('.modal-content');
+          
+          if (modal) modal.scrollTop = 0;         
+          if (mContent) mContent.scrollTop = 0;   
+          if (mInfo) mInfo.scrollTop = 0;         
+          if (mBody) mBody.scrollTop = 0;         
+          
+          if (mThumbnails) {
+            mThumbnails.scrollTop = 0;            
+            mThumbnails.scrollLeft = 0;
+          }
+        }, 50); 
+      });
+    });
+
+    // КЛИК ПО КНОПКЕ "КУПИТЬ" ВНУТРИ QUICK VIEW (ПЕРЕХВАТЫВАЕМ, ЕСЛИ ЕСТЬ ТАРИФЫ)
+    if (mBuyBtn) {
+      mBuyBtn.addEventListener('click', function(e) {
+        if (activeCard) {
+          const packagesSource = activeCard.querySelector('.product-packages-source');
+          if (packagesSource) {
+            e.preventDefault(); // Замораживаем переход
+            modal.close(); // Закрываем Quick View
+            document.body.style.overflow = '';
+            openCheckoutModal(activeCard); // СРАЗУ открываем окно выбора тарифов!
+          }
+        }
+      });
+    }
+
+    // Логика закрытия Quick View
+    const closeModalFunc = () => {
+      modal.close();
+      document.body.style.overflow = '';
+    };
+    if (closeBtn) closeBtn.addEventListener('click', closeModalFunc);
+    
+    modal.addEventListener('click', (e) => {
+      const dialogRect = modal.getBoundingClientRect();
+      if (
+        e.clientX < dialogRect.left || e.clientX > dialogRect.right ||
+        e.clientY < dialogRect.top || e.clientY > dialogRect.bottom
+      ) {
+        closeModalFunc();
+      }
+    });
+
+    // ЛОГИКА ЗАКРЫТИЯ ОКНА CHECKOUT MODAL (КРЕСТИК + ДЕФОЛТ)
+    const closeCheckoutModalFunc = () => {
+      checkoutModal.close();
+      document.body.style.overflow = '';
+    };
+    if (closeCheckoutBtn) closeCheckoutBtn.addEventListener('click', closeCheckoutModalFunc);
+    
+    checkoutModal.addEventListener('click', (e) => {
+      const dialogRect = checkoutModal.getBoundingClientRect();
+      if (
+        e.clientX < dialogRect.left || e.clientX > dialogRect.right ||
+        e.clientY < dialogRect.top || e.clientY > dialogRect.bottom
+      ) {
+        closeCheckoutModalFunc();
+      }
+    });
+
+    // 4. ЖЕСТКИЙ СБРОС СКРОЛЛА СРАЗУ ПОСЛЕ ОТКРЫТИЯ (ОБХОДИМ БАГ БРАУЗЕРА ЧЕРЕЗ ТАЙМАУТ)
+        setTimeout(() => {
+          const mInfo = document.querySelector('.modal-info');
+          const mBody = document.querySelector('.modal-body');
+          const mContent = document.querySelector('.modal-content');
+          
+          if (modal) modal.scrollTop = 0;         
+          if (mContent) mContent.scrollTop = 0;   
+          if (mInfo) mInfo.scrollTop = 0;         
+          if (mBody) mBody.scrollTop = 0;         
+          
+          if (mThumbnails) {
+            mThumbnails.scrollTop = 0;            
+            mThumbnails.scrollLeft = 0;
+          }
+
+          // >>> МАГИЯ ПРОТИВ БАГА ПИНТЕРЕСТА: Программно симулируем касание/перерисовку картинки <<<
+          if (mMainImg) {
+            const forceReflow = mMainImg.offsetHeight; // Чтение высоты принудительно заставляет WebKit перерисовать картинку по размеру!
+          }
+        }, 50);
+  });
+</script>
+
+</body>
+</html>

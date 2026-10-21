@@ -1,0 +1,830 @@
+---
+// src/pages/[category]/[collection].astro
+import fs from 'fs/promises';
+import path from 'path';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+
+export async function getStaticPaths() {
+    const contentDir = path.resolve('content');
+    const paths = [];
+
+    try {
+        const categories = await fs.readdir(contentDir, { withFileTypes: true });
+
+        for (const catEntry of categories) {
+            if (!catEntry.isDirectory() || catEntry.name === 'products') continue;
+
+            const category = catEntry.name;
+            const catDir = path.join(contentDir, category);
+            const collections = await fs.readdir(catDir, { withFileTypes: true });
+
+            for (const colEntry of collections) {
+                if (colEntry.isDirectory()) {
+                    paths.push({
+                        params: { category, collection: colEntry.name }
+                    });
+                }
+            }
+        }
+    } catch (e) {
+        console.error("Ошибка чтения категорий:", e);
+    }
+
+    return paths;
+}
+
+const { category, collection } = Astro.params;
+const collectionDir = path.resolve(`content/${category}/${collection}`);
+
+// 1. Читаем порядок товаров
+let orderSlugs = [];
+try {
+    const orderData = await fs.readFile(path.join(collectionDir, 'collection.json'), 'utf8');
+    orderSlugs = JSON.parse(orderData).items || [];
+} catch (e) {}
+
+// 2. Загружаем JSON товаров
+const products = [];
+for (const slug of orderSlugs) {
+    try {
+        const productData = await fs.readFile(path.join(collectionDir, 'products', `${slug}.json`), 'utf8');
+        const parsed = JSON.parse(productData);
+
+        if (parsed.title && !parsed.title.includes('www.creativefabrica.com')) {
+            products.push(parsed);
+        }
+    } catch (e) {}
+}
+
+const catTitle = category.charAt(0).toUpperCase() + category.slice(1);
+
+// 3. 💡 УМНОЕ ЧТЕНИЕ ЗАГОЛОВКОВ ИЗ info.json (с поддержкой title_page)
+const formatWord = (str) => str.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
+const removeDuplicateWords = (str) => {
+    const words = str.split(/\s+/);
+    const seen = new Set();
+    const result = [];
+    for (const word of words) {
+        if (!word) continue;
+        const lower = word.toLowerCase();
+        if (!seen.has(lower)) {
+            seen.add(lower);
+            result.push(word);
+        }
+    }
+    return result.join(' ');
+};
+
+let rawTitle = `${formatWord(collection)} ${formatWord(category)}`;
+let titleName = removeDuplicateWords(rawTitle);
+let descriptionText = `Best selected ${formatWord(collection).toLowerCase()} assets for your creative projects. Commercial licence included ✓`;
+
+try {
+    const infoData = await fs.readFile(path.join(collectionDir, 'info.json'), 'utf8');
+    const info = JSON.parse(infoData);
+    
+    // ПРИОРИТЕТ 1: Расширенный SEO-заголовок для страницы (title_page)
+    // ПРИОРИТЕТ 2: Короткий заголовок карточки (title)
+    if (info.title_page && info.title_page.trim() !== "") {
+        titleName = info.title_page;
+    } else if (info.title && info.title.trim() !== "") {
+        titleName = info.title;
+    }
+
+    if (info.description) descriptionText = info.description;
+} catch (e) {}
+
+const getCreativeFabricaSearch = (catStr, colStr, userStr = "") => {
+    let cleanUserStr = userStr;
+    let cleanColStr = colStr;
+    let cleanCatStr = catStr;
+
+    const fullContext = `${catStr} ${colStr} ${userStr}`.toLowerCase();
+
+    // Для Procreate и Brushes убираем шумные слова "pack", "packs", "mega" (например, Mega Packs Brushes -> Brushes)
+    if (fullContext.includes("procreate") || fullContext.includes("brush")) {
+        const stripPacks = (str) => str.replace(/\b(mega\s+packs?|packs?)\b/gi, " ");
+        cleanUserStr = stripPacks(cleanUserStr);
+        cleanColStr = stripPacks(cleanColStr);
+        cleanCatStr = stripPacks(cleanCatStr);
+    }
+
+    // Приоритет слов запроса: пользовательский ввод -> коллекция -> категория
+    const rawTokens = [cleanUserStr, cleanColStr, cleanCatStr].filter(Boolean).join(" ");
+    
+    // CF типы контента: выносим только реальные самостоятельные разделы поиска CF.
+    // Важно: "Graphics" НЕ добавляем, так как на CF фильтр &type=Graphics режет выдачу
+    // по ключевым запросам (например, brushes, procreate, cliparts).
+    const TYPE_MAPPINGS = [
+        { type: "Fonts", triggers: ["fonts", "font"] },
+        { type: "3D SVG", triggers: ["3d svg"] },
+        { type: "3D Printing", triggers: ["3d printing", "3d print"] },
+        { type: "Laser Cutting", triggers: ["laser cutting", "laser cut"] },
+        { type: "Embroidery", triggers: ["embroidery"] },
+        { type: "Knitting", triggers: ["knitting"] },
+        { type: "Bundles", triggers: ["bundles", "bundle"] }
+    ];
+
+    let foundType = "";
+    let cleanQuery = rawTokens;
+
+    for (const item of TYPE_MAPPINGS) {
+        let matched = false;
+        for (const trigger of item.triggers) {
+            const regex = new RegExp(`\\b${trigger}\\b`, "gi");
+            if (regex.test(cleanQuery)) {
+                matched = true;
+                cleanQuery = cleanQuery.replace(regex, " ");
+            }
+        }
+        if (matched && !foundType) {
+            foundType = item.type;
+        }
+    }
+
+    const words = cleanQuery.split(/\s+/).filter(Boolean);
+    const seen = new Set();
+    const finalWords = [];
+    for (const w of words) {
+        const lower = w.toLowerCase();
+        if (!seen.has(lower)) {
+            seen.add(lower);
+            finalWords.push(w);
+        }
+    }
+
+    const catLower = catStr.toLowerCase();
+    const fullLower = `${catStr} ${colStr} ${userStr}`.toLowerCase();
+
+    // 1. Для категории cliparts гарантируем наличие "cliparts" в конце запроса
+    if (catLower.includes("clipart") || fullLower.includes("clipart")) {
+        const filtered = finalWords.filter(w => !/^cliparts?$/i.test(w));
+        filtered.push("cliparts");
+        finalWords.length = 0;
+        finalWords.push(...filtered);
+    }
+
+    // 2. Для категории procreate гарантируем наличие "procreate" в запросе
+    if (catLower.includes("procreate") || fullLower.includes("procreate")) {
+        const hasProcreate = finalWords.some(w => /^procreate$/i.test(w));
+        if (!hasProcreate) {
+            finalWords.push("procreate");
+        }
+    }
+
+    const finalQuery = finalWords.join(" ");
+    let url = `https://www.creativefabrica.com/search/ref/8122976/?query=${encodeURIComponent(finalQuery)}`;
+    if (foundType) {
+        url += `&type=${encodeURIComponent(foundType)}`;
+    }
+    return { url, displayQuery: finalQuery || foundType };
+};
+
+const cfFallback = getCreativeFabricaSearch(formatWord(category), formatWord(collection));
+
+// 4. Загрузка умных фильтров
+let filters = [];
+try {
+    const filtersData = await fs.readFile(path.join(collectionDir, 'filters.json'), 'utf8');
+    filters = JSON.parse(filtersData);
+} catch (e) {}
+
+// 5. Загрузка статических фильтр-коллекций (filter_collections)
+const filterCollectionsDir = path.join(collectionDir, 'filter_collections');
+const filterItemsMap = {};
+const filterOrderMap = {};
+let hasStaticFilterCollections = false;
+
+try {
+    const filterFiles = await fs.readdir(filterCollectionsDir);
+    for (const file of filterFiles) {
+        if (file.endsWith('.json')) {
+            try {
+                const fcRaw = await fs.readFile(path.join(filterCollectionsDir, file), 'utf8');
+                const fcData = JSON.parse(fcRaw);
+                const fId = fcData.filterId || path.basename(file, '.json');
+                const items = Array.isArray(fcData.items) ? fcData.items : [];
+                filterItemsMap[fId] = items;
+                filterOrderMap[fId] = {};
+                items.forEach((s, idx) => {
+                    filterOrderMap[fId][s] = idx;
+                });
+                hasStaticFilterCollections = true;
+            } catch (e) {}
+        }
+    }
+} catch (e) {}
+
+// Стемминг-лайт: нормализует слово убирая окончания
+const stem = (word) => word
+    .replace(/ies$/i, 'y')
+    .replace(/(ses|ches|shes|xes|zes)$/i, (m) => m.slice(0, -2))
+    .replace(/([^s])s$/i, '$1');
+
+// Функция определения тегов для товара
+const getProductFilters = (product) => {
+    if (!product) return "";
+
+    // Если есть статические файлы filter_collections, используем их точные списки!
+    if (hasStaticFilterCollections) {
+        const matched = [];
+        for (const [fId, slugs] of Object.entries(filterItemsMap)) {
+            if (slugs.includes(product.slug)) {
+                matched.push(fId);
+            }
+        }
+        return matched.join(',');
+    }
+
+    // Fallback: вычисление по ключевым словам фильтра
+    const titleLower = (product.title || "").toLowerCase();
+    const tagsLower = (product.semanticTags || []).join(" ").toLowerCase();
+    
+    const searchString = `${titleLower} ${tagsLower}`;
+    const searchWords = searchString.split(/[\s,.-]+/).filter(w => w.length > 0);
+    const searchStemmed = searchWords.map(w => stem(w));
+    
+    const matched = [];
+    
+    for (const filter of filters) {
+        const hasMatch = filter.keywords.some(kw => {
+            const kwLower = kw.toLowerCase();
+            // Для multi-word keywords, проверяем как подстроку
+            if (kwLower.includes(' ')) {
+                return searchString.includes(kwLower);
+            }
+            // Для single-word keywords, проверяем с учётом стемминга
+            const kwStem = stem(kwLower);
+            return searchWords.includes(kwLower) || searchStemmed.includes(kwStem);
+        });
+        if (hasMatch) {
+            matched.push(filter.id);
+        }
+    }
+    return matched.join(',');
+};
+---
+
+<BaseLayout
+  title={`${titleName} - Artify Studio`}
+  description={descriptionText}
+  ogImage={products[0]?.image}
+  ogType="website"
+>
+  <main class="container mx-auto px-4 pt-4 sm:pt-6 pb-8 sm:pb-12 max-w-7xl">
+
+    <!-- Заголовок подборки (H1) -->
+    <div class="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
+      <span class="text-xs font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-800/50">
+        {catTitle} Collection
+      </span>
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-white mt-4 tracking-tight leading-tight">{titleName}</h1>
+      <p class="text-neutral-400 mt-3 text-xs sm:text-base leading-relaxed">
+        {descriptionText}
+      </p>
+    </div>
+
+    <!-- УМНЫЙ ПОИСК И ФИЛЬТРЫ -->
+    {filters.length > 0 ? (
+      <div class="mx-auto w-fit max-w-full mb-12 sm:mb-14 flex flex-col xl:flex-row justify-center items-center gap-3 bg-neutral-900/30 p-2 sm:p-3 rounded-2xl sm:rounded-[2rem] border border-neutral-800/50">
+        <div class="relative w-full xl:w-72 shrink-0">
+          <input 
+            type="search" 
+            id="collection-search"
+            placeholder={`Search in ${titleName}...`}
+            class="w-full bg-neutral-900/80 border border-neutral-800 rounded-full px-5 py-2.5 sm:py-3 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all shadow-inner"
+          />
+          <div class="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-500 pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+          </div>
+        </div>
+
+        <div class="relative flex items-start w-full min-w-0 group gap-1.5 sm:gap-2">
+          <!-- Левая кнопка (только десктоп xl+) -->
+          <button id="scroll-left" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 hidden xl:flex items-center justify-center w-8 h-8 rounded-full bg-neutral-900/90 border border-neutral-700 text-neutral-300 shadow-lg hover:text-white hover:border-emerald-500/50 hover:bg-neutral-800 transition-all -ml-2 sm:-ml-4 backdrop-blur-md opacity-100 disabled:opacity-0 disabled:pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+          </button>
+          
+          <!-- Контейнер фильтров: horizontal scroll by default, expandable via JS -->
+          <div class="flex-1 flex overflow-x-auto gap-1.5 sm:gap-2 items-start xl:overflow-x-auto xl:scroll-smooth transition-all duration-300" id="filter-container" style="scrollbar-width: none; -ms-overflow-style: none;">
+            <style>#filter-container::-webkit-scrollbar { display: none; }</style>
+            <button 
+              data-filter="all" 
+              class="filter-btn active whitespace-nowrap shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-emerald-500 text-black shadow-lg shadow-emerald-500/20 transition-all"
+            >
+              All
+            </button>
+            {filters.map(filter => (
+              <button 
+                data-filter={filter.id}
+                data-keywords={filter.keywords.join(',')}
+                class="filter-btn whitespace-nowrap shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-neutral-800 text-neutral-300 border border-neutral-700 hover:border-emerald-500/50 hover:text-white transition-all"
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
+
+          <!-- Mobile Expand Button (Positioned below when collapsed, inside when expanded) -->
+          <button id="mobile-expand-btn" class="xl:hidden absolute -bottom-[42px] right-2 z-10 flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs sm:text-sm font-semibold shadow-md shadow-emerald-900/20 hover:bg-emerald-500/20 hover:text-emerald-300 transition-all active:scale-95" aria-label="Toggle all filters">
+            <span id="mobile-expand-text">More options</span>
+            <svg id="mobile-expand-icon" class="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <!-- Правая кнопка (только десктоп xl+) -->
+          <button id="scroll-right" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden xl:flex items-center justify-center w-8 h-8 rounded-full bg-neutral-900/90 border border-neutral-700 text-neutral-300 shadow-lg hover:text-white hover:border-emerald-500/50 hover:bg-neutral-800 transition-all -mr-2 sm:-mr-4 backdrop-blur-md opacity-100 disabled:opacity-0 disabled:pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg>
+          </button>
+        </div>
+      </div>
+    ) : (
+      <div class="max-w-md mx-auto mb-8 sm:mb-12 relative">
+        <input 
+          type="search" 
+          id="collection-search"
+          placeholder={`Search in ${titleName}...`}
+          class="w-full bg-neutral-900/80 border border-neutral-800 rounded-full px-5 py-2.5 sm:py-3 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all shadow-inner"
+        />
+        <div class="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-500 pointer-events-none">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+        </div>
+      </div>
+    )}
+
+    <!-- Сетка карточек товаров -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8" id="products-grid">
+      {products.map((product, index) => (
+        <div 
+            class="product-item flex flex-col" 
+            data-slug={product.slug}
+            data-filters={getProductFilters(product)}
+            data-title={product.title.toLowerCase()}
+            data-desc={(product.description || '').toLowerCase()}
+            data-semantic={(product.semanticTags || []).join(' ').toLowerCase()}
+        >
+            <ProductCard product={product} campaign={collection} category={category} priority={index < 4} />
+        </div>
+      ))}
+      
+      <!-- Affiliate Fallback Card -->
+      <a 
+        href={cfFallback.url}
+        target="_blank"
+        rel="nofollow noopener"
+        id="cf-search-card"
+        data-cf-category={formatWord(category)}
+        data-cf-collection={formatWord(collection)}
+        class="flex flex-col items-center justify-center bg-neutral-900/40 border-2 border-dashed border-emerald-500/30 rounded-[2rem] p-8 text-center hover:bg-neutral-900/60 hover:border-emerald-500/60 transition-all duration-300 group min-h-[350px] sm:min-h-full"
+        style="order: 9999;"
+      >
+        <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-emerald-500">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2" id="cf-search-title">Didn't find what you need?</h3>
+        <p class="text-neutral-400 text-sm mb-6" id="cf-search-desc">
+          Search more <span class="text-white font-medium">{cfFallback.displayQuery}</span> designs on Creative Fabrica.
+        </p>
+        <span class="px-6 py-3 rounded-xl bg-emerald-500 text-black font-semibold text-sm shadow-lg shadow-emerald-500/20 group-hover:shadow-emerald-500/40 group-hover:scale-105 transition-all duration-300">
+          Search More
+        </span>
+      </a>
+    </div>
+    <script id="filter-order-data" type="application/json" set:html={JSON.stringify(filterOrderMap)} />
+  </main>
+</BaseLayout>
+
+<script>
+  // Функция для расчета расстояния Левенштейна
+  const levenshtein = (a, b) => {
+      if (a.length === 0) return b.length;
+      if (b.length === 0) return a.length;
+      const matrix = [];
+      for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+      for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+      for (let i = 1; i <= b.length; i++) {
+          for (let j = 1; j <= a.length; j++) {
+              if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                  matrix[i][j] = matrix[i - 1][j - 1];
+              } else {
+                  matrix[i][j] = Math.min(
+                      matrix[i - 1][j - 1] + 1,
+                      matrix[i][j - 1] + 1,
+                      matrix[i - 1][j] + 1
+                  );
+              }
+          }
+      }
+      return matrix[b.length][a.length];
+  };
+
+  // Умный поиск с учетом опечаток
+  const fuzzyMatchScore = (query, text, requireAll = true) => {
+      if (!query || !text) return 0;
+      if (text.includes(query)) return 30; // Точное вхождение всей фразы
+      
+      // Игнорируем спецсимволы и & при разбиении
+      const queryWords = query.replace(/&/g, '').split(/\s+/).filter(w => w.length > 0);
+      const textWords = text.replace(/[,.-]/g, ' ').split(/\s+/).filter(w => w.length > 0);
+      
+      let allMatched = true;
+      let matchedAny = false;
+      let score = 0;
+
+      for (let qw of queryWords) {
+          let wordMatched = false;
+          // Точное вхождение отдельного слова
+          if (textWords.some(tw => tw.includes(qw))) {
+              wordMatched = true;
+              score += 20;
+          } 
+          // Поиск с опечатками (только для слов от 4 букв)
+          else if (qw.length >= 4) {
+              const maxDist = qw.length >= 6 ? 2 : 1; // 1 опечатка для коротких, 2 для длинных
+              for (let tw of textWords) {
+                  if (Math.abs(tw.length - qw.length) <= maxDist) {
+                      const dist = levenshtein(qw, tw);
+                      if (dist <= maxDist) {
+                          wordMatched = true;
+                          score += 10;
+                          break;
+                      }
+                  }
+              }
+          }
+          if (!wordMatched) {
+              allMatched = false;
+          } else {
+              matchedAny = true;
+          }
+      }
+      
+      if (requireAll) {
+          return allMatched ? score : 0;
+      } else {
+          return matchedAny ? score : 0;
+      }
+  };
+
+  // Читаем статические порядки товаров для фильтров
+  let filterOrders = {};
+  try {
+      const dataEl = document.getElementById('filter-order-data');
+      if (dataEl) filterOrders = JSON.parse(dataEl.textContent);
+  } catch (e) {}
+
+  // Логика фильтрации и поиска (Vanilla JS)
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const productItems = document.querySelectorAll('.product-item');
+  const searchInput = document.getElementById('collection-search');
+  const productsGrid = document.getElementById('products-grid');
+
+  let currentFilter = 'all';
+  let currentSearch = '';
+
+  const updateGrid = () => {
+    productItems.forEach(item => {
+      const itemSlug = item.getAttribute('data-slug') || "";
+      const itemFilters = (item.getAttribute('data-filters') || "").split(',').filter(Boolean);
+      const itemTitle = item.getAttribute('data-title') || "";
+      const itemDesc = item.getAttribute('data-desc') || "";
+      const itemSemantic = item.getAttribute('data-semantic') || "";
+      
+      let matchesFilter = currentFilter === 'all' || itemFilters.includes(currentFilter);
+      let matchesSearch = true;
+      let score = 0;
+
+      // 🎯 Если выбран фильтр и нет поисковой строки — используем точный сохраненный ручной порядок!
+      if (currentFilter !== 'all' && !currentSearch && filterOrders[currentFilter]) {
+        const orderIdx = filterOrders[currentFilter][itemSlug];
+        if (orderIdx !== undefined) {
+          score = 100000 - orderIdx;
+        }
+      } else {
+        // Определяем запрос для ранжирования
+        let rankQuery = '';
+        let isStrictSearch = true;
+        let filterKeywords = [];
+
+        if (currentSearch) {
+          rankQuery = currentSearch;
+        } else if (currentFilter !== 'all') {
+          const activeBtn = document.querySelector(`.filter-btn[data-filter="${currentFilter}"]`);
+          if (activeBtn) {
+             const kwData = activeBtn.getAttribute('data-keywords');
+             if (kwData) {
+               filterKeywords = kwData.split(',');
+             } else {
+               rankQuery = activeBtn.textContent.trim().toLowerCase();
+             }
+             isStrictSearch = false;
+          }
+        }
+
+      // Ранжирование по keywords фильтра (если есть)
+      if (filterKeywords.length > 0) {
+        const searchFields = `${itemTitle} ${itemSemantic}`;
+        for (const kw of filterKeywords) {
+          const kwLower = kw.trim().toLowerCase();
+          if (!kwLower) continue;
+          // Точное вхождение keyword в поля товара
+          if (searchFields.includes(kwLower)) {
+            // Бонус за совпадение в заголовке
+            if (itemTitle.includes(kwLower)) score += 15;
+            // Бонус за совпадение в тегах
+            else score += 8;
+          }
+        }
+      }
+
+      // Ранжирование по текстовому запросу (поиск или fallback фильтра)
+      if (rankQuery) {
+        const titleScore = fuzzyMatchScore(rankQuery, itemTitle, isStrictSearch);
+        const semanticScore = fuzzyMatchScore(rankQuery, itemSemantic, isStrictSearch);
+        const descScore = fuzzyMatchScore(rankQuery, itemDesc, isStrictSearch);
+
+        if (titleScore > 0) {
+          score += titleScore * 3;
+          if (itemTitle.startsWith(rankQuery)) score += 15;
+        }
+        if (semanticScore > 0) {
+          score += semanticScore * 2;
+        }
+        if (descScore > 0) {
+          score += Math.floor(descScore * 0.5);
+        }
+
+        // Если это ЯВНЫЙ ПОИСК от пользователя и баллов 0 — скрываем товар
+        if (currentSearch && score === 0) {
+          matchesSearch = false;
+        }
+      }
+    }
+
+      if (matchesFilter && matchesSearch) {
+        item.style.display = 'flex';
+        item.style.order = -score;
+      } else {
+        item.style.display = 'none';
+        item.style.order = 0;
+      }
+    });
+
+    // Обновляем карточку Creative Fabrica Search
+    const cfCard = document.getElementById('cf-search-card');
+    if (cfCard) {
+      const titleEl = document.getElementById('cf-search-title');
+      const descEl = document.getElementById('cf-search-desc');
+      const cat = cfCard.getAttribute('data-cf-category') || '';
+      const col = cfCard.getAttribute('data-cf-collection') || '';
+
+      const getCreativeFabricaSearch = (catStr, colStr, userStr = "") => {
+        let cleanUserStr = userStr;
+        let cleanColStr = colStr;
+        let cleanCatStr = catStr;
+
+        const fullContext = `${catStr} ${colStr} ${userStr}`.toLowerCase();
+
+        // Для Procreate и Brushes убираем шумные слова "pack", "packs", "mega" (например, Mega Packs Brushes -> Brushes)
+        if (fullContext.includes("procreate") || fullContext.includes("brush")) {
+            const stripPacks = (str) => str.replace(/\b(mega\s+packs?|packs?)\b/gi, " ");
+            cleanUserStr = stripPacks(cleanUserStr);
+            cleanColStr = stripPacks(cleanColStr);
+            cleanCatStr = stripPacks(cleanCatStr);
+        }
+
+        // Приоритет слов запроса: пользовательский ввод -> коллекция -> категория
+        const rawTokens = [cleanUserStr, cleanColStr, cleanCatStr].filter(Boolean).join(" ");
+        
+        // CF типы контента: выносим только реальные самостоятельные разделы поиска CF.
+        // Важно: "Graphics" НЕ добавляем, так как на CF фильтр &type=Graphics режет выдачу
+        // по ключевым запросам (например, brushes, procreate, cliparts).
+        const TYPE_MAPPINGS = [
+            { type: "Fonts", triggers: ["fonts", "font"] },
+            { type: "3D SVG", triggers: ["3d svg"] },
+            { type: "3D Printing", triggers: ["3d printing", "3d print"] },
+            { type: "Laser Cutting", triggers: ["laser cutting", "laser cut"] },
+            { type: "Embroidery", triggers: ["embroidery"] },
+            { type: "Knitting", triggers: ["knitting"] },
+            { type: "Bundles", triggers: ["bundles", "bundle"] }
+        ];
+
+        let foundType = "";
+        let cleanQuery = rawTokens;
+
+        for (const item of TYPE_MAPPINGS) {
+            let matched = false;
+            for (const trigger of item.triggers) {
+                const regex = new RegExp(`\\b${trigger}\\b`, "gi");
+                if (regex.test(cleanQuery)) {
+                    matched = true;
+                    cleanQuery = cleanQuery.replace(regex, " ");
+                }
+            }
+            if (matched && !foundType) {
+                foundType = item.type;
+            }
+        }
+
+        const words = cleanQuery.split(/\s+/).filter(Boolean);
+        const seen = new Set();
+        const finalWords = [];
+        for (const w of words) {
+            const lower = w.toLowerCase();
+            if (!seen.has(lower)) {
+                seen.add(lower);
+                finalWords.push(w);
+            }
+        }
+
+        const catLower = catStr.toLowerCase();
+        const fullLower = `${catStr} ${colStr} ${userStr}`.toLowerCase();
+
+        // 1. Для категории cliparts гарантируем наличие "cliparts" в конце запроса
+        if (catLower.includes("clipart") || fullLower.includes("clipart")) {
+            const filtered = finalWords.filter(w => !/^cliparts?$/i.test(w));
+            filtered.push("cliparts");
+            finalWords.length = 0;
+            finalWords.push(...filtered);
+        }
+
+        // 2. Для категории procreate гарантируем наличие "procreate" в запросе
+        if (catLower.includes("procreate") || fullLower.includes("procreate")) {
+            const hasProcreate = finalWords.some(w => /^procreate$/i.test(w));
+            if (!hasProcreate) {
+                finalWords.push("procreate");
+            }
+        }
+
+        const finalQuery = finalWords.join(" ");
+        let url = `https://www.creativefabrica.com/search/ref/8122976/?query=${encodeURIComponent(finalQuery)}`;
+        if (foundType) {
+            url += `&type=${encodeURIComponent(foundType)}`;
+        }
+        return { url, displayQuery: finalQuery || foundType };
+      };
+
+      // Получаем текст активного фильтра (если это не "All")
+      let filterLabel = '';
+      if (currentFilter !== 'all') {
+        const activeBtn = document.querySelector(`.filter-btn[data-filter="${currentFilter}"]`);
+        if (activeBtn) filterLabel = activeBtn.textContent.trim();
+      }
+
+      // Собираем пользовательский запрос (строка поиска + название фильтра)
+      let userQueryParts = [];
+      if (currentSearch) userQueryParts.push(currentSearch);
+      if (filterLabel) userQueryParts.push(filterLabel);
+      
+      const combinedUserQuery = userQueryParts.join(' ');
+      const cfDynamic = getCreativeFabricaSearch(cat, col, combinedUserQuery);
+      const cfDefault = getCreativeFabricaSearch(cat, col, "");
+      
+      if (combinedUserQuery) {
+        cfCard.href = cfDynamic.url;
+        if (titleEl) titleEl.textContent = `Didn't find "${combinedUserQuery}"?`;
+        if (descEl) descEl.innerHTML = `Search for <span class="text-white font-medium">"${combinedUserQuery}"</span> across thousands of ${cfDefault.displayQuery} designs on Creative Fabrica.`;
+      } else {
+        cfCard.href = cfDefault.url;
+        if (titleEl) titleEl.textContent = `Didn't find what you need?`;
+        if (descEl) descEl.innerHTML = `Search more <span class="text-white font-medium">${cfDefault.displayQuery}</span> designs on Creative Fabrica.`;
+      }
+
+      // Add Microsoft Clarity event tracking for outbound clicks
+      if (!cfCard.dataset.clarityBound) {
+        cfCard.addEventListener('click', () => {
+          if (window.clarity) {
+            window.clarity("event", "cf_search_outbound_click");
+          }
+        });
+        cfCard.dataset.clarityBound = "true";
+      }
+    }
+  };
+
+  // Поиск
+  if (searchInput) {
+    let debounceTimer;
+    searchInput.addEventListener('input', (e) => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        currentSearch = e.target.value.toLowerCase().trim();
+      
+        // Если пользователь начал поиск, автоматически сбрасываем фильтр на All
+        if (currentSearch.length > 0 && currentFilter !== 'all') {
+          currentFilter = 'all';
+        
+          filterBtns.forEach(b => {
+            if (b.getAttribute('data-filter') === 'all') {
+              b.classList.remove('bg-neutral-800', 'text-neutral-300', 'border-neutral-700');
+              b.classList.add('bg-emerald-500', 'text-black', 'shadow-lg', 'shadow-emerald-500/20', 'active');
+              // Прокручиваем контейнер в начало, чтобы показать активную кнопку All
+              const container = document.getElementById('filter-container');
+              if (container) container.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+              b.classList.remove('bg-emerald-500', 'text-black', 'shadow-lg', 'shadow-emerald-500/20', 'active');
+              b.classList.add('bg-neutral-800', 'text-neutral-300', 'border-neutral-700');
+            }
+          });
+        }
+
+        updateGrid();
+      }, 300);
+    });
+  }
+
+  // Мобильный экспанд фильтров
+  const filterContainer = document.getElementById('filter-container');
+  const mobileExpandBtn = document.getElementById('mobile-expand-btn');
+  const mobileExpandIcon = document.getElementById('mobile-expand-icon');
+  const mobileExpandText = document.getElementById('mobile-expand-text');
+
+  if (mobileExpandBtn && filterContainer) {
+    mobileExpandBtn.addEventListener('click', () => {
+      const isExpanded = filterContainer.classList.contains('flex-wrap');
+      
+      if (isExpanded) {
+        // Свернуть
+        filterContainer.classList.remove('flex-wrap', 'pb-1');
+        filterContainer.classList.add('overflow-x-auto');
+        mobileExpandIcon.style.transform = 'rotate(0deg)';
+        if (mobileExpandText) mobileExpandText.textContent = 'More options';
+        
+        // Позиционируем кнопку компактно снизу
+        mobileExpandBtn.classList.add('absolute', '-bottom-[42px]', 'right-2');
+        mobileExpandBtn.classList.remove('relative', 'shrink-0', 'mt-1');
+        
+        // Скроллим к активному элементу, если он не виден
+        const activeBtn = filterContainer.querySelector('.active');
+        if (activeBtn) {
+          const btnLeft = activeBtn.offsetLeft;
+          filterContainer.scrollTo({ left: Math.max(0, btnLeft - 20), behavior: 'smooth' });
+        }
+      } else {
+        // Развернуть
+        filterContainer.classList.remove('overflow-x-auto');
+        filterContainer.classList.add('flex-wrap', 'pb-1');
+        mobileExpandIcon.style.transform = 'rotate(180deg)';
+        if (mobileExpandText) mobileExpandText.textContent = 'Less';
+        
+        // Кнопка возвращается наверх в конец списка (relative в потоке)
+        mobileExpandBtn.classList.remove('absolute', '-bottom-[42px]', 'right-2');
+        mobileExpandBtn.classList.add('relative', 'shrink-0', 'mt-1');
+      }
+    });
+  }
+
+  // Фильтры-кнопки
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => {
+        b.classList.remove('bg-emerald-500', 'text-black', 'shadow-lg', 'shadow-emerald-500/20', 'active');
+        b.classList.add('bg-neutral-800', 'text-neutral-300', 'border-neutral-700');
+      });
+      
+      btn.classList.remove('bg-neutral-800', 'text-neutral-300', 'border-neutral-700');
+      btn.classList.add('bg-emerald-500', 'text-black', 'shadow-lg', 'shadow-emerald-500/20', 'active');
+
+      currentFilter = btn.getAttribute('data-filter');
+      updateGrid();
+
+      // На мобильном: если развернуто - сворачиваем
+      if (filterContainer && filterContainer.classList.contains('flex-wrap')) {
+        mobileExpandBtn.click();
+      }
+    });
+  });
+
+  // Логика кнопок прокрутки фильтров
+  const scrollLeftBtn = document.getElementById('scroll-left');
+  const scrollRightBtn = document.getElementById('scroll-right');
+
+  if (filterContainer && scrollLeftBtn && scrollRightBtn) {
+    const updateScrollButtons = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = filterContainer;
+      // Если нельзя скроллить влево (в самом начале)
+      scrollLeftBtn.disabled = scrollLeft <= 0;
+      // Если нельзя скроллить вправо (в самом конце)
+      scrollRightBtn.disabled = Math.ceil(scrollLeft + clientWidth) >= scrollWidth;
+    };
+
+    scrollLeftBtn.addEventListener('click', () => {
+      filterContainer.scrollBy({ left: -200, behavior: 'smooth' });
+    });
+
+    scrollRightBtn.addEventListener('click', () => {
+      filterContainer.scrollBy({ left: 200, behavior: 'smooth' });
+    });
+
+    filterContainer.addEventListener('scroll', updateScrollButtons);
+    // Инициализация кнопок при загрузке
+    updateScrollButtons();
+    // Обновляем при изменении размера окна
+    window.addEventListener('resize', updateScrollButtons);
+  }
+</script>

@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nature's Harmony | Premium Natural Remedies</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QQHZMRM6PW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QQHZMRM6PW');
+</script>
+
+
+<style>
+/* ── БАЗОВЫЕ СТИЛИ ── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --forest: #2d5016; --moss: #4a7c2f; --sage: #7aad52; --mint: #b8d99a;
+  --cream: #f5f0e8; --parchment: #ede5d0; --gold: #c8a84b; --white: #ffffff;
+  --ink: #1e2a14; --muted: #5c6b4a;
+}
+body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--ink); }
+
+/* ── TELEGRAM TOP BAR & FLOATING WIDGET ── */
+.tg-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+  background: linear-gradient(90deg, #1d92d1 0%, #2AABEE 100%);
+  color: #ffffff;
+  text-decoration: none;
+  padding: 12px 16px;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  transition: background 0.3s ease;
+  width: 100%;
+}
+.tg-top-bar:hover {
+  background: linear-gradient(90deg, #157cb3 0%, #229ED9 100%);
+}
+.tg-top-bar img {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+.tg-top-bar span {
+  line-height: 1.4;
+  text-align: center;
+  display: inline-block;
+}
+.tg-top-bar strong {
+  color: #ffde59;
+  font-weight: 700;
+}
+@media (max-width: 400px) {
+  .tg-top-bar {
+    font-size: 9px;
+    padding: 8px 12px;
+  }
+}
+
+.tg-floating-btn { position: fixed; bottom: 24px; right: 24px; background: #2AABEE; color: #fff; width: 96px; height: 96px; border-radius: 50%; text-decoration: none; box-shadow: 0 10px 30px rgba(42, 171, 238, 0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; animation: tgPulse 2s infinite; text-align: center; }
+.tg-floating-btn img { width: 36px; height: 36px; margin-bottom: 4px; }
+.tg-floating-btn span { font-size: 10px; font-weight: 700; text-transform: uppercase; }
+@keyframes tgPulse { 0% { box-shadow: 0 0 0 0 rgba(42, 171, 238, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(42, 171, 238, 0); } 100% { box-shadow: 0 0 0 0 rgba(42, 171, 238, 0); } }
+
+/* ── СТИЛЬНАЯ СВАЙП-НАВИГАЦИЯ (CHIPS MENU) ── */
+.nav-wrapper {
+  position: sticky;
+  top: 0; 
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95); 
+  backdrop-filter: blur(10px); 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  border-bottom: 1px solid #e5e0d8;
+}
+
+nav {
+  display: flex;
+  justify-content: center; 
+  gap: 12px;
+  padding: 14px 24px;
+  overflow-x: auto; 
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; 
+}
+
+nav::-webkit-scrollbar { display: none; }
+nav { -ms-overflow-style: none; scrollbar-width: none; }
+
+nav a {
+  color: var(--forest);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap; 
+  flex-shrink: 0; 
+  background: var(--cream);
+  padding: 10px 18px;
+  border-radius: 50px; 
+  border: 1px solid #ede5d0;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px; 
+}
+
+nav a:hover {
+  background: var(--mint);
+  border-color: var(--mint);
+  color: var(--ink);
+}
+
+nav a.nav-active {
+  background: var(--forest) !important;
+  color: var(--white) !important;
+  border-color: var(--forest) !important;
+}
+
+@media (max-width: 768px) {
+   /* 1. Свайп-лента навигации */
+  nav { padding: 12px 10px; gap: 8px; }
+  nav a { font-size: 10px; padding: 8px 14px; }
+  
+
+/* 2. Компактный Hero-баннер на мобильных */
+  .store-hero { 
+    padding: 16px 12px; /* Уменьшили высоту (воздух) баннера */
+    margin: 12px auto 4px; /* Прижали его ближе к меню */
+    width: calc(100% - 24px); 
+    border-radius: 12px; 
+  }
+  .store-hero .hero-eyebrow { 
+    font-size: 9px; 
+    margin-bottom: 4px; 
+  }
+  .store-hero h1 { 
+    font-size: 20px; /* Сделали заголовок аккуратным и небольшим */
+    margin-bottom: 4px; 
+  }
+  .store-hero p { 
+    font-size: 11px; /* Мелкий, легко читаемый шрифт */
+    line-height: 1.4; 
+  }
+  .hero-eyebrow { font-size: 9px; margin-bottom: 4px; }
+  .store-hero h1 { font-size: 20px; margin-bottom: 4px; }
+  .store-hero p { font-size: 11px; line-height: 1.4; }
+  
+  /* 3. Компактная верхняя плашка Telegram */
+  .tg-top-bar { 
+    padding: 8px 10px; 
+    font-size: 9.5px; 
+  }
+  .tg-top-bar img { width: 16px; height: 16px; }
+
+  .marketplace-container { padding: 24px 12px; }
+  .category-title { font-size: 22px; margin-bottom: 16px; text-align: center; }
+}
+
+/* ── HERO СЕКЦИЯ ── */
+.store-hero { background: linear-gradient(135deg, #2d5016 0%, #1a3009 100%); color: var(--white); text-align: center; padding: 32px 20px; margin: 14px auto 10px; max-width: 1150px; border-radius: 20px; box-shadow: 0 12px 30px rgba(26, 48, 9, 0.15); position: relative; overflow: hidden; width: calc(100% - 48px); }
+.store-hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at 50% 0%, rgba(184, 217, 154, 0.15), transparent 60%); pointer-events: none; }
+.hero-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--mint); margin-bottom: 8px; position: relative; }
+.store-hero h1 { font-family: 'Lora', serif; font-size: clamp(26px, 4vw, 36px); margin-bottom: 8px; position: relative; }
+.store-hero h1 em { color: var(--gold); font-style: italic; }
+.store-hero p { font-size: 14px; color: rgba(255,255,255,0.85); max-width: 550px; margin: 0 auto; line-height: 1.5; position: relative; }
+
+/* ── СЕТКА ТОВАРОВ ── */
+.marketplace-container { max-width: 1200px; margin: 0 auto; padding: 10px 24px 60px; } /* Сократили верхний отступ до 10px */
+.scroll-section { scroll-margin-top: 90px; margin-bottom: 60px; } 
+.category-title { font-family: 'Lora', serif; font-size: 28px; color: var(--forest); margin-bottom: 30px; border-bottom: 2px solid var(--mint); padding-bottom: 10px; }
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+
+/* ── КАРТОЧКА ТОВАРА ── */
+.product-card { background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border: 1px solid #f0ebe1; display: flex; flex-direction: column; transition: transform 0.3s ease, box-shadow 0.3s ease; position: relative; height: 100%; }
+.product-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(45, 80, 22, 0.15); border-color: var(--mint); }
+.badge { position: absolute; top: 16px; left: 16px; background: #ff4757; color: #fff; font-size: 12px; font-weight: 700; text-transform: uppercase; padding: 6px 12px; border-radius: 50px; z-index: 10; box-shadow: 0 4px 10px rgba(255, 71, 87, 0.3); }
+.badge.bestseller { background: var(--forest); box-shadow: 0 4px 10px rgba(45, 80, 22, 0.3); }
+
+/* Зона картинки */
+.product-img-wrap { background: #fcfbfa; padding: 30px 20px; text-align: center; border-bottom: 1px solid #f0ebe1; height: 240px; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+.product-img-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; transition: transform 0.3s ease; }
+.product-card:hover .product-img-wrap img { transform: scale(1.05); }
+
+/* Зона текста */
+.product-info { padding: 24px; display: flex; flex-direction: column; flex-grow: 1; }
+.product-tag { font-size: 12px; color: var(--sage); font-weight: 700; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+
+/* Кликабельное название */
+.product-title { font-family: 'Lora', serif; font-size: 22px; color: var(--ink); font-weight: 700; margin-bottom: 16px; line-height: 1.3; }
+.product-title a { color: inherit; text-decoration: none; transition: color 0.2s ease; }
+.product-title a:hover { color: var(--moss); } 
+
+/* Логика Read More */
+.desc-wrapper { position: relative; max-height: 110px; overflow: hidden; transition: max-height 0.4s ease; margin-bottom: 4px; }
+.desc-wrapper.expanded { max-height: 800px; } 
+.desc-fade { position: absolute; bottom: 0; left: 0; width: 100%; height: 40px; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1)); pointer-events: none; transition: opacity 0.3s ease; }
+.desc-wrapper.expanded .desc-fade { opacity: 0; }
+
+.product-bullets { list-style: none; margin-bottom: 16px; }
+.product-bullets li { font-size: 14px; color: var(--muted); margin-bottom: 8px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+.product-bullets li::before { content: '🌿'; flex-shrink: 0; font-size: 12px; margin-top: 2px; }
+
+.read-more-btn { background: transparent !important; border: none !important; box-shadow: none !important; outline: none !important; color: var(--sage); font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 20px; text-align: left; text-decoration: underline; text-underline-offset: 4px; padding: 0; display: inline-block; font-family: inherit; }
+.read-more-btn:hover { color: var(--forest); }
+
+.marketing-note { background: #fffdf5; border-left: 3px solid #ffca28; padding: 12px 14px; border-radius: 0 10px 10px 0; margin-top: 16px; margin-bottom: 16px; }
+.marketing-note strong { display: block; color: #d97706; font-size: 13px; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
+.marketing-note p { font-size: 13px; color: #78350f; line-height: 1.5; margin: 0; }
+
+/* Обёртка кнопки */
+.action-area { margin-top: auto; width: 100%; }
+.btn-buy { display: block; width: 100%; text-align: center; background: linear-gradient(135deg, #fff366 0%, #ffca28 50%, #ff9800 100%); color: #1a3009; font-size: 16px; font-weight: 800; padding: 16px 20px; border-radius: 50px; text-decoration: none; box-shadow: 0 10px 25px rgba(255, 152, 0, 0.3); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.btn-buy:hover { transform: translateY(-2px) scale(1.02); background: linear-gradient(135deg, #ffff8d 0%, #ffd54f 50%, #ffb300 100%); box-shadow: 0 15px 35px rgba(255, 152, 0, 0.4); }
+.btn-secure { display: block; text-align: center; font-size: 11px; color: #8ba37b; margin-top: 10px; }
+
+/* ── БЛОК ТЕЛЕГРАМ VIP ── */
+.tg-invite-section { background: linear-gradient(135deg, #f5f0e8 0%, #e6f2fc 100%); padding: 50px 24px; margin: 40px 0; border-top: 2px dashed #2AABEE; border-bottom: 2px dashed #2AABEE; }
+.tg-invite-box { max-width: 1000px; margin: 0 auto; background: #ffffff; border-radius: 24px; padding: 45px 45px 28px 45px; /* Уменьшили отступ снизу до 28px */ box-shadow: 0 20px 50px rgba(0,0,0,0.1); position: relative; overflow: hidden; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 40px; align-items: center; }
+.tg-invite-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 8px; background: #2AABEE; }
+.tg-desc { font-size: 16px; color: var(--muted); line-height: 1.6; margin-bottom: 10px; /* Увеличили отступ до кнопки */ text-align: left; }
+
+/* ИСПРАВЛЕННЫЙ ЗАГОЛОВОК И ИКОНКА */
+.tg-header-row {
+  display: flex;
+  align-items: center; 
+  gap: 18px;
+  margin-bottom: 16px;
+}
+.tg-icon-small {
+  width: 56px !important;  
+  height: 56px !important; 
+  min-width: 56px !important; 
+  flex-shrink: 0; 
+  object-fit: contain;
+}
+
+.btn-telegram { display: block; width: 100%; text-align: center; background: #2AABEE; color: #fff; padding: 18px 24px; border-radius: 50px; font-size: 16px; font-weight: 800; text-decoration: none; box-shadow: 0 8px 24px rgba(42, 171, 238, 0.4); transition: all 0.3s; }
+.btn-telegram:hover { background: #229ED9; transform: translateY(-2px); }
+
+/* ── АДАПТИВ ДЛЯ ТЕЛЕФОНОВ ── */
+/* ── АДАПТИВ ДЛЯ ТЕЛЕФОНОВ (МАКСИМУМ МЕСТА ДЛЯ ФОТО И КРУПНЫЙ ШРИФТ В 2 КОЛОНКИ) ── */
+@media (max-width: 768px) {
+  /* 1. Свайп-лента навигации */
+  nav { padding: 12px 10px; gap: 8px; }
+  nav a { font-size: 10px; padding: 8px 14px; }
+  
+  /* 2. Компактный Hero-баннер */
+/* 2. Компактный Hero-баннер (свели отступ снизу к 0px) */
+  .store-hero { 
+    padding: 16px 12px; 
+    margin: 12px auto 12px; /* <--- Изменили 8px на 0px */
+    width: calc(100% - 24px); 
+    border-radius: 12px; 
+  }
+  .store-hero .hero-eyebrow { font-size: 9px; margin-bottom: 4px; }
+  .store-hero h1 { font-size: 24px; margin-bottom: 6px; }
+  .store-hero p { font-size: 12px; line-height: 1.4; }
+
+  /* 3. Компактная верхняя плашка Telegram */
+  .tg-top-bar { 
+    padding: 8px 10px; 
+    font-size: 9.5px; 
+  }
+  .tg-top-bar img { width: 16px; height: 16px; }
+
+  /* Убираем верхний отступ у контейнера товаров (свели к 0px) */
+  .marketplace-container { 
+    padding: 0px 12px 24px; /* <--- Изменили 24px сверху на 0px */
+  }
+  .category-title { font-size: 22px; margin-bottom: 16px; text-align: center; }
+
+  /* 4. СЕТКА ТОВАРОВ: 2 КОЛОНКИ */
+  .product-grid { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 10px; /* Уменьшили зазор, отдав место ширине карточек */
+    margin-bottom: 40px;
+  }
+
+  /* 5. КАРТОЧКА */
+  .product-card { border-radius: 16px; }
+  
+  /* ЗОНА ФОТО: Увеличили высоту до 145px (было 130px), чтобы фото стало крупнее */
+  .product-img-wrap { height: 180px; padding: 12px 8px; }
+  
+  /* ВНУТРЕННИЕ ОТСТУПЫ: Сжали до 10px по бокам, чтобы уместить увеличенный шрифт */
+  .product-info { padding: 12px 10px; }
+  .product-tag { font-size: 9px; margin-bottom: 4.3px; }
+  
+  /* Увеличили заголовок до 14px на мобильном (было 13px) */
+  .product-title { 
+    font-size: 16px; 
+    margin-bottom: 10px; 
+    line-height: 1.5; 
+  }
+  
+  /* Настройка Read More */
+  .desc-wrapper { max-height: 75px; } 
+  .desc-fade { height: 25px; }
+  
+  /* УВЕЛИЧИЛИ ШРИФТ ОПИСАНИЯ ДО 11.5px (было 10px) */
+  .product-bullets li { 
+    font-size: 13.5px; 
+    line-height: 1.6; 
+    margin-bottom: 6px; 
+    gap: 4px; 
+  }
+  .product-bullets li::before { font-size: 9px; margin-top: 1px; }
+  
+  /* Рекомендации маркетолога (тоже крупнее) */
+  .marketing-note { padding: 8px 10px; margin-top: 10px; margin-bottom: 10px; }
+  .marketing-note strong { font-size: 10px; margin-bottom: 2px; }
+  .marketing-note p { font-size: 13.5px; line-height: 1.4; }
+  
+  .read-more-btn { font-size: 12px; margin-bottom: 10px; }
+  
+  /* Кнопка покупки */
+  .btn-buy { 
+    font-size: 12.5px; 
+    padding: 11px 4px; 
+    border-radius: 12px; 
+    letter-spacing: 0;
+  }
+  
+  .btn-secure { display: none; }
+  .badge { font-size: 8px; padding: 4px 8px; top: 8px; left: 8px; }
+
+  /* ── УБИРАЕМ ЛИШНИЙ ВОЗДУХ СВЕРХУ НА МОБИЛЬНЫХ ── */
+  .scroll-section { 
+    margin-bottom: 24px; 
+  }
+  .tg-invite-section { 
+    padding: 24px 12px; 
+    margin: 10px 0; 
+  }
+
+  /* ── СБАЛАНСИРОВАННЫЙ ТЕЛЕГРАМ VIP-БЛОК НА МОБИЛЬНЫХ ── */
+  .tg-invite-box { 
+    grid-template-columns: 1fr; 
+    padding: 20px 14px; /* Слегка уменьшили общий размер карточки (был 24px 18px) */
+    gap: 10px; /* Уменьшили отступ между кнопкой и списком снизу (было 16px) */
+    border-radius: 16px; 
+  }
+  .tg-header-row { 
+    gap: 10px; 
+    margin-bottom: 14px; /* Увеличили отступ от заголовка до описания (было 8px) */
+    align-items: center;
+  }
+  .tg-icon-small { 
+    width: 38px !important; /* Слегка уменьшили иконку (было 44px) */
+    height: 38px !important; 
+  }
+  .tg-title { 
+    font-size: 18.5px !important; /* Слегка уменьшили заголовок (было 21px) */
+    line-height: 1.25; 
+  }
+  .tg-desc { 
+    font-size: 12px !important; /* Слегка уменьшили описание (было 13.5px) */
+    line-height: 1.45; 
+    margin-bottom: 14px !important; 
+  }
+  .btn-telegram { 
+    padding: 12px 18px; /* Слегка уменьшили кнопку перехода */
+    font-size: 13.5px; 
+  }
+  .tg-list { 
+    padding: 14px !important; /* Слегка уменьшили плашку со списком */
+    gap: 8px !important; 
+    border-radius: 10px; 
+  }
+  .tg-list p { 
+    font-size: 11.5px !important; /* Слегка уменьшили пункты списка (было 12.5px) */
+    gap: 8px; 
+  }
+  .tg-list p span { 
+    font-size: 13px; 
+  }
+}
+</style>
+
+
+</head>
+<body>
+
+<!-- ТЕЛЕГРАМ ШАПКА -->
+<a href="https://t.me/+DBM4ReYIBQU4YjAy" class="tg-top-bar" target="_blank" onclick="gtag('event', 'click_tg_top_bar');">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram">
+  <span><strong>🔓 UNLOCK PRIVATE CHANNEL FOR FREE:</strong> Daily wellness tips & hidden herbal archives inside! Click to Join 👈</span>
+</a>
+
+<!-- STICKY СВАЙП-НАВИГАЦИЯ -->
+<div class="nav-wrapper">
+  <nav id="main-nav">
+    <a href="#healing-kits">Holistic Kits</a>
+    <a href="#telegram">❤️ FREE Private Channel</a>
+    <a href="#supplements">Dietary supplements</a>
+  </nav>
+</div>
+
+<!-- HERO (БУТИК-ФОРМАТ) -->
+<header class="store-hero">
+  <div class="hero-eyebrow">🌿 Curated Collection</div>
+  <h1>Nature’s Harmony</h1>
+  <p>Your marketplace for holistic healthy lifestyle, organic homesteading essentials, nervous system repair and more.</p>
+</header>
+
+<main class="marketplace-container">
+
+  <!-- =============================== -->
+  <!-- КАТЕГОРИЯ 1: HEALING KITS       -->
+  <!-- =============================== -->
+  <section class="scroll-section" id="healing-kits">
+    <h2 class="category-title">Top Holistic Kits</h2>
+    
+    <div class="product-grid">
+      
+      <!-- КАРТОЧКА 1: GARDEN KIT -->
+      <article class="product-card">
+        <div class="badge bestseller">#1 Bestseller</div>
+        
+        <!-- КЛИКАБЕЛЬНОЕ ФОТО ТОВАРА -->
+        <a href="https://medicinalseedkit.com/kit/#aff=KylieJean" class="product-img-wrap" target="_blank" onclick="gtag('event', 'click_buy_gardenkit_img');">
+          <img src="https://www.digistore24.com/pb/img/merchant_982786/image/orderform_image/W95IWD0O.jpg?o=1460" alt="Medicinal Garden Kit">
+        </a>
+        
+        <div class="product-info">
+          <span class="product-tag">Homesteading & Herbs</span>
+          
+          <!-- КЛИКАБЕЛЬНОЕ НАЗВАНИЕ ТОВАРА -->
+          <h3 class="product-title">
+            <a href="https://medicinalseedkit.com/kit/#aff=KylieJean" target="_blank" onclick="gtag('event', 'click_buy_gardenkit_title');">Medicinal Garden Kit</a>
+          </h3>
+          
+          <div class="desc-wrapper">
+            <ul class="product-bullets">
+              <li>10 potent medicinal plants you can grow anywhere.</li>
+              <li>4,818 High-quality Non-GMO seeds included.</li>
+              <li>Replaces your synthetic pharmacy naturally.</li>
+            </ul>
+            <div class="marketing-note">
+              <strong>💡 My Note:</strong>
+              <p>I highly recommend planting the Chamomile right on your kitchen windowsill. Last winter, brewing fresh tea from my own plants saved my nervous system when stress was peaking!</p>
+            </div>
+            <div class="desc-fade"></div>
+          </div>
+          
+          <button class="read-more-btn" onclick="toggleDesc(this)">Read more ▾</button>
+
+          <div class="action-area">
+            <a href="https://medicinalseedkit.com/kit/#aff=KylieJean" class="btn-buy" target="_blank" onclick="gtag('event', 'click_buy_gardenkit_btn');">🌿 Claim Your Garden Kit Now</a>
+            <span class="btn-secure">🌱 Proudly Sourced & Non-GMO</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- КАРТОЧКА 2: HERBS FOR HEALTH -->
+      <article class="product-card">
+        <div class="badge">Staff Pick</div>
+        
+        <!-- КЛИКАБЕЛЬНОЕ ФОТО ТОВАРА -->
+        <a href="https://thehomeprepper.com/book?aff=KylieJean" class="product-img-wrap" target="_blank" onclick="gtag('event', 'click_buy_herbsforhealth_img');">
+          <img src="https://images.groovetech.io/abUJmXOUC0PGmsYBeHx6-OXNr6QX6QtlrbQ3npLpDJQ/rs:fit:0:0:0/g:no:0:0/c:0:0/aHR0cHM6Ly9hc3NldHMuZ3Jvb3ZlYXBwcy5jb20vaW1hZ2VzLzFlNjU1NzI2LWZlNjEtNDAxNy1hNzZmLWM3M2NjOThmZTA2YS8xNzY1NDcwODkyX0ZvcklsbHVzdHJhdGlvblB1cnBvc2VzMS5wbmc.webp" alt="Herbs for Health Book">
+        </a>
+        
+        <div class="product-info">
+          <span class="product-tag">Herbal & Wellness</span>
+          
+          <!-- КЛИКАБЕЛЬНОЕ НАЗВАНИЕ ТОВАРА -->
+          <h3 class="product-title">
+            <a href="https://thehomeprepper.com/book?aff=KylieJean" target="_blank" onclick="gtag('event', 'click_buy_herbsforhealth_title');">Herbs for Health</a>
+          </h3>
+          
+          <div class="desc-wrapper">
+            <ul class="product-bullets">
+              <li>Unlock the secrets of 45+ powerful medicinal herbs to soothe and vitalize your body.</li>
+              <li>Step-by-step guides to creating calming teas, healing salves, and wellness elixirs.</li>
+              <li>Empower your home with sustainable, plant-based remedies for vibrant daily health.</li>
+            </ul>
+            <div class="marketing-note">
+              <strong>💡 My Note:</strong>
+              <p>This book is an absolute masterpiece for anyone wanting to build a natural home apothecary. I love how simple it makes blending customized herbal teas—it has become my favorite evening ritual for deep, peaceful rest!</p>
+            </div>
+            <div class="desc-fade"></div>
+          </div>
+
+          <button class="read-more-btn" onclick="toggleDesc(this)">Read more ▾</button>
+
+          <div class="action-area">
+            <a href="https://thehomeprepper.com/book?aff=KylieJean" class="btn-buy" target="_blank" onclick="gtag('event', 'click_buy_herbsforhealth_btn');">🌿 Claim Your Herbal Book</a>
+            <span class="btn-secure">🌱 Sustainable Healing & Wellness</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- КАРТОЧКА 3: THE LOST SUPERFOODS -->
+    <article class="product-card">
+      <div class="badge bestseller">Top Choice</div>
+      
+      <!-- КЛИКАБЕЛЬНОЕ ФОТО ТОВАРА -->
+      <a href="https://ultimatesurvivalfoods.com/book/#aff=KylieJean" class="product-img-wrap" target="_blank" onclick="gtag('event', 'click_buy_lostsuperfoods_img');">
+        <img src="https://lh3.googleusercontent.com/Ucto1k3DpnVALSBxyR0JdBEXSJhJfcAKjFpHMdCnOSyZzv1lnNBLy0SW-rgVn_nC-f7ZiviLebng01CWGt7xF9qjQ3QIDDQMKR9t=w578" alt="The Lost SuperFoods Book">
+      </a>
+      
+      <div class="product-info">
+        <span class="product-tag">Homesteading & Pantry</span>
+        
+        <!-- КЛИКАБЕЛЬНОЕ НАЗВАНИЕ ТОВАРА -->
+        <h3 class="product-title">
+          <a href="https://ultimatesurvivalfoods.com/book/#aff=KylieJean" target="_blank" onclick="gtag('event', 'click_buy_lostsuperfoods_title');">The Lost SuperFoods Book</a>
+        </h3>
+        
+        <div class="desc-wrapper">
+          <ul class="product-bullets">
+            <li>Discover 126+ forgotten, nutrient-rich recipes that last for years without refrigeration.</li>
+            <li>Master traditional food preservation to keep your pantry naturally abundant.</li>
+            <li>Empower your family with sustainable, holistic nutrition for any season.</li>
+          </ul>
+          <div class="marketing-note">
+            <strong>💡 My Note:</strong>
+            <p>Building a self-reliant pantry brings such incredible peace of mind. I love trying these traditional recipes—they are deeply nourishing and make me feel beautifully connected to a grounded, natural lifestyle!</p>
+          </div>
+          <div class="desc-fade"></div>
+        </div>
+
+        <button class="read-more-btn" onclick="toggleDesc(this)">Read more ▾</button>
+
+        <div class="action-area">
+          <a href="https://ultimatesurvivalfoods.com/book/#aff=KylieJean" class="btn-buy" target="_blank" onclick="gtag('event', 'click_buy_lostsuperfoods_btn');">📚 Secure Your SuperFood Book Now</a>
+          <span class="btn-secure">🌿 100% Natural Homesteading Wisdom</span>
+        </div>
+      </div>
+    
+    </article>
+
+    <!-- КАРТОЧКА: THE SELF-SUFFICIENT BACKYARD -->
+    <article class="product-card">
+      <div class="badge bestseller">Bestseller</div>
+      
+      <!-- КЛИКАБЕЛЬНОЕ ФОТО ТОВАРА -->
+      <a href="https://independentbackyard.com/my-book/#aff=KylieJean" class="product-img-wrap" target="_blank" onclick="gtag('event', 'click_buy_selfsufficient_img');">
+        <img src="https://www.digistore24-app.com/pb/img/merchant_972962/image/product/CB0AV3HH.png" alt="The Self-Sufficient Backyard Book">
+      </a>
+      
+      <div class="product-info">
+        <span class="product-tag">Homesteading & DIY</span>
+        
+        <!-- КЛИКАБЕЛЬНОЕ НАЗВАНИЕ ТОВАРА -->
+        <h3 class="product-title">
+          <a href="https://independentbackyard.com/my-book/#aff=KylieJean" target="_blank" onclick="gtag('event', 'click_buy_selfsufficient_title');">The Self-Sufficient Backyard</a>
+        </h3>
+        
+        <div class="desc-wrapper">
+          <ul class="product-bullets">
+            <li>Discover 100+ easy, budget-friendly DIY projects to cultivate your own independent homestead.</li>
+            <li>Step-by-step plans for self-heating greenhouses, mini-coops, and rainwater systems on a 1/4 acre.</li>
+            <li>Fully illustrated with clear color pictures, masterfully designed for beginners and experts alike.</li>
+          </ul>
+          <div class="marketing-note">
+            <strong>💡 My Note:</strong>
+            <p>I absolutely love how practical and accessible this guide is. You don’t need acres of land—the projects are designed to maximize even a tiny yard! Setting up a self-heating greenhouse or a windowsill garden is such a rewarding, peaceful way to welcome natural abundance and harmony into your home.</p>
+          </div>
+          <div class="desc-fade"></div>
+        </div>
+
+        <button class="read-more-btn" onclick="toggleDesc(this)">Read more ▾</button>
+
+        <div class="action-area">
+          <a href="https://independentbackyard.com/my-book/#aff=KylieJean" class="btn-buy" target="_blank" onclick="gtag('event', 'click_buy_selfsufficient_btn');">🌿 Get Your Homesteading Guide</a>
+          <span class="btn-secure">🌱 100% Sustainable Living Wisdom</span>
+        </div>
+      </div>
+    </article>
+    </div>
+  </section>
+
+  <!-- =============================== -->
+  <!-- TELEGRAM VIP БЛОК               -->
+  <!-- =============================== -->
+  <section class="tg-invite-section scroll-section" id="telegram">
+    <div class="tg-invite-box">
+      <div class="tg-left">
+        <div class="tg-header-row">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram" class="tg-icon-small">
+          <h2 class="tg-title">Want the Secrets We Don't Share <em>Anywhere Else?</em></h2>
+        </div>
+        <p class="tg-desc">🌿 Step away from the noise. Join our private sanctuary where we share natural nervous system reset methods and daily herbal wisdom.</p>
+        <a href="https://t.me/+DBM4ReYIBQU4YjAy" class="btn-telegram" target="_blank" onclick="gtag('event', 'click_tg_middle_vip');">👉 Join to Unlock Private Channel (Free)</a>
+      </div>
+      <div class="tg-right">
+        <div class="tg-list">
+          <p><span>❤️</span> Best wellness tips & nervous system reset</p>
+          <p><span>🌱</span> Forgotten potent anti-stress remedies</p>
+          <p><span>🏡</span> Somatic sleeping & holistic lifestyle</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================== -->
+  <!-- КАТЕГОРИЯ 2: SUPPLEMENTS        -->
+  <!-- =============================== -->
+  <section class="scroll-section" id="supplements">
+    <h2 class="category-title">Premium Supplements</h2>
+    
+    <div class="product-grid">
+      
+      <!-- КАРТОЧКА: NERVE FRESH -->
+    <article class="product-card">
+      <div class="badge">Top Choice</div>
+      
+      <!-- КЛИКАБЕЛЬНОЕ ФОТО ТОВАРА -->
+      <a href="https://secure.nervefresh24.com/index-nf-ds#aff=KylieJean" class="product-img-wrap" target="_blank" onclick="gtag('event', 'click_buy_nervefresh_img');">
+        <img src="https://nervefresh.com/hosted/images/80/c3ac36ed0541728e36c1a4c0eac1ec/Nerve-Fresh-1-Bottle-180-Days-Guarantee.png" alt="Nerve Fresh Bottle">
+      </a>
+      
+      <div class="product-info">
+        <span class="product-tag">Nervous System & Comfort</span>
+        
+        <!-- КЛИКАБЕЛЬНОЕ НАЗВАНИЕ ТОВАРА -->
+        <h3 class="product-title">
+          <a href="https://secure.nervefresh24.com/index-nf-ds#aff=KylieJean" target="_blank" onclick="gtag('event', 'click_buy_nervefresh_title');">Nerve Fresh</a>
+        </h3>
+        
+        <div class="desc-wrapper">
+          <ul class="product-bullets">
+            <li>Soothes overactive nerves and quiets physical tingling or pins-and-needles.</li>
+            <li>Powered by 5 bio-available extracts including calming Passionflower and Prickly Pear.</li>
+            <li>Promotes daily somatic vitality and deep, uninterrupted sleep.</li>
+          </ul>
+          <div class="marketing-note">
+            <strong>💡 My Note:</strong>
+            <p>I am incredibly impressed by the somatic support this formula offers. Combining California Poppy and Passionflower is a brilliant way to quiet overactive nerve endings so your physical body can truly relax and restore its natural harmony!</p>
+          </div>
+          <div class="desc-fade"></div>
+        </div>
+
+        <button class="read-more-btn" onclick="toggleDesc(this)">Read more ▾</button>
+
+        <div class="action-area">
+          <a href="https://secure.nervefresh24.com/index-nf-ds#aff=KylieJean" class="btn-buy" target="_blank" onclick="gtag('event', 'click_buy_nervefresh_btn');">🌿 Claim Your Nerve Fresh Today</a>
+          <span class="btn-secure">🌱 100% Natural Nerve Support</span>
+        </div>
+      </div>
+    </article>
+      
+      <!-- КАРТОЧКА 3: VERTIGENICS -->
+    <article class="product-card">
+      <div class="badge">Staff Pick</div>
+      
+      <!-- КЛИКАБЕЛЬНОЕ ФОТО ТОВАРА -->
+      <a href="https://getmyvertigenics24.com/text.php#aff=KylieJean" class="product-img-wrap" target="_blank" onclick="gtag('event', 'click_buy_vertigenics_img');">
+        <img src="https://getmyvertigenics24.com/statics/img/prod_1_bottle.png" alt="Vertigenics Bottle">
+      </a>
+      
+      <div class="product-info">
+        <span class="product-tag">Balance & Mobility</span>
+        
+        <!-- КЛИКАБЕЛЬНОЕ НАЗВАНИЕ ТОВАРА -->
+        <h3 class="product-title">
+          <a href="https://getmyvertigenics24.com/text.php#aff=KylieJean" target="_blank" onclick="gtag('event', 'click_buy_vertigenics_title');">Vertigenics Formula</a>
+        </h3>
+        
+        <div class="desc-wrapper">
+          <ul class="product-bullets">
+            <li>Supports healthy inner ear balance, cognitive coordination, and spatial orientation.</li>
+            <li>Formulated with 10 balancing nutrients like Korean Ginseng to enhance daily stability.</li>
+            <li>Restores physical confidence, helping you navigate your day with steady, independent energy.</li>
+          </ul>
+          <div class="marketing-note">
+            <strong>💡 My Note:</strong>
+            <p>Feeling completely grounded and steady is one of those things we often take for granted. I absolutely love how this natural formula uses Korean Ginseng and botanical helpers to support natural spatial awareness. It’s a wonderful daily addition for maintaining active, independent, and confident movement!</p>
+          </div>
+          <div class="desc-fade"></div>
+        </div>
+
+        <button class="read-more-btn" onclick="toggleDesc(this)">Read more ▾</button>
+
+        <div class="action-area">
+          <a href="https://getmyvertigenics24.com/text.php#aff=KylieJean" class="btn-buy" target="_blank" onclick="gtag('event', 'click_buy_vertigenics_btn');">🌿 Claim Vertigenics Formula Now</a>
+          <span class="btn-secure">🌱 100% Natural Stability Support</span>
+        </div>
+      </div>
+    </article>
+    
+      <!-- КАРТОЧКА 4: MAGNESIUM -->
+      <article class="product-card">
+        
+        <!-- КЛИКАБЕЛЬНОЕ ФОТО ТОВАРА -->
+        <a href="ТВОЯ_ССЫЛКА_ЗДЕСЬ" class="product-img-wrap" target="_blank" onclick="gtag('event', 'click_buy_magnesium_img');">
+          <img src="https://static-v1.cdn-bio.com/bio-shop/2025/pdp-2025/mag_1btl_nobgimg_42.webp" alt="Magnesium">
+        </a>
+        
+        <div class="product-info">
+          <span class="product-tag">Deep Sleep</span>
+          
+          <!-- КЛИКАБЕЛЬНОЕ НАЗВАНИЕ ТОВАРА -->
+          <h3 class="product-title">
+            <a href="ТВОЯ_ССЫЛКА_ЗДЕСЬ" target="_blank" onclick="gtag('event', 'click_buy_magnesium_title');">Magnesium Breakthrough</a>
+          </h3>
+          
+          <div class="desc-wrapper">
+            <ul class="product-bullets">
+              <li>Combines all 7 essential forms of magnesium.</li>
+              <li>Acts as a "switch-off" button for the nervous system.</li>
+              <li>Flushes out daily cortisol before bed.</li>
+            </ul>
+            <div class="marketing-note">
+              <strong>💡 My Note:</strong>
+              <p>This is the ultimate foundation. Take it 30 minutes before bed and you'll drop into the deepest REM sleep you've had in years.</p>
+            </div>
+            <div class="desc-fade"></div>
+          </div>
+
+          <button class="read-more-btn" onclick="toggleDesc(this)">Read more ▾</button>
+
+          <div class="action-area">
+            <a href="ТВОЯ_ССЫЛКА_ЗДЕСЬ" class="btn-buy" target="_blank" onclick="gtag('event', 'click_buy_magnesium_btn');">🌿 Heal Naturally Now</a>
+            <span class="btn-secure">🌿 100% Vegan & Non-GMO</span>
+          </div>
+        </div>
+      </article>
+
+            <!-- КАРТОЧКА 2: COGNICARE -->
+      <article class="product-card">
+        <div class="badge">Limited Stock</div>
+        
+        <!-- КЛИКАБЕЛЬНОЕ ФОТО ТОВАРА -->
+        <a href="ТВОЯ_ССЫЛКА_ЗДЕСЬ" class="product-img-wrap" target="_blank" onclick="gtag('event', 'click_buy_cognicare_img');">
+          <img src="https://cognicarepro.com/assets/img/PRODx1-500px.png" alt="CogniCare Pro">
+        </a>
+        
+        <div class="product-info">
+          <span class="product-tag">Nervous System & Focus</span>
+          
+          <!-- КЛИКАБЕЛЬНОЕ НАЗВАНИЕ ТОВАРА -->
+          <h3 class="product-title">
+            <a href="ТВОЯ_ССЫЛКА_ЗДЕСЬ" target="_blank" onclick="gtag('event', 'click_buy_cognicare_title');">CogniCare Pro</a>
+          </h3>
+          
+          <div class="desc-wrapper">
+            <ul class="product-bullets">
+              <li>Clears brain fog naturally without stimulants.</li>
+              <li>Contains potent Bacopa Monnieri & Rhodiola.</li>
+              <li>Supports sustained, calm mental energy all day.</li>
+            </ul>
+            <div class="marketing-note">
+              <strong>💡 My Note:</strong>
+              <p>If you constantly drink coffee just to survive the workday, this is your way out. Taking this 20 minutes before a deep-focus session gives a smooth, jitter-free clarity that lasts hours.</p>
+            </div>
+            <div class="desc-fade"></div>
+          </div>
+
+          <button class="read-more-btn" onclick="toggleDesc(this)">Read more ▾</button>
+
+          <div class="action-area">
+            <a href="ТВОЯ_ССЫЛКА_ЗДЕСЬ" class="btn-buy" target="_blank" onclick="gtag('event', 'click_buy_cognicare_btn');">🛒 Secure Yours Today</a>
+            <span class="btn-secure">🇺🇸 Formulated in the USA</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+</main>
+
+<!-- ПЛАВАЮЩИЙ WIDGET TELEGRAM -->
+<a href="https://t.me/+DBM4ReYIBQU4YjAy" class="tg-floating-btn" target="_blank" onclick="gtag('event', 'click_tg_floating_widget');">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram">
+  <span>FREE Private Channel</span>
+</a>
+
+<script>
+  // 1. Функция Разворачивания/Сворачивания описания
+  function toggleDesc(btn) {
+    const wrapper = btn.previousElementSibling; 
+    wrapper.classList.toggle('expanded');
+    if (wrapper.classList.contains('expanded')) {
+      btn.innerHTML = 'Read less ▴';
+    } else {
+      btn.innerHTML = 'Read more ▾';
+    }
+  }
+
+  // 2. Умный Scroll Spy с задержкой (Debounce) и заморозкой при клике
+  document.addEventListener('DOMContentLoaded', function() {
+    const sections = document.querySelectorAll('.scroll-section');
+    const navLinks = document.querySelectorAll('nav a');
+    const navContainer = document.getElementById('main-nav');
+
+    let isClickScrolling = false; // Флаг: летим ли мы по клику
+    let scrollTimeout; // Таймер задержки "мышления" скрипта
+
+    // Функция авто-свайпа меню (вынесена отдельно для чистоты)
+    function autoSwipeMenu(link) {
+      if (window.innerWidth <= 768) {
+        const linkRect = link.getBoundingClientRect();
+        const navRect = navContainer.getBoundingClientRect();
+        
+        // Если кнопка уходит за края экрана, плавно скроллим меню
+        if (linkRect.left < navRect.left || linkRect.right > navRect.right) {
+          navContainer.scrollTo({
+            left: link.offsetLeft - (navContainer.offsetWidth / 2) + (link.offsetWidth / 2),
+            behavior: 'smooth'
+          });
+        }
+      }
+    }
+
+    // Клик по меню - плавная прокрутка к блоку
+    navLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        const targetSection = document.getElementById(targetId);
+        
+        if (targetSection) {
+          isClickScrolling = true; // Замораживаем отслеживание скролла
+
+          // Сразу красим кнопку, на которую нажали
+          navLinks.forEach(l => l.classList.remove('nav-active'));
+          this.classList.add('nav-active');
+          
+          // Сразу плавно двигаем меню к этой кнопке
+          autoSwipeMenu(this);
+
+          // Отступ равен высоте плавающего меню (~60px)
+          const offsetTop = targetSection.getBoundingClientRect().top + window.pageYOffset - 60;
+          window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+
+          // Размораживаем трекер скролла только через 800мс (когда анимация полета завершится)
+          setTimeout(() => {
+            isClickScrolling = false;
+          }, 800);
+        }
+      });
+    });
+
+    // Отслеживание скролла страницы
+    window.addEventListener('scroll', () => {
+      if (isClickScrolling) return; // Если мы летим по клику — ничего не делаем!
+
+      // "Thinking time" (Задержка в 20 миллисекунд)
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(runScrollSpy, 20); 
+    });
+
+    // Главная логика проверки позиций
+    function runScrollSpy() {
+      // 1. Проверяем, находится ли пользователь в самом верху (внутри Hero блока)
+      if (window.pageYOffset < 200) {
+        navLinks.forEach(link => link.classList.remove('nav-active'));
+        if (window.innerWidth <= 768) {
+          navContainer.scrollTo({ left: 0, behavior: 'smooth' });
+        }
+        return;
+      }
+
+      // 2. Если мы ниже 200px, ищем активную секцию
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        // Проверяем, долистал ли пользователь до секции
+        if (window.pageYOffset >= (sectionTop - 160)) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      // 3. Переключаем активный класс и свайпаем меню
+      navLinks.forEach(link => {
+        link.classList.remove('nav-active');
+        if (current && link.getAttribute('href') === `#${current}`) {
+          link.classList.add('nav-active');
+          autoSwipeMenu(link);
+        }
+      });
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,125 @@
+[
+  {
+    "id": "glitch",
+    "label": "Glitch",
+    "keywords": [
+      "glitch",
+      "glitches",
+      "hacked",
+      "cyber",
+      "cyberpunk",
+      "synth",
+      "synthwave",
+      "bugvirus",
+      "rawbotnix",
+      "techno",
+      "electro",
+      "shiver"
+    ]
+  },
+  {
+    "id": "block",
+    "label": "Block",
+    "keywords": [
+      "block",
+      "blocks",
+      "blocky",
+      "brick",
+      "bricks",
+      "cube",
+      "cubes",
+      "craft",
+      "crafts",
+      "voxel",
+      "square byte"
+    ]
+  },
+  {
+    "id": "matrix",
+    "label": "Matrix",
+    "keywords": [
+      "matrix",
+      "dot",
+      "dots",
+      "led",
+      "mosaic",
+      "module",
+      "analog pixel",
+      "typewriter",
+      "screen font"
+    ]
+  },
+  {
+    "id": "bubble",
+    "label": "Bubble",
+    "keywords": [
+      "bubble",
+      "bubbles",
+      "bubbly",
+      "plump",
+      "bubblo",
+      "pigxel",
+      "pixalatte",
+      "rounded"
+    ]
+  },
+  {
+    "id": "condensed",
+    "label": "Condensed",
+    "keywords": [
+      "condensed",
+      "slender",
+      "thin",
+      "semi pixel line",
+      "powerline",
+      "tall",
+      "narrow"
+    ]
+  },
+  {
+    "id": "gothic",
+    "label": "Gothic",
+    "keywords": [
+      "gothic",
+      "blackletter",
+      "chapelargo",
+      "mystic",
+      "medieval",
+      "dark fantasy"
+    ]
+  },
+  {
+    "id": "playful",
+    "label": "Playful",
+    "keywords": [
+      "kidbit",
+      "whimsy",
+      "chuckler",
+      "snicker",
+      "hilarity",
+      "joyjolt",
+      "friendship",
+      "chumchic",
+      "halloween",
+      "magic games"
+    ]
+  },
+  {
+    "id": "classic",
+    "label": "Classic",
+    "keywords": [
+      "classic",
+      "sowth",
+      "playback",
+      "start up",
+      "retro byte",
+      "corin",
+      "nyonyo",
+      "gunar",
+      "john",
+      "zelpix",
+      "pixelon",
+      "drixel"
+    ]
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "filterId": "gothic",
+  "label": "Gothic",
+  "items": [
+    "chapelargo",
+    "gothic-byte",
+    "black-61",
+    "ll-mystic"
+  ],
+  "excludedItems": [],
+  "updatedAt": "2026-10-11T21:21:11.775Z"
+}

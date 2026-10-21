@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medicinal Garden Kit — Your Backyard Pharmacy</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --forest:    #2d5016;
+  --moss:      #4a7c2f;
+  --sage:      #7aad52;
+  --mint:      #b8d99a;
+  --cream:     #f5f0e8;
+  --parchment: #ede5d0;
+  --earth:     #8b6914;
+  --gold:      #c8a84b;
+  --white:     #ffffff;
+  --ink:       #1e2a14;
+  --muted:     #5c6b4a;
+}
+
+/* УБРАЛИ overflow-x: hidden, чтобы меню начало "прилипать" к верху */
+body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--ink); }
+
+/* ── NAV ── */
+nav {
+  background: var(--cream);
+  border-bottom: 2px solid var(--mint);
+  padding: 14px 24px;
+  display: flex;
+  justify-content: center;
+  gap: 36px;
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Увеличили, чтобы меню всегда было поверх всего */
+  flex-wrap: nowrap; /* ЗАПРЕЩАЕМ ссылкам прыгать на новые строки */
+  overflow-x: auto;  /* Включаем горизонтальный скролл (свайп) для телефона */
+  -webkit-overflow-scrolling: touch; /* Плавный свайп на iPhone */
+  scrollbar-width: none; /* Прячем страшный ползунок скролла в Firefox */
+}
+
+/* Прячем визуальный ползунок в Chrome и Safari (оставляем только свайп пальцем) */
+nav::-webkit-scrollbar {
+  display: none;
+}
+
+nav a {
+  color: var(--forest);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  white-space: nowrap; /* Текст кнопок никогда не рвется на 2 строки */
+  transition: color 0.2s;
+  flex-shrink: 0; /* Кнопки не сжимаются и не портятся */
+}
+nav a:hover { color: var(--moss); }
+
+/* Делаем меню еще компактнее специально для мобильных телефонов */
+@media (max-width: 600px) {
+  nav {
+    justify-content: flex-start; /* Выравниваем слева, чтобы юзер понимал, что можно свайпать */
+    gap: 24px;
+    padding: 12px 20px;
+  }
+  nav a {
+    font-size: 11px; /* Чуть уменьшаем шрифт для аккуратности */
+  }
+}
+
+/* HERO */
+.hero {
+  background: linear-gradient(155deg, #1a3009 0%, #2d5016 55%, #3d6b20 100%);
+  padding: 60px 24px 70px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 50% 100%, rgba(122,173,82,0.15) 0%, transparent 70%);
+}
+.hero-inner {
+  position: relative;
+  max-width: 1100px; /* Увеличили ширину для двух колонок */
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr; /* Текст занимает чуть больше места, картинка чуть меньше */
+  gap: 40px;
+  align-items: center; /* Выравнивание по вертикали по центру */
+}
+
+.hero-text {
+  text-align: left;
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(200,168,75,0.15); border: 1px solid rgba(200,168,75,0.4);
+  color: var(--gold); font-size: 11px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; padding: 7px 18px; border-radius: 30px; margin-bottom: 24px;
+}
+
+.hero h1 {
+  font-family: 'Lora', serif;
+  font-size: clamp(32px, 4vw, 50px);
+  font-weight: 700; color: var(--white);
+  line-height: 1.2; margin-bottom: 20px;
+}
+.hero h1 em { font-style: italic; color: var(--mint); }
+
+.hero-sub {
+  font-size: clamp(15px, 1.8vw, 18px); 
+  color: rgba(255,255,255,0.75); 
+  line-height: 1.6; 
+  max-width: 540px; 
+  margin-bottom: 32px; 
+  font-weight: 300; 
+}
+
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.hero-product-img {
+  width: 100%;
+  max-width: 480px;
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 30px 50px rgba(0,0,0,0.5)); /* Красивая тень */
+  animation: floatProduct 6s ease-in-out infinite; /* Эффект парения */
+}
+
+@keyframes floatProduct { 
+  0%, 100% { transform: translateY(0); } 
+  50% { transform: translateY(-15px); } 
+}
+
+/* Мобильная адаптация: на телефонах делаем колонки друг под другом */
+@media(max-width: 880px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 30px;
+  }
+  .hero-text {
+    text-align: center;
+    order: 1; /* Текст сверху */
+  }
+  .hero-sub {
+    margin: 0 auto 32px;
+  }
+  .hero-actions {
+    align-items: center;
+  }
+  .hero-product-wrap {
+    order: 2; /* Картинка снизу */
+  }
+  .hero-product-img {
+    max-width: 380px;
+  }
+}
+
+/* BUTTONS */
+.btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #e8c84a 0%, var(--gold) 50%, #b8941a 100%);
+  color: var(--forest); font-size: 17px; font-weight: 700;
+  padding: 19px 52px; border-radius: 50px; text-decoration: none;
+  letter-spacing: 0.3px;
+  box-shadow: 0 8px 32px rgba(200,168,75,0.45); transition: all 0.3s;
+}
+.btn:hover { transform: translateY(-3px); box-shadow: 0 14px 44px rgba(200,168,75,0.55); }
+.btn-wrap { text-align: center; margin: 36px 0; }
+.btn-note { display:block; text-align:center; font-size:12px; margin-top:10px; letter-spacing:0.3px; }
+.btn-note-light { color: rgba(255,255,255,0.45); }
+.btn-note-dark  { color: var(--muted); }
+
+/* TRUST */
+.trust { background: var(--parchment); padding: 26px 24px; border-bottom: 2px solid var(--mint); }
+.trust-row { max-width: 860px; margin: 0 auto; display: flex; justify-content: center; flex-wrap: wrap; gap: 10px 30px; }
+.trust-item { font-size: 13px; font-weight: 600; color: var(--forest); display: flex; align-items: center; gap: 6px; }
+
+/* SECTIONS */
+section { padding: 68px 24px; }
+.container { max-width: 860px; margin: 0 auto; }
+.section-label { font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--moss); margin-bottom: 12px; text-align: center; }
+.section-title { font-family: 'Lora', serif; font-size: clamp(24px, 4vw, 38px); font-weight: 700; text-align: center; margin-bottom: 46px; color: var(--forest); line-height: 1.25; }
+.section-title em { font-style: italic; color: var(--moss); }
+
+/* ABOUT */
+.about { background: var(--white); }
+.about-grid { display: grid; grid-template-columns: 220px 1fr; gap: 48px; align-items: start; }
+@media(max-width:620px){ .about-grid{ grid-template-columns:1fr; } }
+.about-photo { width: 220px; height: 220px; border-radius: 50%; object-fit: cover; border: 4px solid var(--mint); box-shadow: 0 8px 30px rgba(45,80,22,0.2); display: block; margin: 0 auto; }
+.about-name { font-family:'Lora',serif; font-size:26px; font-weight:700; color:var(--forest); margin-bottom:4px; }
+.about-role { font-size:12px; color:var(--moss); font-weight:600; letter-spacing:1.2px; text-transform:uppercase; margin-bottom:20px; }
+.about-p { font-size:15px; line-height:1.76; color:#3a4a2a; margin-bottom:14px; }
+
+/* ── ANNOUNCEMENT ── */
+.announce {
+  background: var(--forest);
+  color: var(--mint);
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+.announce strong { color: var(--gold); }
+
+/* PLANTS */
+.plants { background: var(--cream); }
+.plant-card {
+  display: grid; grid-template-columns: 280px 1fr;
+  gap: 0; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 4px 24px rgba(45,80,22,0.10);
+  margin-bottom: 32px; background: var(--white);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.plant-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(45,80,22,0.18); }
+@media(max-width:660px){ .plant-card{ grid-template-columns:1fr; } }
+.plant-img { width:100%; height:100%; min-height:240px; object-fit:cover; display:block; }
+.plant-body { padding: 28px 30px; }
+.plant-num { font-size:11px; font-weight:700; letter-spacing:2px; color:var(--sage); text-transform:uppercase; margin-bottom:5px; }
+.plant-body h3 { font-family:'Lora',serif; font-size:23px; font-weight:700; color:var(--forest); margin-bottom:3px; }
+.plant-tagline { font-size:13px; color:var(--gold); font-weight:600; margin-bottom:14px; font-style:italic; }
+.plant-body p { font-size:14px; line-height:1.74; color:#4a5a38; margin-bottom:12px; }
+
+.info-block { border-radius:8px; padding:12px 16px; margin-top:10px; font-size:13px; line-height:1.62; }
+.info-block.remedy { background:var(--cream); border-left:3px solid var(--sage); color:var(--muted); }
+.info-block.garden { background:#f0f7ea; border-left:3px solid var(--mint); color:var(--muted); }
+.info-block strong { color:var(--forest); font-weight:700; }
+.recipes-label { font-size:11px; font-weight:700; color:var(--moss); text-transform:uppercase; letter-spacing:1px; margin-top:12px; margin-bottom:4px; }
+.recipes-text { font-size:12px; color:#6a7a58; line-height:1.6; font-style:italic; }
+
+/* KIT CONTENTS */
+.kit { background: var(--forest); }
+.kit .section-title { color: var(--white); }
+.kit .section-title em { color: var(--mint); }
+.kit-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:20px; margin-bottom:44px; }
+.kit-item { background:rgba(255,255,255,0.06); border:1px solid rgba(184,217,154,0.2); border-radius:12px; padding:22px 18px; text-align:center; color:var(--white); }
+.kit-item .num { font-family:'Lora',serif; font-size:38px; font-weight:700; color:var(--gold); line-height:1; margin-bottom:6px; }
+.kit-item p { font-size:13px; color:rgba(255,255,255,0.62); line-height:1.55; }
+.kit-img-row { display:flex; justify-content:center; gap:24px; flex-wrap:wrap; margin-bottom:36px; }
+.kit-img-row img { max-width:260px; width:45%; border-radius:10px; box-shadow:0 8px 30px rgba(0,0,0,0.4); }
+
+/* BONUSES */
+.bonuses { background: var(--parchment); }
+.bonus-card { display:grid; grid-template-columns:160px 1fr; gap:30px; align-items:center; background:var(--white); border-radius:14px; padding:28px; margin-bottom:20px; border:1px solid var(--mint); box-shadow:0 3px 16px rgba(45,80,22,0.07); }
+@media(max-width:560px){ .bonus-card{ grid-template-columns:1fr; } }
+.bonus-card img { width:100%; max-width:160px; border-radius:8px; box-shadow:0 4px 16px rgba(0,0,0,0.15); }
+.bonus-badge { display:inline-block; background:var(--forest); color:var(--mint); font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; padding:4px 12px; border-radius:4px; margin-bottom:10px; }
+.bonus-card h3 { font-family:'Lora',serif; font-size:19px; color:var(--forest); margin-bottom:6px; }
+.bonus-val { font-size:13px; color:var(--gold); font-weight:700; margin-bottom:10px; }
+.bonus-card p { font-size:14px; line-height:1.7; color:#4a5a38; }
+
+/* FINAL CTA */
+.final-cta {
+  background: linear-gradient(155deg, #1a3009 0%, #2d5016 60%, #3d6b20 100%);
+  padding: 80px 24px; text-align: center; position: relative; overflow: hidden;
+}
+.final-cta h2 { font-family:'Lora',serif; font-size:clamp(24px,4vw,42px); color:var(--white); margin-bottom:14px; position:relative; }
+.final-cta > p { color:rgba(255,255,255,0.62); font-size:16px; max-width:520px; margin:0 auto 24px; line-height:1.72; position:relative; }
+.final-img { max-width:280px; display:block; margin:0 auto 30px; filter:drop-shadow(0 20px 40px rgba(0,0,0,0.45)); }
+.final-img { animation: floatProduct 5s ease-in-out infinite; }
+
+/* GUARANTEE */
+.guarantee { background:var(--white); padding:60px 24px; text-align:center; border-top:3px solid var(--mint); }
+.guarantee-icon { font-size:70px; margin-bottom:16px; line-height:1; }
+.guarantee h2 { font-family:'Lora',serif; font-size:26px; color:var(--forest); margin-bottom:14px; }
+.guarantee p { max-width:560px; margin:0 auto; font-size:15px; line-height:1.74; color:var(--muted); }
+
+
+/* FOOTER */
+footer { background:var(--ink); padding:36px 24px; text-align:center; color:#485a38; font-size:12px; line-height:1.9; }
+footer a { color:#5a7a48; text-decoration:none; }
+footer a:hover { color:var(--mint); }
+.footer-links { display:flex; flex-wrap:wrap; justify-content:center; gap:8px 20px; margin-bottom:14px; }
+.footer-disc { max-width:680px; margin:12px auto 0; color:#384830; font-size:11px; }
+</style>
+</head>
+<body>
+
+<div class="announce">🌿 <strong>LIMITED TIME:</strong> Order today & get 2 FREE Bonuses (worth $59) included with your kit</div>
+
+<nav>
+  <a href="#about">About Nicole</a>
+  <a href="#plants">10 Plants</a>
+  <a href="#kit">What's Inside</a>
+  <a href="#bonuses">Free Bonuses</a>
+  <a href="#order">Order Now</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    
+    <!-- Левая колонка: Текст и кнопка -->
+    <div class="hero-text">
+      <div class="hero-eyebrow">🌱 4,818 Non-GMO Seeds · Free Herbal Guide</div>
+      <!-- Я убрал теги <br>, чтобы текст естественно переносился в зависимости от ширины колонки -->
+      <h1>The Most Important Thing That's Probably Missing <em>From Your Backyard</em></h1>
+      <p class="hero-sub">Grow a complete natural pharmacy at home with 10 powerful medicinal plants — chosen by a biologist who healed herself from MS using nothing but plants she grew herself.</p>
+      
+      <div class="hero-actions">
+        <a href="https://www.digistore24.com/product/379812?aff=KylieJean" class="btn" target="_blank" rel="noopener">🛒 Get My Medicinal Garden Kit</a>
+        <span class="btn-note btn-note-light">✓ 365-Day Money-Back Guarantee &nbsp;|&nbsp; ✓ Free Bonuses Included</span>
+      </div>
+    </div>
+
+<!-- Правая колонка: Фотография товара -->
+    <div class="hero-product-wrap">
+      <!-- Оборачиваем картинку в тег <a> с вашей ссылкой -->
+      <a href="https://www.digistore24.com/product/379812?aff=KylieJean" style="display: block; cursor: pointer;" target="_blank" rel="noopener">
+        <img class="hero-product-img" 
+             src="https://www.digistore24.com/pb/img/merchant_982786/image/orderform_image/W95IWD0O.jpg?o=1460" 
+             alt="Medicinal Garden Kit Complete Package">
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- TRUST -->
+<div class="trust">
+  <div class="trust-row">
+    <div class="trust-item">🌱 4,818 Non-GMO Seeds</div>
+    <div class="trust-item">🇺🇸 Packaged in the USA</div>
+    <div class="trust-item">📖 Free Herbal Guide Included</div>
+    <div class="trust-item">🎁 +2 Free Bonus Books ($58 value)</div>
+    <div class="trust-item">🛡️ 365-Day Guarantee</div>
+  </div>
+</div>
+
+<!-- ABOUT NICOLE -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="section-label">Meet Your Guide</div>
+    <h2 class="section-title">About <em>Nicole Apelian, Ph.D</em></h2>
+    <div class="about-grid">
+      <div style="text-align:center;">
+        <img class="about-photo"
+          src="https://lh3.googleusercontent.com/dd8Tlohy57L1QFHctAolMn0Glu3d1iY3DUVbOZvqjNis9x2YVJDzeKofFBHQfDdr_ILA4N9aQQLiXmJlqsKoImUGEmiBrpjj6I4=w1060"
+          alt="Nicole Apelian PhD">
+        <div style="margin-top:14px;font-size:13px;color:var(--moss);font-weight:600;line-height:1.6;">
+          Biologist · Herbalist<br>Survival Skills Instructor<br>McGill University, Biology
+        </div>
+      </div>
+      <div>
+        <div class="about-name">Nicole Apelian, Ph.D</div>
+        <div class="about-role">Biologist · Herbalist · MS Survivor · History Channel's Alone</div>
+        <p class="about-p">I am a mother, an herbalist, a survival skills instructor, and a biologist. I graduated with a degree in Biology from McGill University and further developed my herbal skills in the desert of Kalahari. I lived there for years with one of the oldest cultures on Earth, the San Bushmen. Many San still live off what the land provides in terms of food and medicine, and many of them live well to a ripe old age without ever taking pills or seeing the inside of a hospital.</p>
+        <p class="about-p">When I was just 29 years old, I was diagnosed with Multiple Sclerosis. MS is an incurable autoimmune condition that makes your own immune system attack the brain and spinal cord. I was in constant agony, most of the times in a wheelchair.</p>
+        <p class="about-p">The Western treatment prescribed by my doctors didn't provide much relief. For the last 20 years I've been managing my MS using the natural remedies that I personally grow in my backyard. I went from being pushed in a wheelchair to being <strong>fully alive</strong>. So much that in 2015 I survived for <strong>57 days straight in the wild</strong> on the History Channel's TV show <em>Alone</em>.</p>
+        <p class="about-p">I turn to my small backyard pharmacy whenever I'm in pain, catch a cold, have fever, and so on. I haven't stepped foot in a pharmacy in a very long time. I have all I need here in my backyard for me and my whole family.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANTS -->
+<section class="plants" id="plants">
+  <div class="container">
+    <div class="section-label">What You'll Grow</div>
+    <h2 class="section-title">The 10 Medicinal Plants<br><em>You'll Have in Your Backyard</em></h2>
+
+    <!-- 1 CHICORY -->
+    <div class="plant-card">
+      <img class="plant-img"
+        src="https://lh3.googleusercontent.com/jRE25kkXcbZ8YFX31CcAzQkqu-e7fwQ8BETdeWS1ICgz03pVX5PT2N2IilxUwMW7v8XHmthfP2kIVTrGHnxm=w600"
+        alt="Chicory">
+      <div class="plant-body">
+        <div class="plant-num">Plant 01</div>
+        <h3>Chicory</h3>
+        <div class="plant-tagline">The Painkilling Plant You Should Grow in Your Backyard</div>
+        <p>This is the wild plant that Native Americans used to look for more than any other. They'd harvest and use chicory to make a natural painkilling extract for a wide range of physical discomforts, especially stiff and achy joints. The root is rich in chicoric acid (CA), a plant compound with potent anti-inflammatory and analgesic properties but no risk of addiction.</p>
+        <div class="info-block remedy"><strong>🌿 Quick Backyard Remedy:</strong> Add 1 Tbsp of ground chicory root to your coffee or tea. It's a prebiotic and natural laxative that will help move things along and regulate your bowels.</div>
+        <div class="info-block garden"><strong>🌱 Garden Uses:</strong> Chicory is a very good soil builder in your garden, pulling nutrients up from deeper in the soil with its long taproot and returning them to the surface when it dies back.</div>
+        <div class="recipes-label">Recipes in Free Brochure:</div>
+        <div class="recipes-text">Chicory Salve for Pain Relief, Chicory Coffee for Better Digestion, Decoction for Adrenal Fatigue, Chicory Infusion for Sinuses, Anti-Fungal Poultice, Liver Protection Tincture</div>
+      </div>
+    </div>
+
+    <!-- 2 YARROW -->
+    <div class="plant-card">
+      <img class="plant-img"
+        src="https://lh3.googleusercontent.com/StrmCic5jnEns9798ZGI-BS6zCOIOQihVEnxmSOR6f9vMDrtfp4-4lGBjULQlr7DKVlSo9llHAmWq1_Rst9xRup9vmr7Mg5o4LQ=w600"
+        alt="Yarrow">
+      <div class="plant-body">
+        <div class="plant-num">Plant 02</div>
+        <h3>Yarrow</h3>
+        <div class="plant-tagline">The Backyard Wound Healer</div>
+        <p>You always want to have a quick and reliable way to stop a wound from bleeding and help prevent infection. On day 42 of <em>Alone</em>, I accidentally cut my hand while gutting a fish. The wound was very deep and most likely would have gotten infected since I had no antibiotics. Luckily, I found some yarrow and wrapped it around the wound. The bleeding stopped in minutes, and my wound healed so well that now there's barely a scar left.</p>
+        <div class="info-block remedy"><strong>🌿 Quick Backyard Remedy:</strong> If you ever get a toothache, try chewing on a fresh yarrow leaf as it will numb the area and provide needed relief.</div>
+        <div class="info-block garden"><strong>🌱 Garden Uses:</strong> The beautiful yarrow flowers attract beneficial insects like bees and ladybugs, which eat aphids and other pests and also help pollinate your plants.</div>
+        <div class="recipes-label">Recipes in Free Brochure:</div>
+        <div class="recipes-text">Infused Yarrow Oil for Swelling and Varicose Veins; Stop Bleeding Poultice; Yarrow Tincture for Burns, Cuts, Bruises, and Insect Bites; Yarrow Salve for Old Scars; Yarrow Elixir for Menstrual Cramps and Heartburn; Yarrow Tea for Digestive Upsets</div>
+      </div>
+    </div>
+
+    <!-- 3 CALIFORNIA POPPY -->
+    <div class="plant-card">
+      <img class="plant-img"
+        src="https://lh3.googleusercontent.com/Y3oNQjQq40_ttFJVwv3afEiFD31ySQ0e6N4oTCZzBRORPufyySAY1oetxuaeOrJDHdczi3rbaCaWv1GPg3QscSecitZ56vjAjw=w600"
+        alt="California Poppy">
+      <div class="plant-body">
+        <div class="plant-num">Plant 03</div>
+        <h3>California Poppy</h3>
+        <div class="plant-tagline">Better Than Sleeping Pills</div>
+        <p>California poppy helps support a restorative, deep sleep like we enjoyed as children, when falling and staying asleep for at least eight hours each night were both effortless. Why risk the addiction of prescription sleeping pills when you can make your own Sleep Tea from this plant? I usually drink it before bed and then doze off soon after. If your bout of insomnia is more serious or you're suffering from PTSD, just turn California poppy into a more concentrated sleep tincture.</p>
+        <div class="info-block remedy"><strong>🌿 Quick Backyard Remedy:</strong> Gather any of these: leaves, flowers, or stems. Cut finely, add to a cup or pot, and pour hot water. Let it steep for about 10 minutes. Drink warm just before bed for deep, uninterrupted, and restful sleep that night.</div>
+        <div class="info-block garden"><strong>🌱 Garden Uses:</strong> With extremely high levels of pollen production, the poppy is an important food source for beneficial insects. It also needs very little water, so the other plants will get more.</div>
+        <div class="recipes-label">Recipes in Free Brochure:</div>
+        <div class="recipes-text">Deep Sleep Tincture, Analgesic Salve, Sleep Tea Blend, California Poppy Decoction for Head Lice, California Poppy Vinegar, California Poppy Infusion</div>
+      </div>
+    </div>
+
+    <!-- 4 MARSHMALLOW -->
+    <div class="plant-card">
+      <img class="plant-img"
+        src="https://lh3.googleusercontent.com/2vOTdaIwAozh68ZQZflhubW33i0RovbmOQbSWpju9luUV1oLYxPGzx82fyYc_M8OO4y3K4dHKMlSl2MQKmAknu0zSjJDOPe6jW1N=w600"
+        alt="Marshmallow Root">
+      <div class="plant-body">
+        <div class="plant-num">Plant 04</div>
+        <h3>Marshmallow</h3>
+        <div class="plant-tagline">The Most Powerful Plant for a Healthy Digestive System</div>
+        <p>Traditionally the white fluffy campfire treat was made from the root of the marshmallow plant — a powerful medicinal herb. Its leaves and root are antibacterial and contain a sap-like substance called mucilage. As it goes down through your digestive tract, it coats your stomach, intestines, and colon with an additional protective layer, soothing inflammation along the way. This tea also helps people with stomach ulcers, heartburn, indigestion, constipation, IBS, or Crohn's disease.</p>
+        <div class="info-block remedy"><strong>🌿 Quick Backyard Remedy:</strong> Pull out a few marshmallow roots, wash off the dirt, and add them to a glass jar or cup. Cover with ice-cold water and let the mucilage extract for a few hours. Drink for a soothing and restorative effect all along your digestive tract, from mouth to colon.</div>
+        <div class="info-block garden"><strong>🌱 Garden Uses:</strong> Painted lady butterflies are attracted to it, and native pollinators cover its blossoms all summer long.</div>
+        <div class="recipes-label">Recipes in Free Brochure:</div>
+        <div class="recipes-text">Cold Root Infusion for Heartburn and Reflux, Stomach Tea, Marshmallow Poultice for Skin Repair, Decoction for Stubborn Coughs, Throat Syrup, Marshmallow Salve</div>
+      </div>
+    </div>
+
+    <!-- 5 CHAMOMILE -->
+    <div class="plant-card">
+      <img class="plant-img"
+        src="https://lh3.googleusercontent.com/zLoMNKDGCN9DF2wDpUNfwgCBEcj8rRXlcsakZBU7Jnki_YGqZT11hJ-MqHMEVsJ0LCvapDESLcPNy-auv2j0NdKYaDMwLOCwt6c=w600"
+        alt="Chamomile">
+      <div class="plant-body">
+        <div class="plant-num">Plant 05</div>
+        <h3>Chamomile</h3>
+        <div class="plant-tagline">The Natural Antibiotic</div>
+        <p>My grandmother used to grow chamomile in her garden. She saw this plant as a real "heal-all." If I'd get pinkeye, she'd put a warm compress dipped in chamomile tea over my irritated eyes. If my stomach hurt, she'd make me drink the tea. It's very soothing and helps relax your digestive muscles. Chamomile oil is still probably one of the best natural skin remedies out there — researchers believe it can penetrate even the deep layers of your skin, where true healing takes place.</p>
+        <div class="info-block remedy"><strong>🌿 Quick Backyard Remedy:</strong> Take a handful of dried or fresh chamomile leaves and add them to a warm bath. Step inside to relax your entire body, especially sore muscles and aching joints.</div>
+        <div class="info-block garden"><strong>🌱 Garden Uses:</strong> Chamomile is known as "The Gardener's Doctor" as it has the power to heal and enhance the growth of the plants around it.</div>
+        <div class="recipes-label">Recipes in Free Brochure:</div>
+        <div class="recipes-text">Chamomile Compresses for Irritated Eyes, Stomach Tea, Infused Chamomile Oil for Wounds and Skin Ulcers, Chamomile Tincture for Sciatica and Rheumatic Pain, Eczema Salve, Chamomile Sitz Bath for Hemorrhoids</div>
+      </div>
+    </div>
+
+    <!-- 6 EVENING PRIMROSE -->
+    <div class="plant-card">
+      <img class="plant-img"
+        src="https://lh3.googleusercontent.com/xlDLf4EwcxdnSO_4JdTFeAvzeKCMpq4voyeiCSluFRxT7_Ewy1fRh-phbSRnMlqnH1ytHN_q4gkt0fezrixUT4ZjRUazDA6Dqw=w600"
+        alt="Evening Primrose">
+      <div class="plant-body">
+        <div class="plant-num">Plant 06</div>
+        <h3>Evening Primrose</h3>
+        <div class="plant-tagline">A Natural Remedy for Skin and Nerves</div>
+        <p>This plant is called evening primrose because its flowers open at sunset — each bloom lasts for only one night. Our forefathers would use it to make a poultice for bruises, wounds, and skin eruptions. It contains two substances our skin needs but cannot produce on its own. They're also very important for the membranes of nerve cells, which is why more and more people with unresolved nerve pain are turning to this plant. It can also help to balance out hormone levels.</p>
+        <div class="info-block remedy"><strong>🌿 Quick Backyard Remedy:</strong> Grab a leaf or root of the plant and crush it to make a poultice. Apply it directly to a wound or skin rash to promote healing.</div>
+        <div class="info-block garden"><strong>🌱 Garden Uses:</strong> This plant provides food and attracts numerous species of hawk moths, which tend to move pollen farther than bees or birds, as well as butterflies and bumblebees.</div>
+        <div class="recipes-label">Recipes in Free Brochure:</div>
+        <div class="recipes-text">Infused Evening Primrose Oil for Skin and Nerves, Anti-Bruise Poultice of Native Americans, Evening Primrose Tea for Digestive Issues and Mood Swings, Revitalizing Body Balm, Lung Tonic, Cough and Sore Throat Mixture, Cold-Pressed Seed Oil</div>
+      </div>
+    </div>
+
+    <!-- 7 LAVENDER -->
+    <div class="plant-card">
+      <img class="plant-img"
+        src="https://lh3.googleusercontent.com/-ykZCS7zYdEeIUgvoyne5mt0kJ1GHizmpGG9MUjR9e3bDkK7umueXRYVqAk1CFS2P5sI3jR_1x7CrbYEakHrtPKU5KQqzHXTYg=w600"
+        alt="Lavender">
+      <div class="plant-body">
+        <div class="plant-num">Plant 07</div>
+        <h3>Lavender</h3>
+        <div class="plant-tagline">The Perennial Anti-Inflammatory Herb</div>
+        <p>You're probably familiar with how this aromatic plant keeps moths from dining on your winter wardrobe. But medicinally it offers so much more. A recent double-blind study concluded that lavender oil cuts down anxiety to the same extent as taking a 0.5 mg daily dose of Lorazepam. A lavender tincture used alongside a regular antidepressant can help you recover from mild to moderate depression a lot faster. Rubbing a few drops on your scalp every day improves blood flow and strengthens hair follicles.</p>
+        <div class="info-block remedy"><strong>🌿 Quick Backyard Remedy:</strong> Gather some fresh lavender from your garden and put it in a small herb pouch. Place the pouch inside your sleeping pillow or under your mattress. It will ward off mosquitos and other insects and help you fall asleep faster.</div>
+        <div class="info-block garden"><strong>🌱 Garden Uses:</strong> Just as it banishes bugs from your closet, it also banishes pests from the garden. It attracts many species of butterflies, including painted ladies, woodland skippers, and tiger swallowtails.</div>
+        <div class="recipes-label">Recipes in Free Brochure:</div>
+        <div class="recipes-text">Lavender Sleep Tincture; Lavender Tea for Anxiety; Lavender Oil for Fungal Infections, Acne, Dry and Blotchy Skin, and Psoriasis; Lavender Hair Mask; Lavender Salve for Chapped Lips, Cracked Cuticles, Rough Elbows, and Feet</div>
+      </div>
+    </div>
+
+    <!-- 8 ECHINACEA -->
+    <div class="plant-card">
+      <img class="plant-img"
+        src="https://lh3.googleusercontent.com/tlZuUpISb7r75h8u0pKkY6LE544zK_RIFSQ2aIn4520h45oYI0-8a2kp_2Fz8l6vJFLb38tfI1lpPbdeY0UpFXUHNYSXVN5WmA=w600"
+        alt="Echinacea">
+      <div class="plant-body">
+        <div class="plant-num">Plant 08</div>
+        <h3>Echinacea</h3>
+        <div class="plant-tagline">The Most Powerful Immunity Plant You Should Grow</div>
+        <p>When it comes to our health, the immune system is king. A strong one might save you even if you're very sick and have no medicines available. There's no better plant for taking care of your immune system than echinacea. But don't make the mistake of thinking that supplements bought at the health store can compare with natural medicines you can make from organic plants you grow yourself. Echinacea is one of the most counterfeited natural supplements out there — growing your own is the only guarantee.</p>
+        <div class="info-block remedy"><strong>🌿 Quick Backyard Remedy:</strong> Dig up some echinacea roots and slice them rather thinly. Put them in a pot with water and let everything simmer for 30 minutes. Drink hot for an immune boost at the first sign of a cold or any other illness.</div>
+        <div class="info-block garden"><strong>🌱 Garden Uses:</strong> Echinacea helps keep plants moist and prevents weeds from spreading and taking over your backyard pharmacy.</div>
+        <div class="recipes-label">Recipes in Free Brochure:</div>
+        <div class="recipes-text">Immune-Stimulating Echinacea Tincture, Antiseptic Mouthwash, Echinacea Tisane, Echinacea Oil for Inflammation, Anti-Germ Skin Salve, Root Decoction for Pains and Aches</div>
+      </div>
+    </div>
+
+    <!-- 9 CALENDULA -->
+    <div class="plant-card">
+      <img class="plant-img"
+        src="https://lh3.googleusercontent.com/114xYDOSHT-m9tiDfjgGi5udJsJ7vTpirbR3q6oFSL0MCIs_c5reb2d5Aj5IQRpYMCaRILJ26Q4YoW10SrQZ5LfGnWAsSIu14t0o=w600"
+        alt="Calendula">
+      <div class="plant-body">
+        <div class="plant-num">Plant 09</div>
+        <h3>Calendula</h3>
+        <div class="plant-tagline">The Herb You Need to Keep Close During Dark Times</div>
+        <p>Before I ever came across calendula in my natural practice, I had heard about it from my grandfather. He accidentally cut his leg to the bone, refused to see a doctor, and just poured my grandmother's calendula extract on it each time he dressed the wound. Believe it or not, it healed in weeks! As a tea, calendula does something really unique: it moves lymphatic fluid and cleanses your lymphatic system from the remnants of old infections. This is absolutely vital for continued good health — and something no modern drug does.</p>
+        <div class="info-block remedy"><strong>🌿 Quick Backyard Remedy:</strong> During the Civil War, calendula flowers were packed directly into open wounds, and they were used by surgeons when dressing wounds to promote healing and prevent infection.</div>
+        <div class="info-block garden"><strong>🌱 Garden Uses:</strong> Calendula helps repel insect pests and benefits the soil by forming active relationships with soil fungi.</div>
+        <div class="recipes-label">Recipes in Free Brochure:</div>
+        <div class="recipes-text">Calendula Flower Infused Oil for Most Skin Problems, Calendula Salve to Rub Over Wounds and Scars, Calendula Soak for Itches and Rashes, Calendula Tea for Sore Throat and Mouth Ulcers, Calming Calendula Spray for Burns, Tea for Irritated Eyes and Stomach, Protective Skin Lotion, Calendula Extract for Skin Ulcers and Eczema</div>
+      </div>
+    </div>
+
+    <!-- 10 FEVERFEW -->
+    <div class="plant-card">
+      <img class="plant-img"
+        src="https://lh3.googleusercontent.com/z0YL9gRXXWSK8JWIsEHTd_Yhm2_mlwypxViikEP4T5uyGcJFGjObDIsq8WIhh4LX1veSO8cmkE0RAI1Crqm_RkexmXoyN3uvTnE=w600"
+        alt="Feverfew">
+      <div class="plant-body">
+        <div class="plant-num">Plant 10</div>
+        <h3>Feverfew</h3>
+        <div class="plant-tagline">Nature's Aspirin for Fevers and Migraines</div>
+        <p>With feverfew in your backyard, you'll always have a way to deal with a cold, lower a fever, or fight off migraines. This plant is a powerful anti-inflammatory, and people have used it to deal with inflamed and painful joints. Parthenolide seems to be the plant compound responsible for its medicinal power — the highest concentration is found in the flower heads and leaves. In the brochure, I'll show you exactly how to make the Anti-Migraine Tincture from your backyard feverfew.</p>
+        <div class="info-block remedy"><strong>🌿 Quick Backyard Remedy:</strong> Chew some of its leaves raw whenever you have a fever or feel a migraine attack is about to strike (very important to use before it does).</div>
+        <div class="info-block garden"><strong>🌱 Garden Uses:</strong> Feverfew repels pests, hides other plants from them, and also attracts beneficial insects such as hoverflies and tachinid flies to your garden.</div>
+        <div class="recipes-label">Recipes in Free Brochure:</div>
+        <div class="recipes-text">Oil for Inflamed Joints, Natural Insect Repellant, Anti-Migraine Tincture, Salve for Eczema, Rosacea and Acne, Feverfew Tincture, Feverfew Febrifuge Tea, Feverfew Compress for Bruised Skin</div>
+      </div>
+    </div>
+
+    <div class="btn-wrap">
+      <a href="https://www.digistore24.com/product/379812?aff=KylieJean" class="btn" target="_blank" rel="noopener">🌿 Get All 10 Plants — Order My Kit Now</a>
+      <span class="btn-note btn-note-dark">✓ 4,818 Non-GMO Seeds &nbsp;|&nbsp; ✓ Free Herbal Guide &nbsp;|&nbsp; ✓ +2 Bonus Books</span>
+    </div>
+  </div>
+</section>
+
+<!-- KIT CONTENTS -->
+<section class="kit" id="kit">
+  <div class="container">
+    <div class="section-label" style="color:var(--mint);">Everything You Receive</div>
+    <h2 class="section-title">A Complete Natural Pharmacy<br><em>in One Box</em></h2>
+    <div class="kit-grid">
+      <div class="kit-item">
+        <div class="num">10</div>
+        <p>Medicinal plant varieties, handpicked from the very best plants</p>
+      </div>
+      <div class="kit-item">
+        <div class="num">4,818</div>
+        <p>High-quality Non-GMO seeds, packaged in the USA</p>
+      </div>
+      <div class="kit-item">
+        <div class="num">1</div>
+        <p>FREE Herbal Guide: From Seeds to Remedies — tinctures, salves, oils, and more</p>
+      </div>
+      <div class="kit-item">
+        <div class="num">+2</div>
+        <p>FREE Bonus books worth $58, included free with every order</p>
+      </div>
+    </div>
+    <div class="kit-img-row">
+      <img src="https://lh3.googleusercontent.com/gWViTMfqOxehMgluGPyPfaAXXfso0BDQ6R6x832EWRbgNWBLvwGHPe7Opu0xl5X-uSbWxkHK7c88mxuUOCDIE2S8RvLYhNrZXTUj=w600" alt="Kit contents">
+      <img src="https://lh3.googleusercontent.com/01kGYI4EIX4nwsEGCjvKwKZSFEVRlXPMaouDowjf4MO0PJ9Hii6AwIxXUOA9rcatmBfXYXKRtVgqsari2sZenjsj7FT-DXG037mF=w600" alt="Seed packets">
+    </div>
+    <p style="text-align:center;color:rgba(255,255,255,0.6);font-size:15px;line-height:1.76;max-width:620px;margin:0 auto 36px;">
+      You cannot find these 10 seeds in one package anywhere else. The average American spends $1,742 each year at the pharmacy. Your new backyard pharmacy will save you at least a few hundreds of that. And that doesn't even matter, because you are investing in something much more important: your health.
+    </p>
+    <div class="btn-wrap">
+      <a href="https://www.digistore24.com/product/379812?aff=KylieJean" class="btn" target="_blank" rel="noopener">🛒 Order My Medicinal Garden Kit Now</a>
+      <span class="btn-note btn-note-light">✓ Ships Worldwide &nbsp;|&nbsp; ✓ 365-Day Money-Back Guarantee</span>
+    </div>
+  </div>
+</section>
+
+<!-- BONUSES -->
+<section class="bonuses" id="bonuses">
+  <div class="container">
+    <div class="section-label">Included Free Today</div>
+    <h2 class="section-title">+2 <em>FREE Bonuses</em> With Every Order<br><span style="font-size:0.6em;color:var(--muted);font-family:'Inter',sans-serif;font-weight:400;">and 24/7 One on One Support</span></h2>
+
+    <div class="bonus-card">
+      <img src="https://lh3.googleusercontent.com/8UC7CCfi-7Dv83Pg6JggclYzfcjLASBN4_5EKuNhzZoV_d28vlAl2IRoZIKMHiAzX4lkXPGWsvtlU5nB2Ukr3ND5kCn2-c-txy0=w400" alt="Bonus 1 — Healing Yourself At Home">
+      <div>
+        <div class="bonus-badge">Free Bonus #1 — Value $29</div>
+        <h3>Healing Yourself At Home With Household Items</h3>
+        <div class="bonus-val">Valued at $29 — Yours FREE When You Order Today</div>
+        <p>This is the perfect guide for people who don't want to spend a lot of money on unnecessary doctor's appointments or pills. This is a very good companion for your backyard pharmacy. Besides medicinal plants, many things you have in your kitchen or pantry can also be turned into powerful natural remedies: the Onion Cough Syrup, Pickled Garlic, Vinegar Socks, the Potato Poultice, and many others that you may remember from your own childhood.</p>
+      </div>
+    </div>
+
+    <div class="bonus-card">
+      <img src="https://lh3.googleusercontent.com/-BmEOTK3ynal4ZSScIgc_-q2QhsG_XAfP2fNZdMpfIWmV8U4WQZR9uCWOZe-1COtAC6ubQ4sKP49JgW5KtPdtPtrrzmWci_eU6QZ=w400" alt="Bonus 2 — Wild Edible Herbs">
+      <div>
+        <div class="bonus-badge">Free Bonus #2 — Value $29</div>
+        <h3>Wild Edible and Medicinal Herbs You Can Forage or Find Around the House</h3>
+        <div class="bonus-val">Valued at $29 — Yours FREE When You Order Today</div>
+        <p>The best plants you can use are the ones you grow yourself with the Medicinal Garden Kit. The next best thing is taking advantage of the ones Nature has already grown for you, in your own backyard or somewhere close to your home. Until your seeds arrive and have had a chance to grow, you can use this guide to identify and forage what you need right away. You probably won't believe just how many powerful natural medicines are hiding in your area.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<div class="final-cta" id="order">
+  <a href="https://www.digistore24.com/product/379812?aff=KylieJean" style="display: block; cursor: pointer;" target="_blank" rel="noopener">
+  <img class="final-img"
+    src="https://lh3.googleusercontent.com/AQpm8lP56joRcCHK9z0pIb4dRxro19f7TowMtsJhwRGcKd_3ZLmzDGJDT2eC-L00Tnieq-v2xivYvOUh8itge-dnvsoKtO0tzqE=w716"
+    alt="Medicinal Garden Kit">
+  </a>
+  <h2>Start Your Backyard Pharmacy Today</h2>
+  <p>Don't take your health for granted like I did. Do not wait for it to deteriorate, to do something about it. One day it might be too late. Click on the button below now to get this medicinal garden in your backyard and start taking care of your health naturally.</p>
+  <a href="https://www.digistore24.com/product/379812?aff=KylieJean" class="btn" target="_blank" rel="noopener">🌿 Yes! I Want My Medicinal Garden Kit →</a>
+  <span class="btn-note btn-note-light">✓ Secure Checkout &nbsp;|&nbsp; ✓ 365-Day Guarantee &nbsp;|&nbsp; ✓ Free Bonuses Included</span>
+</div>
+
+<!-- GUARANTEE -->
+<div class="guarantee">
+  <div class="guarantee-icon">🛡️</div>
+  <h2>365 Days Money-Back Guarantee</h2>
+  <p>Because I have such faith in the Medicinal Garden Kit, it comes with a full <strong>365 days money-back guarantee</strong>. But my guess is you'll never want a refund, because these seeds and the 10 plants they create will end up saving you a lot more money in the long run than what you're paying for them today.</p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a href="https://medicinalseedkit.com/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a>
+    <a href="https://medicinalseedkit.com/disclaimer/" target="_blank" rel="noopener">Disclaimer</a>
+    <a href="https://medicinalseedkit.com/terms-and-conditions" target="_blank" rel="noopener">Terms and Conditions</a>
+    <a href="https://medicinalseedkit.com/refunds-policy" target="_blank" rel="noopener">Refund Policy</a>
+  </div>
+  <p>Global Brother Copyright © All Rights Reserved</p>
+  <p class="footer-disc">† These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease. Individual results may vary. The material on this site is for informational purposes only and is not a substitute for professional medical advice.</p>
+</footer>
+
+</body>
+</html>

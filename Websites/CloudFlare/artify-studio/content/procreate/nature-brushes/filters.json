@@ -1,0 +1,213 @@
+[
+  {
+    "id": "fantasy",
+    "label": "Fantasy",
+    "keywords": [
+      "fantasy",
+      "fantasies",
+      "magic",
+      "magical",
+      "mystic",
+      "mystical",
+      "dragon",
+      "dragons",
+      "potion",
+      "potions",
+      "unicorn",
+      "unicorns",
+      "fairy",
+      "fairies",
+      "enchanted",
+      "spell",
+      "spells",
+      "monster",
+      "monsters",
+      "mythical"
+    ]
+  },
+  {
+    "id": "ghibli",
+    "label": "Ghibli",
+    "keywords": [
+      "ghibli",
+      "anime",
+      "manga",
+      "miyazaki",
+      "whimsical",
+      "anime landscape",
+      "anime landscapes",
+      "anime cloud",
+      "anime clouds"
+    ]
+  },
+  {
+    "id": "cottagecore",
+    "label": "Cottagecore",
+    "keywords": [
+      "cottagecore",
+      "woodland",
+      "mushroom",
+      "mushrooms",
+      "toadstool",
+      "toadstools",
+      "fungi",
+      "moss",
+      "mosses",
+      "forest",
+      "forests"
+    ]
+  },
+  {
+    "id": "landscape",
+    "label": "Landscape",
+    "keywords": [
+      "landscape",
+      "landscapes",
+      "mountain",
+      "mountains",
+      "scenery",
+      "terrain",
+      "terrains",
+      "tree",
+      "trees",
+      "grass",
+      "grasses",
+      "cloud",
+      "clouds",
+      "sky",
+      "skies",
+      "pine",
+      "pines"
+    ]
+  },
+  {
+    "id": "kawaii",
+    "label": "Kawaii",
+    "keywords": [
+      "kawaii",
+      "cute",
+      "chibi",
+      "sweet",
+      "corgi",
+      "pug",
+      "koala",
+      "baby animal",
+      "baby animals"
+    ]
+  },
+  {
+    "id": "vintage",
+    "label": "Vintage",
+    "keywords": [
+      "vintage",
+      "retro",
+      "folk art",
+      "antique",
+      "rustic",
+      "nostalgic"
+    ]
+  },
+  {
+    "id": "wildlife",
+    "label": "Wildlife",
+    "keywords": [
+      "wildlife",
+      "animal",
+      "animals",
+      "deer",
+      "deers",
+      "reindeer",
+      "bird",
+      "birds",
+      "owl",
+      "owls",
+      "butterfly",
+      "butterflies",
+      "moth",
+      "moths",
+      "bee",
+      "bees",
+      "frog",
+      "frogs",
+      "fish",
+      "fishes",
+      "creature",
+      "creatures",
+      "insect",
+      "insects"
+    ]
+  },
+  {
+    "id": "tattoo",
+    "label": "Tattoo",
+    "keywords": [
+      "tattoo",
+      "tattoos",
+      "line art",
+      "linework",
+      "outline",
+      "outlines",
+      "ink",
+      "inks",
+      "flash"
+    ]
+  },
+  {
+    "id": "foliage",
+    "label": "Foliage",
+    "keywords": [
+      "foliage",
+      "leaf",
+      "leaves",
+      "greenery",
+      "branch",
+      "branches",
+      "bush",
+      "bushes",
+      "plant",
+      "plants",
+      "fern",
+      "ferns",
+      "shrub",
+      "shrubs"
+    ]
+  },
+  {
+    "id": "botanical",
+    "label": "Botanical",
+    "keywords": [
+      "botanical",
+      "botanicals",
+      "flower",
+      "flowers",
+      "floral",
+      "florals",
+      "rose",
+      "roses",
+      "peony",
+      "peonies",
+      "tulip",
+      "tulips",
+      "hydrangea",
+      "hydrangeas",
+      "sunflower",
+      "sunflowers",
+      "lotus",
+      "lotuses"
+    ]
+  },
+  {
+    "id": "cartography",
+    "label": "Cartography",
+    "keywords": [
+      "cartography",
+      "map",
+      "maps",
+      "map creator",
+      "map creators",
+      "rpg",
+      "dnd",
+      "worldbuilding"
+    ]
+  }
+]

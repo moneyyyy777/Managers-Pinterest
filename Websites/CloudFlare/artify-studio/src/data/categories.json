@@ -1,0 +1,74 @@
+[
+  {
+    "id": "cliparts",
+    "title": "Cliparts",
+    "subtitle": "Best Cliparts",
+    "description": "Handpicked collections of cliparts.",
+    "image": "https://i.pinimg.com/1200x/0f/ff/e5/0fffe500521042d1eae37d57e0f2cb20.jpg",
+    "href": "/cliparts",
+    "count": "10+ Collections"
+  },
+  {
+    "id": "procreate",
+    "title": "Procreate",
+    "subtitle": "Best Procreate Brushes & Stamps & Textures & Color Palettes",
+    "description": "Professional brushes, color palettes, stamps, and textures for digital artists and illustrators.",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ5ZknGkQTw7Bktl-yVewmsBFDPygozrBXYHHBIdIsBFMoO4dGim741ME&s=10",
+    "href": "/procreate",
+    "count": "5+ Collections"
+  },
+  {
+    "id": "planners",
+    "title": "Printables & Planners",
+    "subtitle": "Best Printables, Planners & Templates",
+    "description": "Digital planners, KDP interiors, trackers, kids' printables, and layout templates for daily life and business.",
+    "image": "https://cdn.creativefabrica.com/2025/12/29/AllinOne-Digital-Planner-Graphics-108361968.png",
+    "href": "/planners",
+    "count": "1 Collection"
+  },
+  {
+    "id": "christmas",
+    "title": "Christmas",
+    "subtitle": "Best Christmas Collections",
+    "description": "Handpicked collections of Christmas materials.",
+    "image": "https://i.pinimg.com/1200x/82/88/ee/8288ee49f8f820da1f1ecbf2ae31d1dd.jpg",
+    "href": "/christmas",
+    "count": "5+ Collections"
+  },
+  {
+    "id": "fonts",
+    "title": "Fonts",
+    "subtitle": "Best Fonts For Designers",
+    "description": "Handpicked collections of bubble, luxury, vintage, retro and handwritten fonts for modern creators.",
+    "image": "https://i0.wp.com/graphicdesignjunction.com/wp-content/uploads/2025/01/fonts_for_logos.jpg",
+    "href": "/fonts",
+    "count": "7 Collections"
+  },
+  {
+    "id": "wedding",
+    "title": "Wedding",
+    "subtitle": "Best Wedding Collections",
+    "description": "Handpicked collections of wedding materials.",
+    "image": "https://static01.nyt.com/images/2025/12/04/multimedia/04ST-WEDDING-SAVINGS-TIPS-01-tbfc/04ST-WEDDING-SAVINGS-TIPS-01-tbfc-mediumSquareAt3X.jpg",
+    "href": "/wedding",
+    "count": "1 Collection"
+  },
+  {
+    "id": "stickers",
+    "title": "Stickers",
+    "subtitle": "Best Stickers",
+    "description": "Handpicked collections of stickers.",
+    "image": "https://i0.wp.com/graphicdesignjunction.com/wp-content/uploads/2025/01/fonts_for_logos.jpg",
+    "href": "/stickers",
+    "count": "1 Collection"
+  },
+  {
+    "id": "svg",
+    "title": "SVG Cut Files",
+    "subtitle": "Best SVG Designs For Crafters",
+    "description": "Craft-ready SVG cut files for Cricut, Silhouette, monograms, t-shirts, and wedding projects.",
+    "image": "https://cdn.creativefabrica.com/2025/01/09/Vintage-Charm-Fonts-113510035-1.png",
+    "href": "/svg",
+    "count": "1 Collection"
+  }
+]

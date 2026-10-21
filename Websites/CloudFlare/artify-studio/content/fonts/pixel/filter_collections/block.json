@@ -1,0 +1,26 @@
+{
+  "filterId": "block",
+  "label": "Block",
+  "items": [
+    "brick-byte",
+    "sowth",
+    "clivia",
+    "pixel-craft",
+    "square-byte",
+    "grosac",
+    "pixelcraft",
+    "pixel-print",
+    "easy-pixel-2",
+    "pixel-mosaic-2",
+    "pixel-mosaic",
+    "pixel-3",
+    "easy-pixel",
+    "black-61",
+    "block-pixel",
+    "pixel-breaker",
+    "pixdraw",
+    "genty-2"
+  ],
+  "excludedItems": [],
+  "updatedAt": "2026-10-11T21:21:11.758Z"
+}

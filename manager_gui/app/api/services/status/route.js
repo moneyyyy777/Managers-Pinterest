@@ -1,0 +1,46 @@
+import { NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
+
+async function checkService(url, timeoutMs = 1500) {
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+    const res = await fetch(url, {
+      method: 'GET',
+      signal: controller.signal
+    });
+    clearTimeout(timer);
+
+    return res.ok || res.status < 500;
+  } catch (err) {
+    return false;
+  }
+}
+
+export async function GET() {
+  const [adminRunning, browserRunning, streamlitRunning] = await Promise.all([
+    checkService('http://127.0.0.1:3333', 1500),
+    checkService('http://127.0.0.1:9222/json/version', 1500),
+    checkService('http://127.0.0.1:8501', 1500)
+  ]);
+
+  return NextResponse.json({
+    admin: {
+      running: adminRunning,
+      port: 3333,
+      url: 'http://localhost:3333'
+    },
+    browser: {
+      running: browserRunning,
+      port: 9222,
+      url: 'https://aistudio.google.com'
+    },
+    streamlit: {
+      running: streamlitRunning,
+      port: 8501,
+      url: 'http://localhost:8501'
+    }
+  });
+}

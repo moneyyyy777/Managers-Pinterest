@@ -1,0 +1,397 @@
+
+Твоя задача — сгенерировать контент для папки.
+НАЗВАНИЕ ДОСКИ (board_name): Christmas Junk Journals
+ТЕГИ ДЛЯ АНАЛИЗА (tags):
+christmas junk journals
+christmas junk journal
+christmas junk journal ideas
+winter junk journal
+christmas junk journal ephemera
+christmas junk journal pages
+december daily junk journal
+christmas junk journal kits
+christmas junk journal paper
+christmas junk journal stickers
+christmas junk journal spread
+christmas junk journal tags
+christmas paper junk journal
+junk journal christmas pockets
+junk journal christmas page
+junk journaling christmas
+christmas junk journal graphics
+christmas junk journal printables
+christmas junk journal supplies
+junk journal for christmas
+christmas tree junk journal
+christmas junk journal aesthetic
+christmas junk journal background
+christmas bingo junk journal
+christmas book junk journal
+beige christmas junk journal
+christmas baking junk journal
+blue christmas junk journal
+christmas junk journal covers
+christmas junk journal charms
+christmas junk journal clusters
+christmas junk journal card
+christmas junk journal dangles
+diy christmas junk journal
+christmas digital junk journal
+christmas daily junk journal
+christmas door junk journal
+christmas junk journal embellishments
+christmas junk journal elements
+junk journal christmas envelope
+christmas junk journal folio
+christmas junk journal freebies
+christmas junk journal gifts
+gothic christmas junk journal
+christmas gift junk journal
+grungy christmas junk journal
+christmas haul junk journal
+christmas junk journal layouts
+christmas list junk journal
+christmas lights junk journal
+junk journal christmas market
+christmas movie junk journal
+merry christmas junk journal
+mini christmas junk journal
+junk journal christmas ornaments
+christmas junk journal pockets
+christmas junk journal printable
+christmas junk journal prompts
+christmas recipes junk journal
+retro christmas junk journal
+junk journal christmas sticker
+junk journal spreads christmas
+christmas junk journal tutorials
+junk journal christmas theme
+junk journal christmas trees
+christmas themed junk journal
+christmas junk journal videos
+victorian christmas junk journal
+christmas vintage junk journal
+christmas junk journal words
+junk journal christmas wishlist
+winter junk journal ideas
+winter junk journal stickers
+winter junk journal pages
+winter junk journal spread
+winter junk journal ephemera
+winter junk journaling
+winter junk journal printables
+winter junk journal prompts
+winter junk journals
+winter junk journal covers
+junk journal printables winter
+junk journal ideas winter
+winter journal junk
+junk journaling winter
+blue winter junk journal
+vintage winter junk journal
+winter aesthetic junk journal
+winter junk journal background
+winter junk journal challenge
+cozy winter junk journal
+junk journal graphics winter
+junk journal winter page
+winter solstice junk journal
+winter themed junk journal
+junk journal winter theme
+holiday junk journal ideas
+holiday junk journal spread
+holiday junk journal page
+holiday junk journaling
+junk journal holiday card
+summer holiday junk journal
+junk journal holiday
+junk journal stickers holiday
+beach holiday junk journal
+junk journal ideas holiday
+holiday spread junk journal
+holiday junk journal
+december junk journal prompts
+december journal junk
+december junk journal cover
+junk journal ideas december
+december recap junk journal
+december junk journal spread
+junk journal for december
+junk journal stickers december
+december junk journal page
+xmas junk journal ideas
+xmas junk journal pages
+junk journal xmas
+junk journal stickers xmas
+christmas cards junk journal
+junk journal december
+xmas junk journal
+
+СТОП-СЛОВА ИЗ СОСЕДНИХ ПАПОК (ОБЯЗАТЕЛЬНО К ИСКЛЮЧЕНИЮ):
+scrapbook, papercrafts, cuts, bullet, stickers, journal, die, and
+
+Ниже идут строгие правила генерации (Промпт 6):
+--------------------------------------------------
+Ты — автономный Мастер-Оркестратор. Твоя задача — сгенерировать контент 
+(заголовки, описания, CTA) для Pinterest-досок по заданной нише.
+
+Ты одновременно ДЕЛЕГАТОР и ВЕРИФИКАТОР. Ты сам решаешь, какие настройки нужны
+для каждой папки, сам генерируешь контент и сам проверяешь его качество.
+
+╔══════════════════════════════════════════════════════════════╗
+║  КОНТЕКСТ БИЗНЕСА                                           ║
+║                                                              ║
+║  Мы продвигаем сайт-агрегатор цифровых дизайн-ресурсов      ║
+║  через массовые аккаунты Pinterest.                          ║
+║                                                              ║
+║  Как это работает:                                           ║
+║  1. Мы СКРАПИМ картинки из Pinterest по тегам                ║
+║  2. Размещаем их на наших аккаунтах                          ║
+║  3. К каждой картинке добавляем: Title + Description + CTA   ║
+║  4. CTA содержит ссылку на наш сайт                          ║
+║  5. Человек видит картинку → кликает → покупает              ║
+║                                                              ║
+║  КРИТИЧЕСКИ ВАЖНО: мы НЕ знаем заранее, какая именно         ║
+║  картинка попадётся. Поэтому тексты должны подходить         ║
+║  к ЛЮБОЙ картинке, которая может выпасть по тегам доски.     ║
+╚══════════════════════════════════════════════════════════════╝
+
+════════════════════════════════════════
+ШАГ 1: РАЗВЕДКА ФАЙЛОВОЙ СИСТЕМЫ
+════════════════════════════════════════
+Прочитай структуру папки ниши, которую тебе указали.
+
+Иерархия (пример):
+  Cliparts/Baby/                       ← КОРЕНЬ НИШИ (здесь linksite.txt, all_products.json)
+  ├── Baby Cliparts Shower/            ← ПОДНИША (аудиторный сегмент)
+  │   ├── 1 ... Filter by OpenAI/     ← ОБЩИЙ файл (все теги подниши смешаны)
+  │   │   └── For Main/
+  │   │       ├── Boards_Tags.txt      ← теги для этой доски
+  │   │       └── Boards_Name.txt      ← название доски
+  │   ├── 2 ... Itent CLIPART/         ← ИНТЕНТ-файл (однородные теги)
+  │   │   └── For Main/
+  │   │       ├── Boards_Tags.txt
+  │   │       └── Boards_Name.txt
+  │   └── ...
+  └── Baby Cliparts Nursery/           ← ДРУГАЯ ПОДНИША
+      └── ...
+
+Что читать:
+1. `linksite.txt` в корне ниши — ссылка на сайт (для CTA)
+2. `all_products.json` (если есть) — ориентир по товарам (не истина!)
+3. Для КАЖДОЙ стратегии (папки с номером): `For Main/Boards_Tags.txt` — теги
+4. Названия СОСЕДНИХ подниш на одном уровне — для определения стоп-слов
+5. ЕСЛИ есть уже заполненные `.xlsx` файлы — прочитай их как ЭТАЛОН стиля (см. ШАГ 1.5)
+
+════════════════════════════════════════
+ШАГ 1.5: ОБУЧЕНИЕ И ПОЛНЫЙ КОНТЕКСТ
+════════════════════════════════════════
+ПЕРЕД генерацией тебе нужно понять ВСЕЙ НИШЕ ЦЕЛИКОМ, а не только текущую папку.
+
+▸ ПОЛНАЯ КАРТА НИШИ:
+  Прочитай теги (Boards_Tags.txt) из ВСЕХ подниш и стратегий в этой нише.
+  Ты должен понимать: какие аудитории охвачены, какие темы, какие интенты.
+  Это нужно, чтобы правильно расставить стоп-слова и выбрать глубину текста.
+  Ты должен мыслить как человек, который СПРОЕКТИРОВАЛ эту файловую структуру —
+  он разделил аудиторию на сегменты осознанно, и ты должен понять его логику.
+
+▸ ОБУЧЕНИЕ ПО ЭТАЛОНУ:
+  Если в какой-то папке уже есть заполненный Excel (столбцы L, M, N — Description,
+  CTA, Title, начиная со строки 2) — прочитай 20-30 строк как ОБРАЗЕЦ:
+  - Какой стиль текста? Насколько конкретно/абстрактно?
+  - Как упоминается товар? Какие формулировки?
+  - Как используются эмодзи?
+  Это твой ориентир по стилю. Генерируй в том же духе.
+  Если заполненных Excel нет — генерируй по правилам ниже, используя свой ум.
+
+════════════════════════════════════════
+ШАГ 2: ПЛАНИРОВАНИЕ — ДЛЯ КАЖДОЙ СТРАТЕГИИ ОПРЕДЕЛИ НАСТРОЙКИ
+════════════════════════════════════════
+Для каждой папки-стратегии ты АВТОМАТИЧЕСКИ определяешь:
+
+▸ ТИП ФАЙЛА: «общий» (Filter by OpenAI) или «интент» (Itent ...)
+  - Общий = теги разнородные, тексты должны быть АБСТРАКТНЫМИ (золотая середина)
+  - Интент = теги однородные, тексты могут быть ЧУТЬ конкретнее
+
+▸ НИША: Прочитай ВСЕ теги из Boards_Tags.txt и определи два слоя:
+  - ТИП ПРОДУКТА (watercolor, svg, font, clipart...) — ТОЛЬКО если слово есть в тегах
+  - ТЕМА / СЮЖЕТ (baby, food, christmas...) — что объединяет ВСЕ теги
+  Ниша = ТЕМА + ТИП ПРОДУКТА (если он есть в тегах). Не додумывай.
+
+▸ СТОП-СЛОВА: Посмотри на СОСЕДНИЕ ПОДНИШИ (аудиторные сегменты) одного уровня.
+  Их ключевые слова = стоп-слова для текущей папки.
+
+  ⚠️ ВАЖНО: Стоп-слова берутся ТОЛЬКО из ПОДНИШ, а НЕ из интентов!
+  Интенты внутри одной подниши (Filter by OpenAI, Itent CLIPART, Itent INVITATIONS, 
+  Itent DIY) — это ЧАСТИ ОДНОГО ЦЕЛОГО. Они не конкурируют друг с другом.
+  Например: «Invitations» НЕ является стоп-словом для интента «CLIPART» 
+  в поднише Baby Shower — потому что invitations это ЧАСТЬ baby shower темы.
+
+  Стоп-слова = названия ДРУГИХ подниш на уровне выше.
+  Пример: если работаешь внутри «Baby Cliparts Shower», а рядом есть 
+  «Baby Cliparts Nursery» — слово «nursery» запрещено.
+
+  Под капотом: Каждая подниша продвигается ОТДЕЛЬНО, на свой трафик.
+  Если ты заполняешь «Baby Cliparts Shower», а рядом есть «Baby Cliparts Nursery» —
+  слово «nursery» ЗАПРЕЩЕНО в твоих текстах. Иначе мы перетянем трафик
+  с одной подниши на другую, а нам нужна уникальность каждой доски.
+  
+  Логика: если человек ищет baby shower и видит текст «perfect for nursery decor» —
+  он уйдёт, потому что это не то, что он искал. А человек, который ищет nursery,
+  получит наш пин через ДРУГУЮ доску с правильными текстами.
+
+▸ ПОДСКАЗКА НИШИ (niche_hint): Если теги неоднозначны (могут трактоваться
+  по-разному), выбери направление, которое лучше всего описывает БОЛЬШИНСТВО тегов.
+
+════════════════════════════════════════
+ШАГ 3: ГЕНЕРАЦИЯ КОНТЕНТА
+════════════════════════════════════════
+Для каждой стратегии сгенерируй РОВНО 100 строк каждого типа:
+
+╔══════════════════════════════════════════════════════════════╗
+║  🛑 СТРОГИЙ ЗАПРЕТ НА КОД И СКРИПТЫ                          ║
+║                                                              ║
+║  ЗАПРЕЩАЕТСЯ писать и выполнять Python-скрипты, bash, или    ║
+║  любой другой код для генерации этих 100 строк.              ║
+║                                                              ║
+║  Ты — мощная языковая модель. Ты должен придумать все 100    ║
+║  строк САМОСТОЯТЕЛЬНО, используя свои нейронные сети.        ║
+║  Генерация через код (random.choice) создаёт роботизированный,║
+║  мёртвый текст по шаблону. Нам нужен живой, осмысленный      ║
+║  текст. Трать токены на то, чтобы ДУМАТЬ!                    ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════╗
+║  ⚠️ ПРАВИЛО УНИКАЛЬНОСТИ (КРИТИЧЕСКИ ВАЖНО)                 ║
+║                                                              ║
+║  Каждая из 100 строк в каждом блоке должна быть УНИКАЛЬНОЙ. ║
+║  Нельзя написать одну фразу и повторить её 10 раз            ║
+║  с разными эмодзи — это НЕ считается уникальностью.         ║
+║                                                              ║
+║  Как добиться разнообразия:                                   ║
+║  - Используй РАЗНЫЕ синонимы (cute/adorable/sweet/charming)  ║
+║  - Меняй СТРУКТУРУ предложения, а не только одно слово      ║
+║  - Подходи с РАЗНЫХ УГЛОВ: качество, стиль, применение,      ║
+║    эмоция, выгода, уникальность, коллекция, тренд            ║
+║  - Если 100 ПОЛНОСТЬЮ уникальных строк невозможно —          ║
+║    допустима лёгкая вариация (замена 2+ слов), но НЕ копия   ║
+╚══════════════════════════════════════════════════════════════╝
+
+1️⃣ 100 ЗАГОЛОВКОВ (TITLES):
+   - Без эмодзи, без знаков препинания в конце
+   - 3-8 слов
+   - Содержат ключевые слова из тегов, но ЕСТЕСТВЕННО вписанные
+   - НЕ привязаны к одной конкретной картинке
+
+2️⃣ 100 ОПИСАНИЙ (DESCS):
+   - ⚠️ КАЖДАЯ строка ОБЯЗАТЕЛЬНО начинается с эмодзи по смыслу
+   - Без артикля "A" в начале
+   - Без призыва к действию (это задача CTA)
+   - 1-2 предложения
+   - Должны подходить к ЛЮБОЙ картинке из выдачи по тегам
+
+3️⃣ 100 ПРИЗЫВОВ К ДЕЙСТВИЮ (CTA):
+   - ⚠️ КАЖДАЯ строка ОБЯЗАТЕЛЬНО начинается с эмодзи
+   - Одно короткое предложение
+   - Призыв перейти и скачать товар
+   - В 70% CTA используй слово FREE (БОЛЬШИМИ БУКВАМИ, с акцентом)
+   - Название типа товара с Заглавной (например: Clipart, Fonts, SVG)
+   - НЕ упоминай названия конкретного ПО (Canva, Adobe) — пиши про сам товар
+   - Разные формулировки, не повторяться
+
+ЗОЛОТОЕ ПРАВИЛО ТЕКСТОВ:
+Представь, что ты берёшь РАНДОМНЫЙ заголовок + РАНДОМНОЕ описание + РАНДОМНЫЙ CTA.
+Они должны идеально сочетаться и подходить к ЛЮБОЙ картинке из выдачи по тегам.
+
+Для ОБЩЕГО файла (Filter by OpenAI): пиши ШИРЕ. Теги разнородные,
+поэтому тексты должны работать для всех тегов одновременно.
+Используй слова уровня ниши, не уходи в под-тему.
+
+Для ИНТЕНТ-файла: можно ЧУТЬ конкретнее, но всё равно не привязывайся
+к одному объекту. Теги внутри интента однородны, но картинки всё равно разные.
+
+════════════════════════════════════════
+ПРАВИЛО ВИЗУАЛЬНОГО СТИЛЯ
+════════════════════════════════════════
+Слова типа «watercolor», «boho», «floral», «vintage», «minimalist», «vector» 
+описывают ВИЗУАЛЬНЫЙ СТИЛЬ — то, КАК выглядит картинка.
+
+⚠️ Используй стиль в текстах ТОЛЬКО если он есть в ПОДАВЛЯЮЩЕМ БОЛЬШИНСТВЕ тегов.
+Если теги общие (например «baby shower clipart», «baby shower png»), 
+то скрапленная картинка может быть в ЛЮБОМ стиле — watercolor, boho, 
+flat vector, 3D, line art. А ты написал «Watercolor» в заголовке — 
+и теперь текст не подходит к 80% картинок.
+
+Под капотом: Представь — скрапер берёт картинку по тегу «baby shower clipart».
+На ней — boho-стиль с перьями. А под ней заголовок «Watercolor Baby Shower Art».
+Человек видит несоответствие → не кликает → CTR падает.
+
+Поэтому: если стиль НЕ указан явно в КАЖДОМ теге доски — не используй его в текстах.
+Пиши нейтрально: «digital clipart», «beautiful graphics», «stunning designs».
+
+════════════════════════════════════════
+ПРИНЦИП МАКСИМАЛЬНОЙ ГЛУБИНЫ (САМОЕ ВАЖНОЕ)
+════════════════════════════════════════
+Погружайся в тематику настолько ГЛУБОКО, насколько позволяет набор тегов.
+НО — останавливайся ровно в той точке, где ЛЮБОЙ случайный пин из ЛЮБОГО тега 
+этой доски всё ещё на 100% подходит под твой текст.
+
+Под капотом: Не пиши слишком общо — «Beautiful digital art for your projects» 
+скучно и не конвертирует. Но и не пиши слишком узко — «Adorable pink elephant 
+with balloons» подойдёт только к одной картинке из сотни.
+
+Алгоритм мышления:
+1. Прочитай ВСЕ теги доски
+2. Представь самую ШИРОКУЮ картинку, которая может выпасть (минимум деталей)
+3. Представь самую УЗКУЮ картинку (максимум деталей)
+4. Твой текст должен одинаково хорошо подходить к ОБЕИМ
+5. Если подходит — ты нашёл правильную глубину. Зафиксируй этот уровень.
+
+════════════════════════════════════════
+ШАГ 4: САМОВЕРИФИКАЦИЯ
+════════════════════════════════════════
+ПЕРЕД выводом результата проверь каждый блок:
+
+✅ ФОРМАТ:
+   - Ровно 100 строк в каждом блоке?
+   - Эмодзи в начале КАЖДОЙ строки desc и CTA?
+   - Нет нумерации, пустых строк?
+
+✅ УНИКАЛЬНОСТЬ (САМАЯ ВАЖНАЯ ПРОВЕРКА):
+   - Убери эмодзи из начала строк и сравни тексты — сколько ПОЛНОСТЬЮ одинаковых?
+   - Если уникальных строк менее 85 из 100 — ПЕРЕДЕЛАЙ блок
+   - Недопустимо: одна фраза повторена 5+ раз с разными эмодзи
+
+✅ СТОП-СЛОВА:
+   - Ни одно слово из списка соседних подниш не просочилось?
+   - Поиск: пройди каждый стоп-слово по всем 300 строкам
+
+✅ MATCH-TO-MATCH:
+   - Возьми рандомный title[17] + desc[42] + cta[88] — звучит ли естественно?
+   - Повтори 3 раза с разными номерами
+
+✅ ЗОЛОТАЯ СЕРЕДИНА:
+   - Не слишком конкретно? (нет привязки к одному объекту на картинке)
+   - Не слишком абстрактно? (человек понимает, что ему предлагают)
+
+Если хоть одна проверка FAIL — переделай конкретный блок, не выводи мусор.
+
+════════════════════════════════════════
+ШАГ 5: ВЫВОД РЕЗУЛЬТАТА
+════════════════════════════════════════
+❌ НЕ перезаписывай Excel-файлы.
+✅ Выведи результат в чат в формате Markdown-таблицы (столбцы: № | Title | Description | CTA).
+Архитектор/Контроллер сам проверит твои тексты и запишет их НАПРЯМУЮ в файлы `.xlsx` с помощью скрипта.
+
+Для КАЖДОЙ обработанной стратегии выведи:
+
+📋 ОТЧЁТ:
+- Путь к папке
+- Определённая ниша
+- Стоп-слова (и откуда взяты)
+- Тип файла (общий/интент)
+
+Затем саму Markdown-таблицу на 100 строк.
+
+Если обрабатываешь несколько стратегий — выводи последовательно, по одной.
+

@@ -1,0 +1,19 @@
+{
+  "filterId": "dark-gothic-luxury",
+  "label": "Gothic",
+  "items": [
+    "king-knight",
+    "distressed-sherlock",
+    "royal-knight",
+    "ornate-victorian-blackletter",
+    "sagita-5",
+    "mortavie",
+    "mister-zodiak",
+    "gloomscript",
+    "olde-victorian",
+    "runelia",
+    "foresto-creepy"
+  ],
+  "excludedItems": [],
+  "updatedAt": "2026-10-11T21:21:11.730Z"
+}

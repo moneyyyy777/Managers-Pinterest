@@ -1,0 +1,16 @@
+{
+  "filterId": "script",
+  "label": "Script",
+  "items": [
+    "retro-script",
+    "retro-graffiti-monoline",
+    "retro-script-2",
+    "retro-scrible",
+    "retro-christa",
+    "retro-sentiment",
+    "retro-angela-duo",
+    "retro-lovely"
+  ],
+  "excludedItems": [],
+  "updatedAt": "2026-10-11T21:21:12.040Z"
+}

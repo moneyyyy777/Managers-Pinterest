@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Muscle Plus - Build Muscle After 40</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+        }
+        h1, h2, h3, h4, h5 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+        }
+        
+        /* Navbar */
+        .navbar {
+            background-color: #061122;
+            padding: 15px 0;
+        }
+        .navbar-brand {
+            font-weight: 800;
+            color: #fff !important;
+            font-size: 24px;
+        }
+        .nav-link {
+            color: #cbd5e1 !important;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+            margin: 0 10px;
+            transition: 0.3s;
+        }
+        .nav-link:hover {
+            color: #38bdf8 !important;
+        }
+
+        /* Buttons */
+        .btn-cta {
+            background-color: #0284c7; 
+            color: #fff;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 15px 35px;
+            border-radius: 50px;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
+        }
+        .btn-cta:hover {
+            background-color: #0369a1;
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.6);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #061122; 
+            color: #fff;
+            padding: 100px 0 80px;
+        }
+        .hero-headline {
+            font-size: 3rem;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+        .hero-headline span {
+            color: #38bdf8;
+        }
+
+        /* Section Titles */
+        .section-title {
+            color: #0f172a;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* Feature Cards */
+        .feature-box {
+            text-align: center;
+            padding: 30px;
+            background: #f8fafc;
+            border-radius: 15px;
+            height: 100%;
+            transition: 0.3s;
+        }
+        .feature-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Detailed Reviews */
+        .review-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .review-stars {
+            color: #f59e0b;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        /* Guarantee */
+        .guarantee-section {
+            background-color: #f0f9ff;
+            border: 2px dashed #0284c7;
+            padding: 50px 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        /* FAQ Accordion Styling */
+        .accordion-button:not(.collapsed) {
+            background-color: #f0f9ff;
+            color: #0284c7;
+            box-shadow: inset 0 -1px 0 rgba(0,0,0,.125);
+        }
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: rgba(0,0,0,.125);
+        }
+        .accordion-body ul, .accordion-body ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+        .accordion-body li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Pricing Packages */
+        .pricing-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            background: #fff;
+            position: relative;
+            transition: 0.3s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .pricing-card:hover {
+            border-color: #0284c7;
+        }
+        .pricing-popular {
+            border-color: #0f172a;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transform: scale(1.05);
+            z-index: 2;
+        }
+        .badge-popular {
+            background: #0f172a;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 0 0 10px 10px;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        .price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .price span {
+            font-size: 1rem;
+            color: #64748b;
+        }
+
+        /* Footer */
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 40px 0;
+            font-size: 14px;
+        }
+        footer a {
+            color: #cbd5e1;
+            text-decoration: none;
+        }
+        footer a:hover {
+            color: #fff;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-headline { font-size: 2.2rem; }
+            .pricing-popular { transform: scale(1); margin-top: 30px; margin-bottom: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-dumbbell" style="color:#38bdf8;"></i> Advanced Bio</a>
+            <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#ingredients">Ingredients</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#reviews">Reviews</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#guarantee">Guarantee</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+                    <li class="nav-item ms-lg-3"><a class="btn btn-cta btn-sm py-2 px-4" href="#order">Order Now</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <h1 class="hero-headline">“The Last Time I Saw Gains Like This <span>I Was In High School!</span>”</h1>
+                    <p class="lead mb-4">– Paul M. (Verified Buyer)</p>
+                    <p class="mb-5">This combination of 8 essential amino acids gives your body the building blocks to make all the protein it needs so you can feel fitter, stronger, and younger.</p>
+                    <a href="#order" class="btn btn-cta">Rush My Order Now <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="https://assets.advancedbionutritionals.com/Images/Landing-Pages-2020/Advanced-Muscle-Plus/High-Design/muscle-moneyback-guarantee.jpg" alt="Advanced Muscle Plus" class="img-fluid rounded">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3 Core Benefits -->
+    <section id="about" class="py-5">
+        <div class="container py-5">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <img src="https://assets.advancedbionutritionals.com/Images/Landing-Pages-2020/Advanced-Amino-2023/High-Design/muscle-icon.jpg" alt="Muscle Icon" class="img-fluid mb-3" style="max-height: 80px;">
+                        <h3>Pack On Muscle and Strength</h3>
+                        <p>You’re not too old to build muscle! Your body just needs the right push. Advanced Muscle Plus helps your body “flip the muscle switch” again. This leads to more muscle, more strength, and more confidence.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <img src="https://assets.advancedbionutritionals.com/Images/Landing-Pages-2020/Advanced-Amino-2023/High-Design/workout-icon.jpg" alt="Workout Icon" class="img-fluid mb-3" style="max-height: 80px;">
+                        <h3>More Power, Stability, and Independence</h3>
+                        <p>Losing just 10% of your muscle can double your risk of serious injury from a fall. Advanced Muscle Plus strengthens your legs, core, and grip. Your balance improves, and you have control over your body again.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <img src="https://assets.advancedbionutritionals.com/Images/Landing-Pages-2020/Advanced-Muscle-Plus/High-Design/body-icon.jpg" alt="Body Icon" class="img-fluid mb-3" style="max-height: 80px;">
+                        <h3>Look and Feel Years Younger</h3>
+                        <p>Your flabby arms firm up. Your belly tightens and tones. And your shoulders broaden. More muscle gives you energy, stamina, and the drive to enjoy life again.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Problem & Solution -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0 text-center">
+                    <img src="https://assets.advancedbionutritionals.com/Images/Landing-Pages-2020/Advanced-Muscle-Plus/High-Design/lifting-weights.png" alt="Working Out" class="img-fluid rounded shadow">
+                </div>
+                <div class="col-lg-6">
+                    <h2 class="section-title text-start mb-3">Why It’s Harder to Build Muscle After 40</h2>
+                    <p>Many people notice it gets harder to stay strong as they get older. The reason is a natural enzyme in your body called <strong>mTOR</strong>. This enzyme acts like a switch for muscle growth.</p>
+                    <p>After 40, this switch does not work as it used to. As a result, your body struggles to use protein, rebuild muscle, and recover from exercise. That’s why diet and exercise alone don’t work like they once did.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4 Ways & What you'll notice -->
+    <section class="py-5">
+        <div class="container py-4">
+            <div class="row g-5">
+                <div class="col-lg-6">
+                    <h3 class="mb-4 text-primary" style="color: #0284c7 !important;">Muscle Plus Helps You In 4 Different Ways</h3>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="fas fa-check-circle text-success me-2 fs-5"></i> <strong>Turns on your muscle-building switch.</strong> Your body is able to build muscle again.</li>
+                        <li class="mb-3"><i class="fas fa-check-circle text-success me-2 fs-5"></i> <strong>Stops age-related muscle loss.</strong> You keep the muscle you have and can grow more.</li>
+                        <li class="mb-3"><i class="fas fa-check-circle text-success me-2 fs-5"></i> <strong>Speeds up muscle growth.</strong> You can see results up to 3 times faster than with exercise and food alone.</li>
+                        <li class="mb-3"><i class="fas fa-check-circle text-success me-2 fs-5"></i> <strong>Boosts recovery and energy.</strong> You feel less tired and have more energy every day.</li>
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <h3 class="mb-4 text-primary" style="color: #0284c7 !important;">What You’ll Notice with Advanced Muscle Plus</h3>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="fas fa-star text-warning me-2 fs-5"></i> Muscles that feel firmer and look more defined</li>
+                        <li class="mb-3"><i class="fas fa-star text-warning me-2 fs-5"></i> More strength for lifting, carrying, and moving</li>
+                        <li class="mb-3"><i class="fas fa-star text-warning me-2 fs-5"></i> Easier balance and better posture</li>
+                        <li class="mb-3"><i class="fas fa-star text-warning me-2 fs-5"></i> Faster recovery after exercise or activity</li>
+                        <li class="mb-3"><i class="fas fa-star text-warning me-2 fs-5"></i> A steady boost in daily energy</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ingredients -->
+    <section id="ingredients" class="py-5 bg-light">
+        <div class="container py-5">
+            <h2 class="section-title">What Makes Advanced Muscle Plus So Effective?</h2>
+            <div class="row mt-5 align-items-center">
+                <!-- Ingredient 1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="h-100 p-3 bg-white rounded shadow-sm">
+                        <h4 class="text-primary" style="color: #0284c7 !important;">Dileucine (Peptide DL185™)</h4>
+                        <p class="mt-3">Peptide DL185™ is a next-gen amino compound that tells your muscles to grow by kicking your body's muscle-building switch (mTOR) into overdrive.</p>
+                        <p>It boosts muscle protein synthesis by a staggering 159%. In a 10-week clinical study, people taking DL185™ added 133 pounds to their leg press! That’s nearly 3 times the strength gains of the placebo group.</p>
+                    </div>
+                </div>
+                <!-- Graphic Image -->
+                <div class="col-md-4 mb-4 text-center">
+                    <img src="https://assets.advancedbionutritionals.com/Images/Landing-Pages-2020/Advanced-Muscle-Plus/High-Design/advanced-muscle-plus-graphic.jpg" alt="Advanced Muscle Plus Graphic" class="img-fluid rounded shadow-sm">
+                </div>
+                <!-- Ingredient 2 -->
+                <div class="col-md-4 mb-4">
+                    <div class="h-100 p-3 bg-white rounded shadow-sm">
+                        <h4 class="text-primary" style="color: #0284c7 !important;">MyHMB®</h4>
+                        <p class="mt-3">Muscle loss accelerates after 40. MyHMB® stops it cold.</p>
+                        <p>It reduces muscle loss by 57%. And, at the same time, it promotes muscle growth. So it protects your muscles and helps you get stronger.</p>
+                        <p>In one study, even bedridden adults retained ALL their muscle mass with MyHMB®!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Use -->
+    <section class="py-5">
+        <div class="container py-4">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="section-title text-start mb-4">How To Use</h2>
+                    <p class="lead">Take Advanced Muscle Plus after your workout to amplify muscle protein synthesis. On a rest day, take it with your first meal of the day.</p>
+                    <p>This will help your muscles grow stronger … your body feel younger … and your energy surge back – without changing your routine.</p>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="https://assets.advancedbionutritionals.com/Images/Landing-Pages-2020/Advanced-Muscle-Plus/High-Design/dumbbell.png" alt="Dumbbell" class="img-fluid" style="max-width: 330px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="reviews" class="py-5 bg-light">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="section-title mb-2">Advanced Muscle Plus Reviews</h2>
+                <div class="d-flex justify-content-center align-items-center mb-2">
+                    <div class="review-stars fs-3 me-2">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <span class="fs-4 fw-bold">4.5 Average Rating</span>
+                </div>
+                <p class="text-muted"><i class="fas fa-check-circle text-success"></i> 86% Recommend This Supplement</p>
+            </div>
+
+            <div class="row">
+                <!-- Review 1 -->
+                <div class="col-md-6">
+                    <div class="review-card">
+                        <div class="review-stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <h5 class="mb-1">You’ve done it again guys!!!</h5>
+                        <p class="small text-muted mb-3">By <strong>Robert S.</strong> (Australia) | Verified Customer <i class="fas fa-check-circle text-success"></i></p>
+                        <p class="fst-italic text-secondary">"It is unreal actually, to see the difference particularly in my arms. Where my skin on my forearms was once a bit limp and wrinkly from muscle loss, it is now stretching over the muscle building underneath... Advanced Muscle Plus has rebuilt my confidence, my mental health, and overall happiness."</p>
+                    </div>
+                </div>
+                <!-- Review 2 -->
+                <div class="col-md-6">
+                    <div class="review-card">
+                        <div class="review-stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <h5 class="mb-1">Great results</h5>
+                        <p class="small text-muted mb-3">By <strong>CHARLES F.</strong> (Summerfield, FL) | Verified Customer <i class="fas fa-check-circle text-success"></i></p>
+                        <p class="fst-italic text-secondary">"At age 63, things were different. My gains hit the wall. When I tried Advanced Muscle Plus, it made a believer out of me. No placebo effect here, because I was gaining again after stalling for some time. I tried another formula from Amazon, but quickly realized it wasn’t the same. The ingredients in Advanced Muscle Plus are superior."</p>
+                    </div>
+                </div>
+                <!-- Review 3 -->
+                <div class="col-md-6">
+                    <div class="review-card">
+                        <div class="review-stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <h5 class="mb-1">It really works</h5>
+                        <p class="small text-muted mb-3">By <strong>Glen B.</strong> (Prescott Valley, AZ) | Verified Customer <i class="fas fa-check-circle text-success"></i></p>
+                        <p class="fst-italic text-secondary">"Started taking Advance Muscle Plus 3 weeks ago and I have increased the weights 5 pounds and reps from 10 to 12. My wife noticed the difference in my muscle size. I now have better Range of Motion and no more pain since taking your product."</p>
+                    </div>
+                </div>
+                <!-- Review 4 -->
+                <div class="col-md-6">
+                    <div class="review-card">
+                        <div class="review-stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <h5 class="mb-1">Building muscle mass</h5>
+                        <p class="small text-muted mb-3">By <strong>Anthony M.</strong> (Archer, FL) | Verified Customer <i class="fas fa-check-circle text-success"></i></p>
+                        <p class="fst-italic text-secondary">"This product appears to decrease recovery time and post workout soreness and I have noticed gains in strength at almost 79 years of age- I have been a lifelong advocate of fitness... I believe this product provides benefit."</p>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center small text-muted mt-4">* Above are actual reviews from our customers. Your results may vary.</p>
+        </div>
+    </section>
+
+    <!-- Pricing / Order Section -->
+    <section id="order" class="py-5">
+        <div class="container py-5">
+            <h2 class="section-title">Try Advanced Muscle Plus Risk-Free</h2>
+            <div class="row align-items-stretch mt-5">
+                
+                <!-- 1 Bottle -->
+                <div class="col-lg-4 mb-4">
+                    <div class="pricing-card">
+                        <h4>Sample Option</h4>
+                        <p class="text-muted">1 Bottle</p>
+                        
+                        <!-- Кликабельная картинка для 1 бутылки (открывается в новой вкладке) -->
+                        <a href="https://www.digistore24.com/product/627161?aff=KylieJean&cam=campaign&ga_cid=1334012133.1776867772&ga_sid=1780068382" target="_blank" rel="noopener noreferrer" class="d-block">
+                            <img src="https://assets.advancedbionutritionals.com/Images/Landing-Pages-2020/Advanced-Muscle-Plus/High-Design/1bottle.jpg" alt="1 Bottle" class="img-fluid mb-3 mx-auto" style="height: 240px; object-fit: contain;">
+                        </a>
+
+                        <div class="price mb-4">$79.95<span> /bottle</span></div>
+                        <ul class="list-unstyled text-start mb-4 mx-auto" style="max-width: 200px; flex-grow: 1;">
+                            <li class="mb-2"><i class="fas fa-times text-danger me-2"></i> No Bulk Discount</li>
+                            <li class="mb-2"><i class="fas fa-times text-danger me-2"></i> Standard Shipping</li>
+                        </ul>
+                        <p class="fw-bold mb-3">Total: $79.95</p>
+                        <!-- Кнопка (открывается в новой вкладке) -->
+                        <a href="https://www.digistore24.com/product/627161?aff=KylieJean&cam=campaign&ga_cid=1334012133.1776867772&ga_sid=1780068382" target="_blank" rel="noopener noreferrer" class="btn btn-cta w-100 py-3">Add To Cart</a>
+                    </div>
+                </div>
+
+                <!-- 3 Bottles (Most Popular) -->
+                <div class="col-lg-4 mb-4">
+                    <div class="pricing-card pricing-popular">
+                        <div class="badge-popular">Most Popular</div>
+                        <h4 class="mt-3">3 Bottles</h4>
+                        <p class="text-success fw-bold m-0">Instant Savings: $84.90</p>
+                        
+                        <!-- Кликабельная картинка для 3 бутылок (открывается в новой вкладке) -->
+                        <a href="https://www.digistore24.com/product/627162?aff=KylieJean&cam=campaign&ga_cid=1334012133.1776867772&ga_sid=1780068382" target="_blank" rel="noopener noreferrer" class="d-block">
+                            <img src="https://assets.advancedbionutritionals.com/Images/Landing-Pages-2020/Advanced-Muscle-Plus/High-Design/3bottle.jpg" alt="3 Bottles" class="img-fluid my-3 mx-auto" style="height: 240px; object-fit: contain;">
+                        </a>
+
+                        <div class="price mb-4">$71.65<span> /bottle</span></div>
+                        <ul class="list-unstyled text-start mb-4 mx-auto" style="max-width: 200px; flex-grow: 1;">
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Save Over $80</li>
+                            <li class="mb-2"><i class="fas fa-truck text-success me-2"></i> <strong>Free US Shipping</strong></li>
+                        </ul>
+                        <p class="fw-bold mb-3">Total: $214.95</p>
+                        <!-- Кнопка (открывается в новой вкладке) -->
+                        <a href="https://www.digistore24.com/product/627162?aff=KylieJean&cam=campaign&ga_cid=1334012133.1776867772&ga_sid=1780068382" target="_blank" rel="noopener noreferrer" class="btn btn-cta w-100 py-3">Add To Cart</a>
+                    </div>
+                </div>
+
+                <!-- 6 Bottles -->
+                <div class="col-lg-4 mb-4">
+                    <div class="pricing-card">
+                        <h4>Biggest Savings</h4>
+                        <p class="text-success fw-bold m-0">Instant Savings: $199.80</p>
+                        
+                        <!-- Кликабельная картинка для 6 бутылок (открывается в новой вкладке) -->
+                        <a href="https://www.digistore24.com/product/627163?aff=KylieJean&cam=campaign&ga_cid=1334012133.1776867772&ga_sid=1780068382" target="_blank" rel="noopener noreferrer" class="d-block">
+                            <img src="https://assets.advancedbionutritionals.com/Images/Landing-Pages-2020/Advanced-Muscle-Plus/High-Design/6bottle.png" alt="6 Bottles" class="img-fluid my-3 mx-auto" style="height: 240px; object-fit: contain;">
+                        </a>
+
+                        <div class="price mb-4">$66.65<span> /bottle</span></div>
+                        <ul class="list-unstyled text-start mb-4 mx-auto" style="max-width: 200px; flex-grow: 1;">
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Max Discount</li>
+                            <li class="mb-2"><i class="fas fa-truck text-success me-2"></i> <strong>Free US Shipping</strong></li>
+                        </ul>
+                        <p class="fw-bold mb-3">Total: $399.90</p>
+                        <!-- Кнопка (открывается в новой вкладке) -->
+                        <a href="https://www.digistore24.com/product/627163?aff=KylieJean&cam=campaign&ga_cid=1334012133.1776867772&ga_sid=1780068382" target="_blank" rel="noopener noreferrer" class="btn btn-cta w-100 py-3">Add To Cart</a>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="text-center mt-4">
+                <img src="https://assets.advancedbionutritionals.com/Images/Icons/credit.png" alt="Secure Checkout Icons" class="img-fluid" style="max-width: 225px;">
+            </div>
+        </div>
+    </section>
+
+    <!-- Guarantee Section -->
+    <section id="guarantee" class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="guarantee-section shadow">
+                        <i class="fas fa-shield-alt fa-4x mb-3" style="color: #0284c7;"></i>
+                        <h2 class="mb-3">“Build Muscle or it’s Free” Guarantee</h2>
+                        <p class="lead">We're so confident Advanced Muscle Plus will work for you that we offer a complete guarantee. Try Advanced Muscle Plus for 90 days. If you don't:</p>
+                        <ul class="list-unstyled text-start mx-auto" style="max-width: 400px; font-size: 1.1rem;">
+                            <li><i class="fas fa-check text-success me-2"></i> Feel stronger and more energetic</li>
+                            <li><i class="fas fa-check text-success me-2"></i> Recover faster from physical activity</li>
+                            <li><i class="fas fa-check text-success me-2"></i> Notice firmer, more defined muscles</li>
+                            <li><i class="fas fa-check text-success me-2"></i> Love the way you look and feel</li>
+                        </ul>
+                        <p class="mt-3">… just send back your bottles – even if they’re empty – and get a full refund (minus shipping).</p>
+                        <p class="fw-bold mt-3">That’s how much we believe in this formula. You either see results, or you don’t pay.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dr. Greg Eckel Section -->
+    <section class="py-5 text-white" style="background-color: #0f172a;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center mb-4 mb-md-0">
+                    <img src="https://assets.advancedbionutritionals.com/Images/Doctor-Images/Greg-Eckel.png" alt="Dr. Greg Eckel" class="img-fluid rounded" style="max-width: 250px;">
+                </div>
+                <div class="col-md-8">
+                    <h2 class="mb-4">About Dr. Greg Eckel</h2>
+                    <p>Dr. Eckel is a Naturopathic Physician with more than 23 years of experience in Integrative and Regenerative Medicine.</p>
+                    <p>He is the founder of bVital, where he practices his unique combination of naturopathy, Chinese Medicine, and cutting-edge technologies. He has a track record of success with difficult cases, and patients fly in from all over the world to see him.</p>
+                    <p>He has been featured on major networks such as ABC, NBC, and FOX, and is the author of the book “Shake it Off: An Integrative Approach.”</p>
+                    <p>Dr. Eckel has served as the President of the Board of Naturopathic Medical Examiners.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FULL FAQ SECTION -->
+    <section id="faq" class="py-5 bg-light">
+        <div class="container py-5">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="accordion shadow-sm" id="faqAccordion">
+                        
+                        <!-- FAQ 1 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                    <strong>Is it really possible to build muscle in my 60s or 70s?</strong>
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p>Yes! The old idea that you can't build muscle after a certain age is wrong. Modern science shows it's not your age that matters. It's about the cell processes that control muscle building and breakdown.</p>
+                                    <p class="mb-0">Advanced Muscle Plus cuts muscle loss by 57% and boosts muscle building by 159%. This means that even people in their 70s, 80s, and 90s can build new muscle.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 2 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                    <strong>How much muscle can I expect to build?</strong>
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p>Results depend on your current fitness, diet, and activity. But studies on the ingredients in Advanced Muscle Plus show great results:</p>
+                                    <ul>
+                                        <li>People in a 12-week study gained up to 16 pounds of muscle while losing 12 pounds of fat.</li>
+                                        <li>Strength improved 2-5 times more than placebo groups.</li>
+                                        <li>Even people who did little exercise saw big muscle improvements.</li>
+                                    </ul>
+                                    <p class="mb-0">Most users see clear improvements in muscle tone and strength within 4-8 weeks. And progress continues over 3-6 months.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 3 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                    <strong>Can I build muscle without hard exercise?</strong>
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p>Yes. Unlike most supplements that need hard workouts to work, Advanced Muscle Plus helps you build muscle even with little exercise.</p>
+                                    <p>MyHMB® was proven to preserve and build muscle even during bed rest. While DL185™ turns on muscle building no matter your activity level.</p>
+                                    <p class="mb-0">That said, combining Advanced Muscle Plus with even light activity (walking, gardening, simple movements with weights) makes the results much better.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 4 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingFour">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                                    <strong>Should I replace Advanced Amino Formula with Advanced Muscle Plus?</strong>
+                                </button>
+                            </h2>
+                            <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p>Since Advanced Amino Formula contains all 8 of the essential amino acids, it provides extra benefits like:</p>
+                                    <ul>
+                                        <li>Improved energy levels</li>
+                                        <li>Healthier skin and nails</li>
+                                        <li>Better sleep quality</li>
+                                        <li>Mood support</li>
+                                        <li>More stamina and endurance</li>
+                                        <li>Support for immune function</li>
+                                        <li>Improved cognitive function</li>
+                                    </ul>
+                                    <p>Those benefits are on top of the support Advanced Amino Formula gives your muscles. On the other hand, Advanced Muscle Plus is specifically designed for accelerated muscle growth and strength gains.</p>
+                                    <p class="mb-0">Most people who tried Advanced Muscle Plus also kept taking Advanced Amino Formula. This combination offers complementary benefits. Advanced Amino Formula works well as a daily foundation for overall wellness, energy, and muscle maintenance, while Advanced Muscle Plus unlocks significant muscle growth and strength development.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 5 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingFive">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive">
+                                    <strong>Can you take Advanced Amino Formula and Advanced Muscle Plus together?</strong>
+                                </button>
+                            </h2>
+                            <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p>Yes. You can take both.</p>
+                                    <p>You can take Advanced Amino Formula in the morning for daily energy, endurance, and muscle maintenance. And you can take Advanced Muscle Plus after workouts to maximize muscle and strength gains.</p>
+                                    <p class="mb-0">If you’re serious about building muscle faster, this combination works incredibly well. So yes, you can take both.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 6 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingSix">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix">
+                                    <strong>How is Advanced Muscle Plus different from protein powders or BCAAs?</strong>
+                                </button>
+                            </h2>
+                            <div id="collapseSix" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p>Protein powders and BCAAs only give your body raw materials for muscle repair. Advanced Muscle Plus does much more:</p>
+                                    <ul class="mb-0">
+                                        <li>Actively stops muscle breakdown (protein can't do this)</li>
+                                        <li>Turns on muscle building 3X better than standard amino acids</li>
+                                        <li>Works even without hard exercise</li>
+                                        <li>Fixes the root causes of age-related muscle loss</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 7 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingSeven">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven">
+                                    <strong>Is Advanced Muscle Plus safe? Are there any side effects?</strong>
+                                </button>
+                            </h2>
+                            <div id="collapseSeven" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Advanced Muscle Plus contains only ingredients tested in clinical studies with excellent safety records. The formula has no stimulants, artificial colors, or common allergens. As with any supplement, talk to your doctor before starting, especially if you have health conditions or take medicines.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 8 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingEight">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight">
+                                    <strong>What scientific studies back up the ingredients in Advanced Muscle Plus?</strong>
+                                </button>
+                            </h2>
+                            <div id="collapseEight" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <ol class="mb-0 small text-muted">
+                                        <li>Front Physiol. 2023 Nov 17;14:1252089.</li>
+                                        <li>J Physiol. 2013 Apr 3;591(Pt 11):2911–2923.</li>
+                                        <li>J Physiol. 2012 Mar 25;590(Pt 11):2751–2765.</li>
+                                        <li>Nutrients. 2020 Aug 12;12(8):2421.</li>
+                                        <li>Front Nutr. 2023 Jul 10;10:1189522.</li>
+                                        <li>J Appl Physiol (1985). 2021 Sep 1;131(3):1111-1122.</li>
+                                        <li>J Int Soc Sports Nutr. 2023 Jul 27;20(Suppl):2235311.</li>
+                                        <li>Biomolecules. 2021 Sep 8;11(9):1327.</li>
+                                        <li>J Cachexia Sarcopenia Muscle. 2017 May 10;8(4):529–541.</li>
+                                        <li>Clin Nutr. 2013 Oct;32(5):704-12.</li>
+                                        <li>Nutrients. 2017 Dec 2;9(12):1316. </li>
+                                        <li>Cells. 2020 Aug 26;9(9):1970.</li>
+                                        <li>Eur J Appl Physiol. 2014 Mar 6;114(6):1217–1227.</li>
+                                        <li>J Gerontol A Biol Sci Med Sci. 2020 Aug 28;75(11):2089–2097.</li>
+                                        <li>J Cachexia Sarcopenia Muscle. 2020 Sep 22;11(6):1535–1547.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p>Copyright © 2025 Advanced Bionutritionals, LLC. All rights reserved.</p>
+            <p class="mb-4">
+                <a href="#">Privacy Policy</a> | 
+                <a href="#">Terms & Conditions</a> | 
+                <a href="#">Return Policy</a>
+            </p>
+            <p class="small text-muted" style="font-size: 11px; max-width: 800px; margin: 0 auto;">
+                *These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, cure, or prevent a disease. Dr. Greg Eckel is compensated by Advanced Bionutritionals for his work in endorsing this product. Customer results may vary.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle (Includes Popper for accordion) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Nerve Fresh Review — Is It Worth Trying?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #2d6a4f;
+    --green-light: #52b788;
+    --green-pale: #d8f3dc;
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --dark: #1a1a2e;
+    --text: #2c2c2c;
+    --gray: #f8f9fa;
+    --white: #ffffff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Source Sans 3', sans-serif; color: var(--text); background: var(--white); overflow-x: hidden; }
+
+  nav {
+    background: var(--dark);
+    padding: 12px 20px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+  nav a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  nav a:hover { color: var(--gold-light); }
+
+  .hero {
+    background: linear-gradient(135deg, #0d2818 0%, #1a4731 50%, #0d2818 100%);
+    padding: 60px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(82,183,136,0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--dark);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 5vw, 46px);
+    color: var(--white);
+    line-height: 1.25;
+    margin-bottom: 16px;
+    position: relative;
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero h1 span { color: var(--green-light); }
+  .hero p.lead {
+    font-size: clamp(14px, 2.5vw, 17px);
+    color: #bbb;
+    font-weight: 300;
+    max-width: 600px;
+    margin: 0 auto 30px;
+    line-height: 1.7;
+    position: relative;
+  }
+  .hero-illust {
+    width: 100%;
+    max-width: 240px;
+    margin: 8px auto 32px;
+    display: block;
+    position: relative;
+    animation: float 4s ease-in-out infinite;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .hero-illust:hover { transform: scale(1.04); }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .btn {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--gold) 0%, #e8c44a 50%, var(--gold) 100%);
+    color: var(--dark);
+    font-size: 17px;
+    font-weight: 700;
+    padding: 17px 44px;
+    border-radius: 50px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 8px 30px rgba(201,168,76,0.4);
+    transition: all 0.3s;
+  }
+  .btn:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(201,168,76,0.5); }
+  .btn-wrap { text-align: center; margin: 30px 0; position: relative; z-index: 1; }
+  .btn-sub { display: block; color: #888; font-size: 12px; margin-top: 10px; }
+
+  section { padding: 56px 20px; }
+  .container { max-width: 760px; margin: 0 auto; }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 4vw, 32px);
+    text-align: center;
+    margin-bottom: 28px;
+    color: var(--dark);
+  }
+  .section-title span { color: var(--green); }
+
+  .intro { background: var(--white); }
+  .intro p { font-size: 15px; line-height: 1.85; color: #444; margin-bottom: 18px; }
+
+  .points { background: var(--green-pale); }
+  .points-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  @media(max-width: 480px) { .points-grid { grid-template-columns: 1fr; } }
+  .point-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--white);
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .point-item::before { content: '✓'; font-size: 16px; color: var(--green); font-weight: 900; flex-shrink:0; }
+
+  .formula { background: var(--gray); }
+  .formula p { font-size: 15px; line-height: 1.85; color: #444; margin-bottom: 16px; }
+  .formula ul { padding-left: 20px; margin: 16px 0; }
+  .formula li { font-size: 14.5px; line-height: 1.8; color: #444; margin-bottom: 6px; }
+
+  .ingredient-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 16px;
+    margin: 28px 0 8px;
+  }
+  .ing-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 18px 12px 16px;
+    text-align: center;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.05);
+  }
+  .ing-card svg { width: 56px; height: 56px; margin-bottom: 10px; }
+  .ing-card span { display: block; font-size: 12.5px; font-weight: 700; color: var(--green); line-height: 1.3; }
+
+  .honest { background: var(--white); }
+  .honest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 10px; }
+  @media(max-width: 560px) { .honest-grid { grid-template-columns: 1fr; } }
+  .honest-card { background: var(--gray); border-radius: 14px; padding: 22px; }
+  .honest-card h3 { font-size: 15px; color: var(--green); margin-bottom: 12px; font-weight: 700; }
+  .honest-card ul { padding-left: 18px; }
+  .honest-card li { font-size: 13.5px; line-height: 1.7; color: #555; margin-bottom: 8px; }
+
+  .faq { background: var(--gray); }
+  .faq-item {
+    background: var(--white);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    padding: 18px 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .faq-q { font-weight: 700; font-size: 14.5px; color: var(--dark); margin-bottom: 8px; }
+  .faq-a { font-size: 13.5px; line-height: 1.7; color: #555; }
+
+  .final-cta { background: linear-gradient(135deg, #0d2818, #1a4731); padding: 64px 20px; text-align: center; }
+  .final-cta h2 { font-family: 'Playfair Display', serif; font-size: clamp(22px, 4vw, 34px); color: var(--white); margin-bottom: 14px; }
+  .final-cta p { color: #aaa; font-size: 14.5px; margin-bottom: 26px; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.7; }
+
+  footer {
+    background: var(--dark);
+    padding: 30px 20px;
+    text-align: center;
+    color: #555;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  footer .disclaimer { max-width: 700px; margin: 0 auto 12px; color: #888; }
+  footer .copyright { color: #555; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#about">About</a>
+  <a href="#formula">Formula</a>
+  <a href="#honest">Pros & Cons</a>
+  <a href="#faq">FAQ</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🌿 Independent Review</div>
+  <h1>Nerve Fresh Review: Does This <span>Nerve Support</span> Formula Actually Hold Up?</h1>
+  <p class="lead">We looked into what's inside Nerve Fresh, who it's made for, and what to know before you order — so you can decide if it's worth a try.</p>
+  <a href="https://secure.nervefresh24.com/index-nf-ds#aff=KylieJean" target="_blank" rel="noopener noreferrer" aria-label="View official Nerve Fresh page">
+    <svg class="hero-illust" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="120" cy="216" rx="58" ry="10" fill="#000" opacity="0.18"/>
+      <rect x="68" y="96" width="104" height="110" rx="14" fill="#f8f9fa"/>
+      <rect x="68" y="96" width="104" height="110" rx="14" fill="none" stroke="#c9a84c" stroke-width="2"/>
+      <rect x="80" y="118" width="80" height="2" fill="#d8f3dc"/>
+      <rect x="80" y="132" width="80" height="2" fill="#d8f3dc"/>
+      <rect x="80" y="146" width="80" height="2" fill="#d8f3dc"/>
+      <rect x="86" y="160" width="68" height="30" rx="6" fill="#2d6a4f"/>
+      <text x="120" y="179" font-family="Playfair Display, serif" font-size="13" fill="#f0d080" text-anchor="middle" font-weight="700">NERVE</text>
+      <rect x="60" y="80" width="120" height="20" rx="6" fill="#c9a84c"/>
+      <rect x="100" y="60" width="40" height="26" rx="4" fill="#a88c3a"/>
+      <path d="M120 60 C 90 30, 50 36, 40 64 C 64 70, 92 64, 120 60 Z" fill="#52b788"/>
+      <path d="M120 60 C 92 28, 132 14, 168 30 C 156 56, 138 60, 120 60 Z" fill="#2d6a4f"/>
+      <path d="M120 60 C 130 26, 168 22, 190 48 C 172 64, 144 64, 120 60 Z" fill="#74c69d"/>
+      <circle cx="120" cy="60" r="6" fill="#d8f3dc"/>
+    </svg>
+  </a>
+  <div class="btn-wrap">
+    <a href="https://secure.nervefresh24.com/index-nf-ds#aff=KylieJean" class="btn" target="_blank" rel="noopener noreferrer">See Current Pricing &amp; Offers →</a>
+    <span class="btn-sub">You'll be taken to the official Nerve Fresh order page</span>
+  </div>
+</div>
+
+<!-- INTRO -->
+<section class="intro" id="about">
+  <div class="container">
+    <h2 class="section-title">What Is <span>Nerve Fresh</span>?</h2>
+    <p>Nerve Fresh is a dietary supplement built around a blend of plant-based extracts, positioned as daily support for people dealing with everyday nerve discomfort. It comes in capsule form and is marketed as a non-prescription option for people exploring natural approaches alongside their regular routine.</p>
+    <p>Like any supplement in this category, results are personal — what works well for one person may do less for another. Below is a plain breakdown of what's in it, what the company claims, and what to weigh before buying.</p>
+  </div>
+</section>
+
+<!-- POINTS -->
+<section class="points">
+  <div class="container">
+    <h2 class="section-title">Quick Overview</h2>
+    <div class="points-grid">
+      <div class="point-item">Plant-based capsule formula</div>
+      <div class="point-item">Non-GMO, gluten-free ingredients</div>
+      <div class="point-item">Made in an FDA-registered facility</div>
+      <div class="point-item">No prescription required</div>
+      <div class="point-item">Multi-bottle pricing available</div>
+      <div class="point-item">Backed by a money-back guarantee</div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMULA -->
+<section class="formula" id="formula">
+  <div class="container">
+    <h2 class="section-title">What's In The <span>Formula</span></h2>
+    <p>Nerve Fresh combines several plant and botanical extracts that are commonly found in nerve and calm-support supplements, including:</p>
+
+    <div class="ingredient-cards">
+      <div class="ing-card">
+        <svg viewBox="0 0 56 56"><path d="M28 50 C18 40 10 30 14 18 C20 22 26 28 28 38 C30 28 36 22 42 18 C46 30 38 40 28 50 Z" fill="#52b788"/><circle cx="28" cy="14" r="6" fill="#c9a84c"/></svg>
+        <span>Prickly Pear</span>
+      </div>
+      <div class="ing-card">
+        <svg viewBox="0 0 56 56"><circle cx="28" cy="26" r="9" fill="#f0d080"/><path d="M28 17 C20 10 14 14 16 22 C20 18 24 18 28 17Z" fill="#74c69d"/><path d="M28 17 C36 10 42 14 40 22 C36 18 32 18 28 17Z" fill="#52b788"/><path d="M28 35 C20 42 14 38 16 30 C20 34 24 34 28 35Z" fill="#2d6a4f"/><path d="M28 35 C36 42 42 38 40 30 C36 34 32 34 28 35Z" fill="#40916c"/><circle cx="28" cy="26" r="3" fill="#a88c3a"/></svg>
+        <span>Passionflower</span>
+      </div>
+      <div class="ing-card">
+        <svg viewBox="0 0 56 56"><path d="M28 48 L28 22" stroke="#40916c" stroke-width="3" fill="none"/><path d="M28 30 C18 26 14 16 20 8 C28 14 30 24 28 30 Z" fill="#74c69d"/><path d="M28 30 C38 26 42 16 36 8 C28 14 26 24 28 30 Z" fill="#52b788"/></svg>
+        <span>Marshmallow Root</span>
+      </div>
+      <div class="ing-card">
+        <svg viewBox="0 0 56 56"><path d="M28 48 C28 48 14 36 14 24 C14 14 22 8 28 16 C34 8 42 14 42 24 C42 36 28 48 28 48 Z" fill="#c9a84c" opacity="0.85"/><circle cx="28" cy="24" r="4" fill="#fffdf0"/></svg>
+        <span>Corydalis</span>
+      </div>
+      <div class="ing-card">
+        <svg viewBox="0 0 56 56"><path d="M28 50 L28 30" stroke="#2d6a4f" stroke-width="3"/><ellipse cx="28" cy="20" rx="14" ry="10" fill="#f0d080"/><ellipse cx="28" cy="20" rx="6" ry="10" fill="#e8c44a"/></svg>
+        <span>California Poppy</span>
+      </div>
+    </div>
+
+    <ul>
+      <li><strong>Prickly Pear extract</strong> — often included in formulas targeting oxidative stress</li>
+      <li><strong>Passionflower</strong> — a botanical traditionally associated with relaxation</li>
+      <li><strong>Marshmallow Root</strong> — known in herbal use for its soothing properties</li>
+      <li><strong>Corydalis (Yanhusuo)</strong> — an extract used in some Eastern herbal traditions</li>
+      <li><strong>California Poppy seed</strong> — traditionally linked to calming, sleep-supportive effects</li>
+    </ul>
+    <p>The manufacturer publishes the full ingredient list and suggested use on the official product page — worth reading in full before ordering, since exact dosing per capsule matters more than the ingredient names alone.</p>
+  </div>
+</section>
+
+<!-- HONEST -->
+<section class="honest" id="honest">
+  <div class="container">
+    <h2 class="section-title">Worth Knowing <span>Before You Buy</span></h2>
+    <div class="honest-grid">
+      <div class="honest-card">
+        <h3>WHAT STANDS OUT</h3>
+        <ul>
+          <li>Plant-based ingredient list, no synthetic fillers advertised</li>
+          <li>Multi-bottle packages reduce per-bottle cost</li>
+          <li>Extended money-back guarantee from the manufacturer</li>
+          <li>Free shipping on orders within the US</li>
+        </ul>
+      </div>
+      <div class="honest-card">
+        <h3>WHAT TO CONSIDER</h3>
+        <ul>
+          <li>Supplements aren't regulated as drugs — claims aren't FDA-evaluated</li>
+          <li>Results vary significantly between individuals</li>
+          <li>Best taken consistently over months, not as a quick fix</li>
+          <li>Always worth checking with a doctor if you're on medication</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <h2 class="section-title">Common <span>Questions</span></h2>
+
+    <div class="faq-item">
+      <div class="faq-q">How is Nerve Fresh meant to be taken?</div>
+      <div class="faq-a">The label directs one capsule twice daily, ideally 20–30 minutes before a meal with water. Always follow the instructions on the bottle or your healthcare provider's guidance.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How long before I'd notice anything?</div>
+      <div class="faq-a">The manufacturer suggests a 3–6 month minimum for consistent use, which is part of why multi-bottle packages exist — most people don't evaluate a supplement fairly after just a few days.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is there a refund option?</div>
+      <div class="faq-a">Yes — the manufacturer offers an extended money-back guarantee. Exact terms and timeframes are listed on the official order page, so check there for the current policy.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Where can I see current prices?</div>
+      <div class="faq-a">Pricing changes with promotions, so we don't list fixed numbers here — the official order page always reflects the current packages and any active discount.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="research">
+  <h2>Curious If It's Right For You?</h2>
+  <p>The official product page has full ingredient details, current pricing, and the manufacturer's guarantee terms.</p>
+  <div class="btn-wrap">
+    <a href="https://secure.nervefresh24.com/index-nf-ds#aff=KylieJean" class="btn" target="_blank" rel="noopener noreferrer">Visit Official Nerve Fresh Page →</a>
+    <span class="btn-sub" style="color:#888;">Opens the manufacturer's secure order page</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p class="disclaimer">This is an independent review site and is not affiliated with or operated by the manufacturer of Nerve Fresh. We may earn a commission if you make a purchase through links on this page, at no extra cost to you. Statements on this page have not been evaluated by the Food and Drug Administration. This content is not medical advice and is not intended to diagnose, treat, cure, or prevent any disease. Always consult a physician before starting any new supplement.</p>
+  <p class="copyright">© 2026 — Independent product review. All trademarks belong to their respective owners.</p>
+</footer>
+
+</body>
+</html>

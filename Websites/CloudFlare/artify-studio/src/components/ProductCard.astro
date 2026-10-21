@@ -1,0 +1,212 @@
+---
+// src/components/ProductCard.astro
+import { buildAffiliateUrl } from '../utils/build-affiliate-url.js';
+import { optimizeImageUrl } from '../utils/image-optimizer.js';
+
+interface Product {
+	slug: string;
+	title: string;
+	author?: string;
+	canonical?: string;
+	image: string;
+	description?: string;
+	fullDescription?: string;
+	gallery?: string[];
+	license?: string;
+}
+
+interface Props {
+	product: Product;
+	campaign?: string;
+	category?: string;
+	priority?: boolean;
+}
+
+const { product, campaign = "", category = "", priority = false } = Astro.props;
+
+const affiliateUrl = buildAffiliateUrl(
+    product.canonical || product.slug, 
+    campaign, 
+    category
+);
+
+const mainCover = optimizeImageUrl(product.image);
+let images = mainCover ? [mainCover] : [];
+
+// 2. Добавляем остальные фото из галереи, исключая служебные прозрачные preview-файлы
+if (product.gallery && product.gallery.length > 0) {
+    for (const img of product.gallery) {
+        if (img && img !== product.image && !img.includes('preview') && !images.includes(optimizeImageUrl(img))) {
+            images.push(optimizeImageUrl(img));
+        }
+    }
+}
+---
+
+<div class="group flex flex-col rounded-2xl border border-neutral-800 bg-[#121212] overflow-hidden transition duration-300 hover:border-neutral-700 hover:shadow-2xl hover:shadow-emerald-900/10">
+	
+	<!-- 1. КАРАУСЕЛЬ ФОТОГРАФИЙ (ТОЛЬКО ДЛЯ СВАЙПА И ПРОСМОТРА) -->
+	<div class="relative aspect-[3/2] overflow-hidden bg-neutral-900 group/carousel">
+		<div class="flex h-full w-full overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth carousel-scroll-container">
+			{images.map((imgUrl, index) => {
+				const isEager = index === 0 && priority;
+				return (
+					<a
+						href={affiliateUrl}
+						target="_blank"
+						rel="nofollow sponsored"
+						class="block h-full w-full flex-none snap-center relative bg-neutral-900 cursor-pointer"
+						title="Click to view on Creative Fabrica"
+					>
+						<img
+							src={isEager ? imgUrl : "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="}
+							data-src={!isEager ? imgUrl : null}
+							alt={`${product.title} - photo ${index + 1}`}
+							loading={isEager ? "eager" : "lazy"}
+							decoding="async"
+							fetchpriority={isEager ? "high" : "auto"}
+							class="h-full w-full object-cover select-none lazy-gallery-img transition-opacity duration-300"
+						/>
+					</a>
+				);
+			})}
+		</div>
+
+		<!-- Кнопки навигации (показываем только на десктопе при наведении) -->
+		{images.length > 1 && (
+			<>
+				<button type="button" class="carousel-prev absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 hidden md:flex items-center justify-center rounded-full bg-black/60 text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity hover:bg-black/90 backdrop-blur-md z-10 border border-white/10" aria-label="Previous photo">
+					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+				</button>
+				<button type="button" class="carousel-next absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 hidden md:flex items-center justify-center rounded-full bg-black/60 text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity hover:bg-black/90 backdrop-blur-md z-10 border border-white/10" aria-label="Next photo">
+					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+				</button>
+			</>
+		)}
+
+		<!-- Бейдж Лицензии -->
+		<span class="absolute top-3 left-3 bg-black/80 backdrop-blur-md text-white text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider border border-white/10 select-none pointer-events-none">
+			Commercial License Included ✓
+		</span>
+
+		<!-- Индикатор количества фото -->
+		{images.length > 1 && (
+			<div class="carousel-counter absolute bottom-3 right-3 bg-black/80 backdrop-blur-md text-white text-[10px] font-mono px-2 py-0.5 rounded border border-white/10 select-none pointer-events-none" data-total={images.length}>
+				<span class="carousel-current">1</span> / {images.length} 📸
+			</div>
+		)}
+	</div>
+
+	<!-- 2. ВЕСЬ НИЖНИЙ БЛОК — ЭТО ЕДИНАЯ КЛИКАБЕЛЬНАЯ ПАРТНЕРСКАЯ ССЫЛКА -->
+	<a
+		href={affiliateUrl}
+		target="_blank"
+		rel="nofollow sponsored"
+		class="p-5 flex flex-col justify-between flex-1 cursor-pointer group/link hover:bg-white/[0.02] transition"
+	>
+		<div>
+			<h3 class="text-base font-bold text-white tracking-tight leading-snug group-hover/link:text-emerald-400 transition">
+				{product.title} • Creative Fabrica
+			</h3>
+
+			<p class="mt-2 text-xs text-neutral-400 leading-relaxed line-clamp-3">
+				{product.description || "Click here and download font · Windows, Mac, Linux · Commercial licence included ✓"}
+			</p>
+		</div>
+
+		<!-- 3. ЗЕЛЕНАЯ КНОПКА (ВНУТРИ ССЫЛКИ ДЛЯ МАКСИМАЛЬНОЙ КОНВЕРСИИ) -->
+		<div class="mt-5 relative">
+			<span
+				class="w-full bg-[#22c55e] group-hover/link:bg-[#4ade80] text-black font-semibold text-sm py-3 px-4 rounded-xl text-center tracking-wider uppercase transition-all duration-300 ease-out block shadow-lg shadow-emerald-500/30 group-hover/link:shadow-emerald-400/80 group-hover/link:shadow-2xl group-hover/link:scale-[1.02] relative overflow-hidden btn-sparkle"
+			>
+				Free Download
+			</span>
+		</div>
+	</a>
+
+</div>
+<script>
+    function initCarousels() {
+        const carousels = document.querySelectorAll('.group\\/carousel');
+        carousels.forEach(carousel => {
+            const container = carousel.querySelector('.carousel-scroll-container');
+            const prevBtn = carousel.querySelector('.carousel-prev');
+            const nextBtn = carousel.querySelector('.carousel-next');
+            const currentCounter = carousel.querySelector('.carousel-current');
+
+            if (container) {
+                // 1. Lazy-On-Demand: Загрузка скрытых фото только при наведении или свайпе
+                const loadGalleryImages = () => {
+                    const lazyImages = carousel.querySelectorAll('.lazy-gallery-img[data-src]');
+                    lazyImages.forEach(img => {
+                        img.src = img.getAttribute('data-src');
+                        img.removeAttribute('data-src');
+                    });
+                };
+                
+                // IntersectionObserver: начинаем загружать фото как только карточка входит в зону видимости
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            // Мгновенная загрузка при появлении в области видимости (с большим rootMargin)
+                            loadGalleryImages();
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px 500px 0px'
+                });
+                observer.observe(carousel);
+
+                // Резервные триггеры — МГНОВЕННАЯ загрузка если пользователь взаимодействует
+                carousel.addEventListener('mouseenter', loadGalleryImages, { once: true });
+                carousel.addEventListener('touchstart', loadGalleryImages, { once: true, passive: true });
+
+                // 2. Обновление счетчика при скролле (пальцем или кнопкой)
+                if (currentCounter) {
+                    container.addEventListener('scroll', () => {
+                        loadGalleryImages(); // Свайп = мгновенная загрузка
+                        const index = Math.round(container.scrollLeft / container.clientWidth) + 1;
+                        currentCounter.textContent = index;
+                    }, { passive: true });
+                }
+
+                // 3. Логика кнопок (с зацикливанием + мгновенная загрузка)
+                if (prevBtn && nextBtn) {
+                    const newPrev = prevBtn.cloneNode(true);
+                    const newNext = nextBtn.cloneNode(true);
+                    prevBtn.replaceWith(newPrev);
+                    nextBtn.replaceWith(newNext);
+
+                    newPrev.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        loadGalleryImages(); // ← Мгновенно при клике на стрелку
+                        if (container.scrollLeft <= 5) {
+                            container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
+                        } else {
+                            container.scrollBy({ left: -container.clientWidth, behavior: 'smooth' });
+                        }
+                    });
+
+                    newNext.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        loadGalleryImages(); // ← Мгновенно при клике на стрелку
+                        if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 5) {
+                            container.scrollTo({ left: 0, behavior: 'smooth' });
+                        } else {
+                            container.scrollBy({ left: container.clientWidth, behavior: 'smooth' });
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    // Initialize on first load
+    initCarousels();
+    // Re-initialize if using View Transitions
+    document.addEventListener('astro:after-swap', initCarousels);
+</script>

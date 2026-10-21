@@ -1,0 +1,44 @@
+[
+  {
+    "id": "watercolor",
+    "label": "Watercolor",
+    "keywords": [
+      "watercolor"
+    ]
+  },
+  {
+    "id": "holiday",
+    "label": "Holiday",
+    "keywords": [
+      "holiday"
+    ]
+  },
+  {
+    "id": "baby",
+    "label": "Baby",
+    "keywords": [
+      "baby"
+    ]
+  },
+  {
+    "id": "cozy",
+    "label": "Cozy",
+    "keywords": [
+      "cozy"
+    ]
+  },
+  {
+    "id": "tropical",
+    "label": "Tropical",
+    "keywords": [
+      "tropical"
+    ]
+  },
+  {
+    "id": "cute",
+    "label": "Cute",
+    "keywords": [
+      "cute"
+    ]
+  }
+]

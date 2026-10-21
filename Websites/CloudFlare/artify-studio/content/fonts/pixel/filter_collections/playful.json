@@ -1,0 +1,20 @@
+{
+  "filterId": "playful",
+  "label": "Playful",
+  "items": [
+    "gothic-byte",
+    "halloween-pixel",
+    "magic-games",
+    "pixel-joyjolt",
+    "pixel-friendship",
+    "pixel-hilarity",
+    "pixel-whimsy",
+    "pixel-snicker",
+    "pixel-chuckler",
+    "kidbit",
+    "chumchic-pixel",
+    "shiver-glitch"
+  ],
+  "excludedItems": [],
+  "updatedAt": "2026-10-11T21:21:11.778Z"
+}

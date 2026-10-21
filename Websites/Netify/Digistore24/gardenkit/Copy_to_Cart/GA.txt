@@ -1,0 +1,18 @@
+Какие события вы теперь мгновенно увидите в DebugView и отчетах GA4:
+1. Навигация в шапке (меню):
+click_nav_about +
+click_nav_plants +
+click_nav_kit +
+click_nav_bonuses +
+click_nav_order +
+2. Клики по главному экрану (Hero):
+click_hero_cta — нажатие на главную кнопку. +
+click_hero_image — нажатие на картинку коробки с семенами (которую мы тоже сделали кликабельной). +
+3. Клики по кнопкам в середине страницы:
+click_plants_cta — нажатие на кнопку после списка из 10 растений. + 
+click_kit_cta — нажатие на кнопку после описания состава коробки. +
+4. Клики в самом низу (Final CTA):
+click_final_image — клик по левитирующей коробке в самом низу. +
+click_final_cta — клик по огромной финальной кнопке "Yes! I Want My Medicinal Garden Kit". +
+5. Клики в подвале (Footer):
+click_footer_privacy, click_footer_disclaimer, click_footer_terms, click_footer_refund.

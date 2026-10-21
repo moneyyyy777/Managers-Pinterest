@@ -1,0 +1,10 @@
+{
+  "filterId": "school-education",
+  "label": "School & Teacher",
+  "items": [
+    "smart-bubble",
+    "paper-playground"
+  ],
+  "excludedItems": [],
+  "updatedAt": "2026-10-11T21:21:11.675Z"
+}

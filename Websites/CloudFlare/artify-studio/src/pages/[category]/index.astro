@@ -1,0 +1,145 @@
+---
+// src/pages/[category]/index.astro
+import fs from 'fs/promises';
+import path from 'path';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CollectionCard from '../../components/CollectionCard.astro';
+import categories from '../../data/categories.json';
+
+export async function getStaticPaths() {
+    const contentDir = path.resolve('content');
+    try {
+        const entries = await fs.readdir(contentDir, { withFileTypes: true });
+        const categories = entries
+            .filter(d => d.isDirectory() && d.name !== 'products')
+            .map(d => d.name);
+
+        return categories.map(category => ({
+            params: { category }
+        }));
+    } catch {
+        return [];
+    }
+}
+
+const { category } = Astro.params;
+const categoryDir = path.resolve(`content/${category}`);
+
+const categoryInfo = categories.find(c => c.id === category) || {
+    title: category,
+    subtitle: `Best ${category} For Designers`,
+    description: `Curated collections of ${category}.`
+};
+
+// 1. Читаем файл порядка подборок order.json (если он существует)
+let categoryOrder = [];
+try {
+    const orderData = await fs.readFile(path.join(categoryDir, 'order.json'), 'utf8');
+    const parsedOrder = JSON.parse(orderData);
+    categoryOrder = parsedOrder.order || parsedOrder.items || [];
+} catch {}
+
+// 2. Сканируем все подборки в категории
+let collections = [];
+try {
+    const entries = await fs.readdir(categoryDir, { withFileTypes: true });
+    
+    for (const entry of entries) {
+        if (entry.isDirectory()) {
+            const collectionSlug = entry.name;
+            const infoPath = path.join(categoryDir, collectionSlug, 'info.json');
+            
+            try {
+                const infoData = await fs.readFile(infoPath, 'utf8');
+                const info = JSON.parse(infoData);
+                
+                const formatWord = (str) => str.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                const generatedTitle = `${formatWord(collectionSlug)} ${formatWord(category)}`;
+                const generatedDescription = `Best selected ${formatWord(collectionSlug).toLowerCase()} assets for your creative projects. Commercial licence included ✓`;
+
+                collections.push({
+                    slug: collectionSlug,
+                    title: info.title || generatedTitle,
+                    description: info.description || generatedDescription,
+                    image: info.image || 'https://via.placeholder.com/600x400',
+                    category: categoryInfo.title,
+                    count: info.count || '20+ items',
+                    href: `/${category}/${collectionSlug}`
+                });
+            } catch {
+                const formatWord = (str) => str.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                const generatedTitle = `${formatWord(collectionSlug)} ${formatWord(category)}`;
+                
+                collections.push({
+                    slug: collectionSlug,
+                    title: generatedTitle,
+                    description: `Handpicked collection of ${generatedTitle.toLowerCase()}.`,
+                    image: 'https://via.placeholder.com/600x400',
+                    category: categoryInfo.title,
+                    count: '20+ items',
+                    href: `/${category}/${collectionSlug}`
+                });
+            }
+        }
+    }
+
+    // 3. 🔥 СОРТИРОВКА: Сортируем подборки строго по порядку из order.json
+    if (categoryOrder.length > 0) {
+        collections.sort((a, b) => {
+            const indexA = categoryOrder.indexOf(a.slug);
+            const indexB = categoryOrder.indexOf(b.slug);
+            
+            // Если подборка не указана в order.json, отправляем ее в конец
+            if (indexA === -1) return 1;
+            if (indexB === -1) return -1;
+            return indexA - indexB;
+        });
+    }
+
+} catch (e) {
+    console.error(`Ошибка чтения категории ${category}:`, e);
+}
+---
+
+<BaseLayout
+  title={`${categoryInfo.subtitle} - Artify Studio`}
+  description={categoryInfo.description}
+  ogImage={collections[0]?.image}
+  ogType="website"
+>
+  <section class="container mx-auto px-4 py-8 sm:py-12 max-w-7xl">
+    
+    <!-- Хлебные крошки -->
+    <nav class="flex items-center gap-2 text-xs text-neutral-400 mb-8">
+      <a href="/" class="hover:text-white transition">Home</a>
+      <span>/</span>
+      <span class="text-emerald-400 font-medium capitalize">{categoryInfo.title}</span>
+    </nav>
+
+    <!-- Заголовок Категории -->
+    <div class="max-w-3xl mb-10 sm:mb-14">
+      <h1 class="text-4xl sm:text-5xl font-black text-white tracking-tight">
+        {categoryInfo.subtitle}
+      </h1>
+      <p class="mt-3 text-neutral-400 text-sm sm:text-base leading-relaxed">
+        {categoryInfo.description}
+      </p>
+    </div>
+
+    <!-- Сетка подборок в правильном порядке -->
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      {collections.map((item, index) => (
+        <CollectionCard
+          title={item.title}
+          description={item.description}
+          image={item.image}
+          category={item.category}
+          count={item.count}
+          href={item.href}
+          priority={index < 4}
+        />
+      ))}
+    </div>
+
+  </section>
+</BaseLayout>

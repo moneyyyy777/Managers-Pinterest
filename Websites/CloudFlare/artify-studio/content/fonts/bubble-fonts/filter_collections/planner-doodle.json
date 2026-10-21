@@ -1,0 +1,17 @@
+{
+  "filterId": "planner-doodle",
+  "label": "Planner & Doodles",
+  "items": [
+    "smart-bubble",
+    "disney-bubble",
+    "daily-bubble",
+    "modern-baby",
+    "paper-playground",
+    "cute-bubble-4",
+    "bubble-mood",
+    "love-bubble-10",
+    "outline-bubble-2"
+  ],
+  "excludedItems": [],
+  "updatedAt": "2026-10-11T21:21:11.681Z"
+}

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artify Studio Clipper</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка -->
+        <header class="header">
+            <div class="logo-box">
+                <span class="logo-icon">🎨</span>
+                <div>
+                    <h1 class="logo-title">Artify Studio</h1>
+                    <span class="logo-subtitle">Creative Fabrica Clipper</span>
+                </div>
+            </div>
+            <div id="statusBadge" class="status-badge status-checking">
+                <span class="status-dot"></span>
+                <span id="statusText">Проверка...</span>
+            </div>
+        </header>
+
+        <!-- Целевая подборка -->
+        <section class="card">
+            <div class="card-header">
+                <span class="card-icon">📂</span>
+                <span class="card-title">Куда сохранять товары:</span>
+            </div>
+
+            <div class="form-group">
+                <label for="categorySelect">Категория:</label>
+                <select id="categorySelect" class="select-input">
+                    <option value="">Загрузка категорий...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="collectionSelect">Подборка:</label>
+                <select id="collectionSelect" class="select-input" disabled>
+                    <option value="">Выберите категорию</option>
+                </select>
+            </div>
+
+            <div class="create-col-toggle-row">
+                <button type="button" id="toggleCreateColBtn" class="link-btn" style="color: #a78bfa;">➕ Создать новую подборку</button>
+            </div>
+
+            <div id="createColBox" class="create-col-box hidden">
+                <input type="text" id="newColTitleInput" class="select-input" placeholder="Название: например, Cute Kawaii Cliparts">
+                <div class="slug-row">
+                    <span class="slug-prefix" id="slugPrefixSpan">slug:</span>
+                    <input type="text" id="newColSlugInput" class="slug-input" placeholder="cute-kawaii">
+                </div>
+                <button type="button" id="submitCreateColBtn" class="btn btn-primary" style="padding: 6px 10px; font-size: 11px;">✨ Создать и выбрать</button>
+            </div>
+
+            <div id="colStatsBar" class="col-stats-bar hidden">
+                <span>📦 Всего в подборке: <strong id="totalCountSpan">0</strong></span>
+            </div>
+
+            <!-- Универсальная кнопка допарсинга (всегда на виду) -->
+            <button type="button" id="universalHydrateBtn" class="btn btn-primary" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; margin-top: 8px; width: 100%; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);">
+                <span>🔄 Проверка товаров...</span>
+            </button>
+        </section>
+
+        <!-- Настройки добавления -->
+        <section class="card">
+            <div class="position-row" style="margin: 0;">
+                <span class="pos-label">Позиция на витрине:</span>
+                <div class="pos-toggle">
+                    <button type="button" id="posTopBtn" class="pos-btn active">⬆️ В начало (1-е место)</button>
+                    <button type="button" id="posBottomBtn" class="pos-btn">⬇️ В конец</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Блок выбранных галочками товаров с предпросмотром порядка -->
+        <section id="selectedPreviewSection" class="card selected-card hidden">
+            <div class="selected-header">
+                <div class="selected-header-left">
+                    <span class="card-icon">☑️</span>
+                    <span class="card-title">Выбрано (<span id="selectedCountSpan">0</span>)</span>
+                </div>
+                <div class="selected-header-actions">
+                    <button type="button" id="undoSelectionBtn" class="mini-icon-btn" title="Отменить последнее действие" disabled>↩️</button>
+                    <button type="button" id="redoSelectionBtn" class="mini-icon-btn" title="Вернуть отмененное действие" disabled>↪️</button>
+                    <button type="button" id="clearSelectionBtn" class="link-btn" title="Снять все галочки">Сбросить</button>
+                </div>
+            </div>
+
+            <!-- Список карточек с нумерацией порядка добавления (#1, #2...) -->
+            <div id="selectedItemsContainer" class="selected-items-list"></div>
+
+            <button id="scrapeSelectedBtn" class="btn btn-success">
+                <span>⚡ Спарсить выбранные (<span id="btnSelectedCountSpan">0</span> шт.)</span>
+            </button>
+        </section>
+
+        <!-- Быстрые действия на текущей вкладке -->
+        <section class="card actions-card">
+            <button id="scrapeCurrentPageBtn" class="btn btn-primary" disabled>
+                <span>🎯 Спарсить этот товар сейчас</span>
+            </button>
+            
+            <div class="batch-select-row">
+                <button type="button" id="selectAllCardsBtn" class="btn btn-secondary" disabled title="Поставить галочки на всех карточках на странице (пропуская уже добавленные и вручную снятые)">
+                    <span>☑️ Отметить всё на экране</span>
+                </button>
+                <button type="button" id="deselectAllCardsBtn" class="btn btn-outline" disabled title="Снять все галочки">
+                    <span>☐ Снять всё</span>
+                </button>
+            </div>
+
+            <button id="undoLastBatchBtn" class="btn btn-danger hidden">
+                <span>↩️ Отменить последнее добавление (<span id="undoCountSpan">0</span>)</span>
+            </button>
+
+            <button id="openAdminBtn" class="btn btn-outline">
+                <span>🔗 Открыть витрину в админке</span>
+            </button>
+        </section>
+
+        <!-- Настройки сервера (сворачиваемый блок) -->
+        <details class="settings-details">
+            <summary class="settings-summary">
+                <span>⚙️ Настройки подключения к админке</span>
+            </summary>
+            <div class="settings-content">
+                <label for="apiUrlInput">Адрес сервера админки (API URL):</label>
+                <div class="input-row">
+                    <input type="text" id="apiUrlInput" placeholder="http://localhost:3333" value="http://localhost:3333">
+                    <button id="saveApiUrlBtn" class="btn-sm">Сохранить</button>
+                </div>
+                <p class="settings-hint">По умолчанию <code>http://localhost:3333</code>. Если менеджер работает удалённо — введите адрес хоста или туннеля.</p>
+            </div>
+        </details>
+
+        <!-- Всплывающий тост внутри попапа -->
+        <div id="popupToast" class="popup-toast hidden">Товар добавлен!</div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

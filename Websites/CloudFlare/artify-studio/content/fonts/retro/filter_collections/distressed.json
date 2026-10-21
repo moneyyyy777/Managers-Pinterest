@@ -1,0 +1,27 @@
+{
+  "filterId": "distressed",
+  "label": "Distressed",
+  "items": [
+    "retro-vintage-9",
+    "retro-grunge-6",
+    "retro-kraft",
+    "retro-distressed",
+    "jersey-retro-grunge",
+    "grunge-retro",
+    "retro-deco-chalk",
+    "retro-chalet-2",
+    "retro-cowboy-3",
+    "retro-ranch",
+    "retro-collage",
+    "buhun-retro-trio",
+    "retro-vintage-11",
+    "retro-father",
+    "retro-grunge-2",
+    "retro-western",
+    "retro-guns",
+    "home-retro-2",
+    "retro-chicken"
+  ],
+  "excludedItems": [],
+  "updatedAt": "2026-10-11T21:21:12.067Z"
+}

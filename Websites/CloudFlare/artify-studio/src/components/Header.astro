@@ -1,0 +1,54 @@
+---
+// src/components/Header.astro
+import categories from "../data/categories.json";
+
+const categoryIcons: Record<string, string> = {
+	procreate: "🖌️",
+	fonts: "✍️",
+	cliparts: "🎨",
+	wedding: "💍",
+	christmas: "🎄",
+	svg: "✂️",
+	stickers: "⭐",
+	planners: "📒",
+};
+---
+
+<header class="sticky top-0 z-50 border-b border-neutral-800/80 bg-[#09090b]/95 backdrop-blur-md">
+	<div class="container mx-auto px-3 sm:px-6 max-w-7xl">
+
+		<!-- Единая строка: лого + категории в одном ряду со скроллом -->
+		<nav 
+			class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-2.5 sm:py-3 -mx-3 px-3 sm:mx-0 sm:px-0"
+			aria-label="Navigation"
+		>
+			<!-- Логотип — как элемент в том же ряду -->
+			<a 
+				href="/" 
+				class="flex items-center shrink-0 mr-2 sm:mr-4"
+			>
+				<img 
+					src="/images/logo.png" 
+					alt="Artify Studio" 
+					loading="eager"
+					fetchpriority="high"
+					decoding="async"
+					class="h-5 sm:h-6 w-auto object-contain transition duration-300 hover:opacity-80"
+				/>
+			</a>
+
+			<!-- Категории -->
+			{categories.map((cat) => (
+				<a 
+					href={cat.href}
+					class="flex items-center gap-1.5 whitespace-nowrap shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-neutral-700/50 bg-neutral-800/40 text-neutral-300 hover:text-white hover:bg-neutral-700/60 hover:border-neutral-600 transition-all duration-200 text-xs sm:text-sm font-medium group"
+				>
+					<span class="text-sm leading-none">{categoryIcons[cat.id] || "✦"}</span>
+					<span>{cat.title}</span>
+					<span class="text-[10px] text-neutral-500 group-hover:text-neutral-400 transition-colors hidden sm:inline">{cat.count}</span>
+				</a>
+			))}
+		</nav>
+
+	</div>
+</header>

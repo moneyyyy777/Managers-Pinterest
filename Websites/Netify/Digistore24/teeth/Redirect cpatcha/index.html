@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>reCAPTCHA Checkbox</title>
+    <style>
+        :root {
+            --color-background: #ffffff;
+            --color-surface: #ffffff;
+            --color-text: #202124;
+            --color-border: #dadce0;
+            --color-primary: #1f71b8;
+            --color-primary-hover: #1765a0;
+            --color-check: #1f71b8;
+            --space-16: 16px;
+            --space-20: 20px;
+            --radius-base: 4px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            /* 60px сверху, 20px по бокам и снизу для комфортного визуального восприятия */
+            padding: 300px 20px 20px; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background-color: var(--color-background);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .captcha-container {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            padding: var(--space-20);
+            max-width: 304px;
+            width: 100%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        }
+
+        .captcha-content {
+            display: flex;
+            gap: var(--space-16);
+            align-items: center;
+            margin-bottom: var(--space-16);
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox-input {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--color-border);
+            border-radius: 3px;
+            cursor: pointer;
+            background-color: var(--color-surface);
+            transition: all 200ms ease;
+            flex-shrink: 0;
+        }
+
+        .checkbox-input:hover {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 1px rgba(31, 113, 184, 0.1);
+        }
+
+        .checkbox-input:checked {
+            background-color: var(--color-check);
+            border-color: var(--color-check);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 16px;
+        }
+
+        .checkbox-input:focus-visible {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            color: var(--color-text);
+            margin-left: 8px;
+            font-weight: 500;
+        }
+
+        .captcha-logo {
+            display: flex;
+            justify-content: flex-end;
+            gap: 4px;
+            font-size: 11px;
+            color: #5f6368;
+            margin-top: 12px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-size: 10px;
+            line-height: 1.2;
+        }
+
+        .logo-text strong {
+            font-weight: 700;
+            color: #3c4043;
+        }
+
+        .success-message {
+            display: none;
+            padding: var(--space-16);
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: var(--radius-base);
+            color: #155724;
+            font-size: 14px;
+            margin-top: var(--space-16);
+            text-align: center;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideIn 300ms ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="captcha-container">
+        <div class="captcha-content">
+            <div class="checkbox-wrapper">
+                <input 
+                    type="checkbox" 
+                    id="captcha-checkbox" 
+                    class="checkbox-input"
+                >
+                <label for="captcha-checkbox" class="checkbox-label">
+                    I'm not a robot
+                </label>
+            </div>
+        </div>
+
+        <div class="captcha-logo">
+            <div class="logo-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" fill="#4285F4"/>
+                </svg>
+            </div>
+            <div class="logo-text">
+                <strong>reCAPTCHA</strong>
+                <span>Privacy - Terms</span>
+            </div>
+        </div>
+
+        <div class="success-message" id="success-message">
+            ✓ Thanks!
+        </div>
+    </div>
+
+    <script>
+        const checkbox = document.getElementById('captcha-checkbox');
+        const successMessage = document.getElementById('success-message');
+        const redirectUrl = 'https://artify-studio.pages.dev/cliparts/teeth/';
+
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                // Показываем сообщение об успехе
+                successMessage.classList.add('show');
+
+                // Перенаправляем через 0.5 секунды
+                setTimeout(() => {
+                    window.open(redirectUrl, '_blank');
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>

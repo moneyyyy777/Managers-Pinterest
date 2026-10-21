@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "skills": {
+    "etsy-digital-products": {
+      "source": "nexscope-ai/ecommerce-skills",
+      "sourceType": "github",
+      "skillPath": "etsy-digital-products/SKILL.md",
+      "computedHash": "beccd4959a4e015ef6736dec7d490d40bcda48a13718424c7ce00f5fc7341a6d"
+    },
+    "etsy-keyword-research": {
+      "source": "nexscope-ai/ecommerce-skills",
+      "sourceType": "github",
+      "skillPath": "etsy-keyword-research/SKILL.md",
+      "computedHash": "2c6c09d668d099e86657b80b28343ec0aa3256a076e2002ed92e1b13c806627d"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "computedHash": "b146008599c31057cef1c145774cea5d5afb30e8f43fa802e47a4b461419aaaf"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "89496d5dd00f4810205f351759594fc2742bf8eea85a2f2b2d1de59f4bd91576"
+    },
+    "pinterest-growth": {
+      "source": "social-media-skills/skills",
+      "sourceType": "github",
+      "skillPath": "skills/pinterest-growth/SKILL.md",
+      "computedHash": "91eb1979b5498179d1d4c17ba3e85463289ec1d0fe6b587a22cce73d88e31f63"
+    },
+    "pinterest-seo": {
+      "source": "social-media-skills/skills",
+      "sourceType": "github",
+      "skillPath": "skills/pinterest-seo/SKILL.md",
+      "computedHash": "8a4656d9b63591ebd48e3e7acd16b0d100a0870cdab84ea73452532cefccfb1d"
+    }
+  }
+}

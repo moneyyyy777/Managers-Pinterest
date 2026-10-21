@@ -1,0 +1,79 @@
+# ==========================================
+# 🛑 Unified .gitignore for Managers Pinterest
+# ==========================================
+
+# Node & Package Managers
+**/node_modules/
+**/.pnp
+**/.pnp.js
+
+# Next.js & Builds
+**/.next/
+**/out/
+**/dist/
+**/build/
+**/.astro/
+
+# Cloudflare & Deployments
+**/.wrangler/
+
+# Python Cache & Environments
+**/__pycache__/
+*.py[cod]
+*$py.class
+**/.venv/
+**/env/
+**/venv/
+**/ENV/
+
+# Testing & Browser automation artifacts
+**/test-results/
+**/playwright-report/
+**/.cache/
+.browser_profile/
+**/.browser_profile/
+
+# System & OS Files
+.DS_Store
+**/.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+
+# IDE & Editors
+.idea/
+**/.idea/
+.vscode/
+**/.vscode/
+scratch/
+**/.gemini/
+*.swp
+*.swo
+
+# Internal git backups
+**/.git_subrepo_backup/
+
+# Large archives (if any temporary)
+*.zip
+*.tar.gz
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Secrets & credentials (keep local, do not push to GitHub)
+**/google-key.json
+**/cloudflare_accounts.json
+**/deploy_accounts.json
+**/archived_accounts.json
+**/api_config.json
+**/*_accounts.json
+*.env
+.env.*
+*.pem
+*.key

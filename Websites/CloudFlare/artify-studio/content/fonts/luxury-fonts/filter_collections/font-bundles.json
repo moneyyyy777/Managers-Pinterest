@@ -1,0 +1,19 @@
+{
+  "filterId": "font-bundles",
+  "label": "Bundles",
+  "items": [
+    "luxury-editorial-bundle",
+    "modern-bundle",
+    "elegant-serif-bundle",
+    "headline-serif-bundle",
+    "elegant-serif-bundle-3",
+    "merovel",
+    "aesthetic-elegant-bundle",
+    "hepune",
+    "sorento-regular",
+    "nentra",
+    "rossten"
+  ],
+  "excludedItems": [],
+  "updatedAt": "2026-10-11T21:21:11.697Z"
+}

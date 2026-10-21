@@ -1,0 +1,200 @@
+[
+  {
+    "id": "floral-botanical",
+    "label": "Floral & Botanical",
+    "keywords": [
+      "floral",
+      "florals",
+      "flower",
+      "flowers",
+      "botanical",
+      "botanicals",
+      "blossom",
+      "blossoms",
+      "bloom",
+      "blooms",
+      "petal",
+      "petals",
+      "leaf",
+      "leaves",
+      "leafy",
+      "foliage",
+      "plant",
+      "plants",
+      "greenery",
+      "garden",
+      "gardens",
+      "branch",
+      "branches"
+    ]
+  },
+  {
+    "id": "watercolor-art",
+    "label": "Watercolor Style",
+    "keywords": [
+      "watercolor",
+      "watercolors",
+      "watercolour",
+      "watercolours",
+      "hand painted",
+      "hand-painted",
+      "artistic",
+      "gouache",
+      "wash",
+      "washes",
+      "splatter",
+      "splatters"
+    ]
+  },
+  {
+    "id": "nursery-baby",
+    "label": "Nursery & Baby",
+    "keywords": [
+      "nursery",
+      "nurseries",
+      "baby",
+      "babies",
+      "baby shower",
+      "baby showers",
+      "baby girl",
+      "baby boy",
+      "child",
+      "children",
+      "kids",
+      "kid",
+      "toddler",
+      "toddlers",
+      "cute"
+    ]
+  },
+  {
+    "id": "wedding-romance",
+    "label": "Wedding & Romance",
+    "keywords": [
+      "wedding",
+      "weddings",
+      "wedding invitation",
+      "wedding invitations",
+      "romantic",
+      "romance",
+      "bridal",
+      "bride",
+      "brides",
+      "anniversary",
+      "anniversaries",
+      "love",
+      "valentine",
+      "valentines",
+      "blush"
+    ]
+  },
+  {
+    "id": "boho-earthy",
+    "label": "Boho & Earthy",
+    "keywords": [
+      "boho",
+      "bohemian",
+      "earth tone",
+      "earth tones",
+      "earthy",
+      "terracotta",
+      "rustic",
+      "neutral",
+      "neutrals",
+      "sage",
+      "warm tone",
+      "warm tones"
+    ]
+  },
+  {
+    "id": "vintage-retro",
+    "label": "Vintage & Retro",
+    "keywords": [
+      "vintage",
+      "vintages",
+      "retro",
+      "retros",
+      "groovy",
+      "cottagecore",
+      "nostalgia",
+      "nostalgic",
+      "70s",
+      "80s",
+      "90s",
+      "y2k",
+      "victorian",
+      "antique",
+      "antiques"
+    ]
+  },
+  {
+    "id": "seasonal-holiday",
+    "label": "Seasonal & Holidays",
+    "keywords": [
+      "spring",
+      "springs",
+      "summer",
+      "summers",
+      "autumn",
+      "autumns",
+      "fall",
+      "falls",
+      "winter",
+      "winters",
+      "christmas",
+      "halloween",
+      "holiday",
+      "holidays",
+      "easter"
+    ]
+  },
+  {
+    "id": "geometric-abstract",
+    "label": "Geometric & Abstract",
+    "keywords": [
+      "geometric",
+      "geometrics",
+      "abstract",
+      "abstracts",
+      "stripe",
+      "stripes",
+      "grid",
+      "grids",
+      "check",
+      "checks",
+      "checkerboard",
+      "checkerboards",
+      "polka dot",
+      "polka dots",
+      "terrazzo",
+      "minimalist",
+      "minimalism",
+      "line art"
+    ]
+  },
+  {
+    "id": "animals-woodland",
+    "label": "Animals & Woodland",
+    "keywords": [
+      "animal",
+      "animals",
+      "woodland",
+      "woodlands",
+      "forest",
+      "forests",
+      "jungle",
+      "jungles",
+      "safari",
+      "safaris",
+      "wildlife",
+      "bunny",
+      "bunnies",
+      "bear",
+      "bears",
+      "bird",
+      "birds",
+      "butterfly",
+      "butterflies"
+    ]
+  }
+]

@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Natural Neuropathy Relief | Nerve Fresh</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #2d6a4f;
+    --green-light: #52b788;
+    --green-pale: #d8f3dc;
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --dark: #1a1a2e;
+    --text: #2c2c2c;
+    --gray: #f8f9fa;
+    --white: #ffffff;
+    --red: #c0392b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Source Sans 3', sans-serif; color: var(--text); background: var(--white); overflow-x: hidden; }
+
+  /* NAV */
+  nav {
+    background: var(--dark);
+    padding: 12px 20px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+  nav a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--gold-light); }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d2818 0%, #1a4731 50%, #0d2818 100%);
+    padding: 60px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(82,183,136,0.15) 0%, transparent 70%);
+  }
+  .hero-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--dark);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 52px);
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .hero h1 span { color: var(--green-light); }
+  .hero h2 {
+    font-size: clamp(14px, 2.5vw, 18px);
+    color: #aaa;
+    font-weight: 300;
+    max-width: 600px;
+    margin: 0 auto 30px;
+    line-height: 1.6;
+  }
+  .hero img {
+    max-width: 340px;
+    width: 90%;
+    display: block;
+    margin: 30px auto;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));
+    animation: float 4s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* CTA BUTTON */
+  .btn {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--gold) 0%, #e8c44a 50%, var(--gold) 100%);
+    color: var(--dark);
+    font-size: 18px;
+    font-weight: 700;
+    padding: 18px 48px;
+    border-radius: 50px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 8px 30px rgba(201,168,76,0.4);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+  }
+  .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 40px rgba(201,168,76,0.5);
+  }
+  .btn-wrap { text-align: center; margin: 30px 0; }
+  .btn-sub { display: block; color: #888; font-size: 12px; margin-top: 8px; }
+
+  /* TRUST BADGES */
+  .trust {
+    background: var(--green-pale);
+    padding: 40px 20px;
+  }
+  .trust-grid {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 24px;
+    text-align: center;
+  }
+  .trust-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 10px;
+  }
+  .trust-item p {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green);
+    line-height: 1.4;
+  }
+
+  /* SECTION */
+  section { padding: 60px 20px; }
+  .container { max-width: 860px; margin: 0 auto; }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 4vw, 36px);
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--dark);
+  }
+  .section-title span { color: var(--green); }
+
+  /* BENEFITS */
+  .benefits { background: var(--white); }
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    max-width: 600px;
+    margin: 0 auto 30px;
+  }
+  @media(max-width: 480px) { .benefits-grid { grid-template-columns: 1fr; } }
+  .benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--green-pale);
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--green);
+  }
+  .benefit-item::before { content: '✓'; font-size: 18px; color: var(--green); font-weight: 900; }
+
+  /* INGREDIENTS */
+  .ingredients { background: var(--gray); }
+  .ingredient {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 30px;
+    align-items: center;
+    margin-bottom: 40px;
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    transition: transform 0.3s;
+  }
+  .ingredient:hover { transform: translateY(-3px); }
+  @media(max-width: 560px) { .ingredient { grid-template-columns: 1fr; } }
+  .ingredient img { width: 100%; height: 160px; object-fit: cover; }
+  .ingredient-text { padding: 20px 24px 20px 0; }
+  @media(max-width: 560px) { .ingredient-text { padding: 16px; } }
+  .ingredient-text h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+  .ingredient-text p { font-size: 14px; line-height: 1.7; color: #555; }
+
+  /* TESTIMONIALS */
+  .testimonials { background: var(--dark); }
+  .testimonials .section-title { color: var(--white); }
+  .testimonials .section-title span { color: var(--gold-light); }
+  .testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+  }
+  .testimonial-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 24px;
+    position: relative;
+  }
+  .testimonial-card .stars { color: var(--gold); font-size: 18px; margin-bottom: 12px; }
+  .testimonial-card p { color: #ccc; font-size: 14px; line-height: 1.7; margin-bottom: 16px; font-style: italic; }
+  .testimonial-card .author { color: var(--gold-light); font-weight: 700; font-size: 13px; }
+  .testimonial-card .location { color: #666; font-size: 12px; }
+  .testimonial-card img.avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 12px;
+    border: 2px solid var(--gold);
+  }
+
+  /* PACKAGES */
+  .packages { background: linear-gradient(135deg, #0d2818, #1a4731); }
+  .packages .section-title { color: var(--white); }
+  .packages-note { text-align: center; color: #aaa; margin-bottom: 30px; font-size: 14px; }
+  .packages-note strong { color: var(--green-light); }
+  .packages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    max-width: 960px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  /* PACKAGE CARDS */
+  .pkg-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px 20px;
+    text-align: center;
+    position: relative;
+    border: 2px solid #e0e0e0;
+    transition: transform 0.3s;
+  }
+  .pkg-card:hover { transform: translateY(-4px); }
+  .pkg-featured {
+    border-color: var(--gold);
+    background: #fffdf0;
+    box-shadow: 0 8px 40px rgba(201,168,76,0.25);
+  }
+  .pkg-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--red);
+    color: white;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    padding: 5px 18px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .pkg-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--dark);
+    margin-top: 10px;
+  }
+  .pkg-supply { font-size: 13px; color: #888; margin-bottom: 12px; }
+  .pkg-img { width: 100%; max-width: 260px; margin: 0 auto 20px; display: block; transition: transform 0.3s; }
+  .pkg-img:hover { transform: scale(1.02); }
+  .pkg-price {
+    font-size: 48px;
+    font-weight: 900;
+    color: #1a3a8c;
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+  .pkg-dollar { font-size: 28px; vertical-align: super; }
+  .pkg-per { font-size: 14px; font-weight: 400; color: #555; }
+  .pkg-perks { margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px; }
+  .pkg-perk {
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 6px;
+    letter-spacing: 0.3px;
+  }
+  .perk-blue { background: #1a3a8c; color: white; }
+  .perk-red { background: var(--red); color: white; }
+  .pkg-btn {
+    display: block;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    color: var(--dark);
+    font-size: 17px;
+    font-weight: 900;
+    padding: 16px 10px;
+    border-radius: 50px;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    margin-bottom: 14px;
+    box-shadow: 0 6px 20px rgba(201,168,76,0.35);
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+  }
+  .pkg-btn:hover { transform: scale(1.03); box-shadow: 0 10px 28px rgba(201,168,76,0.5); }
+  .pkg-total { font-size: 15px; color: var(--dark); margin-bottom: 6px; }
+  .pkg-total s { color: #aaa; }
+  .pkg-total strong { color: var(--dark); font-size: 17px; }
+  .pkg-cards { font-size: 11px; color: #aaa; margin-bottom: 8px; letter-spacing: 0.5px; }
+  .pkg-guarantee { font-size: 13px; color: var(--green); font-weight: 700; margin-top: 10px; }
+
+  /* BONUSES */
+  .bonuses { background: var(--white); }
+  .bonus {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 30px;
+    align-items: center;
+    margin-bottom: 40px;
+    padding: 28px;
+    border: 2px solid var(--green-pale);
+    border-radius: 16px;
+  }
+  @media(max-width: 560px) { .bonus { grid-template-columns: 1fr; } }
+  .bonus img { width: 100%; max-width: 140px; }
+  .bonus-badge {
+    display: inline-block;
+    background: var(--red);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  .bonus h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--dark);
+    margin-bottom: 8px;
+  }
+  .bonus .price { color: var(--red); font-weight: 700; margin-bottom: 10px; font-size: 14px; }
+  .bonus p { font-size: 14px; line-height: 1.7; color: #555; }
+
+  /* GUARANTEE */
+  .guarantee {
+    background: var(--green-pale);
+    padding: 60px 20px;
+    text-align: center;
+  }
+  .guarantee img { max-width: 160px; margin-bottom: 20px; }
+  .guarantee h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(20px, 3vw, 30px);
+    color: var(--dark);
+    margin-bottom: 16px;
+  }
+  .guarantee p { max-width: 600px; margin: 0 auto; font-size: 15px; line-height: 1.7; color: #555; }
+
+  /* SHIPPING */
+  .shipping { background: var(--white); padding: 40px 20px; text-align: center; }
+  .shipping img { max-width: 80px; margin-bottom: 10px; }
+  .shipping h3 { font-size: 18px; color: var(--green); font-weight: 700; margin-bottom: 8px; }
+  .shipping p { font-size: 14px; color: #666; max-width: 500px; margin: 0 auto; }
+
+  /* FAQ */
+  .faq { background: var(--gray); }
+  .faq-item {
+    background: var(--white);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .faq-q {
+    padding: 18px 24px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+    color: var(--dark);
+  }
+  .faq-q::after { content: '+'; font-size: 22px; color: var(--green); flex-shrink: 0; }
+  .faq-a {
+    padding: 0 24px 18px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #555;
+  }
+
+  /* FINAL CTA */
+  .final-cta { background: linear-gradient(135deg, #0d2818, #1a4731); padding: 70px 20px; text-align: center; }
+  .final-cta h2 { font-family: 'Playfair Display', serif; font-size: clamp(22px, 4vw, 38px); color: var(--white); margin-bottom: 16px; }
+  .final-cta p { color: #aaa; font-size: 15px; margin-bottom: 30px; max-width: 500px; margin-left: auto; margin-right: auto; }
+  .final-cta img { max-width: 220px; margin: 20px auto; display: block; }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark);
+    padding: 30px 20px;
+    text-align: center;
+    color: #555;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  footer a { color: #777; text-decoration: none; }
+  footer a:hover { color: var(--gold-light); }
+  footer .links { margin-bottom: 16px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; }
+  footer .disclaimer { max-width: 700px; margin: 0 auto; color: #444; }
+
+  /* STOCK BANNER */
+  .stock-banner {
+    background: var(--red);
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .stock-banner span { background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#ingredients">Ingredients</a>
+  <a href="#testimonials">Testimonials</a>
+  <a href="#faq">FAQ</a>
+  <a href="#research">Research</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🌿 All-Natural Formula</div>
+  <h1>Powerful All-New <span>Nerve</span> Support Formula</h1>
+  <h2>Nerve Fresh promotes healthy nerves by providing 5 vital bio-available fruit, flower and bark extracts with essential vitamin and mineral support.</h2>
+  <img src="https://secure.nervefresh24.com/images/cbbrand/Nerve_Fresh_6_Bottles_made_in_usa_no_logo.png" alt="Nerve Fresh Bottles">
+  <div class="btn-wrap">
+    <a href="#packages" class="btn" onclick="document.getElementById('packages').scrollIntoView({behavior:'smooth'});return false;">🛒 ORDER NOW — Special Discount</a>
+    <span class="btn-sub">✓ 180-Day Money Back Guarantee &nbsp;|&nbsp; ✓ Free Shipping</span>
+  </div>
+</div>
+
+<!-- TRUST -->
+<div class="trust">
+  <div class="trust-grid">
+    <div class="trust-item">
+      <img src="https://secure.nervefresh24.com/images/cbbrand/6042469_20180806T211741.png" alt="Natural">
+      <p>All Natural<br>Non-GMO & Gluten-Free</p>
+    </div>
+    <div class="trust-item">
+      <img src="https://secure.nervefresh24.com/images/cbbrand/6042474_20180806T211750.png" alt="USA">
+      <p>Made In The USA<br>Proudly Formulated</p>
+    </div>
+    <div class="trust-item">
+      <img src="https://secure.nervefresh24.com/images/cbbrand/6042473_20180806T211759.png" alt="GMP">
+      <p>GMP Certified<br>Pharmaceutical Grade Quality</p>
+    </div>
+    <div class="trust-item">
+      <img src="https://secure.nervefresh24.com/images/cbbrand/6042471_20180806T211809.png" alt="FDA">
+      <p>FDA Registered Facility<br>Strict FDA Regulations</p>
+    </div>
+  </div>
+</div>
+
+<!-- BENEFITS -->
+<section class="benefits" id="ingredients">
+  <div class="container">
+    <h2 class="section-title">Take <span>Nerve Fresh</span> For Daily Nerve Support</h2>
+    <p style="text-align:center; color:#555; max-width:600px; margin:0 auto 30px; line-height:1.7;">
+      Each ingredient is backed by research and peer-reviewed studies that prove the effectiveness of the ingredients in Nerve Fresh.†
+    </p>
+    <div class="benefits-grid">
+      <div class="benefit-item">Healthy Nerves†</div>
+      <div class="benefit-item">Reduction in Pain†</div>
+      <div class="benefit-item">Promote Energy Production†</div>
+      <div class="benefit-item">Deeper, More Relaxing Sleep†</div>
+      <div class="benefit-item">Overall Health & Wellness†</div>
+      <div class="benefit-item">Improved Dexterity†</div>
+    </div>
+    <div class="btn-wrap">
+      <a href="#packages" class="btn" onclick="document.getElementById('packages').scrollIntoView({behavior:'smooth'});return false;">Get Your Discount Today →</a>
+    </div>
+  </div>
+</section>
+
+<!-- INGREDIENTS -->
+<section class="ingredients">
+  <div class="container">
+    <h2 class="section-title">The 5 Vital <span>Key Ingredients</span></h2>
+
+    <div class="ingredient">
+      <img src="https://secure.nervefresh24.com/images/cbbrand/Prickly-Pear1.jpg" alt="Prickly Pear">
+      <div class="ingredient-text">
+        <h3>Prickly Pear</h3>
+        <p>This miracle plant protects the body from the three harmful enzymes — the same ones causing those pins and needle sensations. These toxic radicals pile on excess oxidative stress on your cells, tissues, and muscles.</p>
+      </div>
+    </div>
+
+    <div class="ingredient">
+      <img src="https://secure.nervefresh24.com/images/cbbrand/Passionflower1.jpg" alt="Passionflower">
+      <div class="ingredient-text">
+        <h3>Passionflower</h3>
+        <p>A highly popular herbal agent that helps with nerve pain, stress, anxiety, and insomnia. Passionflower achieves its calming effect by increasing the levels of GABA (gamma aminobutyric acid) in the brain.</p>
+      </div>
+    </div>
+
+    <div class="ingredient">
+      <img src="https://secure.nervefresh24.com/images/cbbrand/Marshmallow-Root1.jpg" alt="Marshmallow Root">
+      <div class="ingredient-text">
+        <h3>Marshmallow Root</h3>
+        <p>This demulcent plant possesses a sizable portion of anti-inflammatory mucilage — a gelatinous substance that helps the body rid itself of unwanted stress, anxiety and pain.</p>
+      </div>
+    </div>
+
+    <div class="ingredient">
+      <img src="https://secure.nervefresh24.com/images/cbbrand/Corydalis-Yanhusuo-Plant1.jpg" alt="Corydalis">
+      <div class="ingredient-text">
+        <h3>Corydalis (Yanhusuo Plant)</h3>
+        <p>A flowering herbal plant that grows in Siberia, Northern China and Japan. Research from UC Irvine showed it "diminishes inflammatory pain… associated with tissue damage and the infiltration of immune cells."</p>
+      </div>
+    </div>
+
+    <div class="ingredient">
+      <img src="https://secure.nervefresh24.com/images/cbbrand/California-Poppy-Poppy-Seed-1.jpg" alt="California Poppy">
+      <div class="ingredient-text">
+        <h3>California Poppy (Poppy Seed)</h3>
+        <p>Acts as a hypnotic, sleep-inducing, sedative, neuron relaxant and anodyne (pain-relieving). It fights against insomnia, migraines, stressful conditions, nervous bowel, anxiety, depression and neuralgia (nerve pain).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <h2 class="section-title">What Our <span>Customers</span> Have To Say</h2>
+    <div class="testimonial-grid">
+
+      <div class="testimonial-card">
+        <img class="avatar" src="https://secure.nervefresh24.com/images/cbbrand/grandmother-head.jpg" alt="Gina">
+        <div class="stars">★★★★★</div>
+        <p>"I started using Nerve Fresh because it was recommended to me by a nurse/therapist who understood my issue. After 2 months I feel a lot more better and I don't feel the pain and tingling as before. I take it 2 times a day and I love it!" *†</p>
+        <div class="author">Gina Stein</div>
+        <div class="location">Fresno, CA</div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p>"I'm a musician, but my neuropathy made it challenging to play musical instruments. Since I started taking Nerve Fresh, I've noticed a significant improvement in my hand and finger dexterity, flexibility, and sensitivity. Now I can play my favorite musical instruments again!" *†</p>
+        <div class="author">Jorge C.</div>
+        <div class="location">Tampa, FL</div>
+      </div>
+
+      <div class="testimonial-card">
+        <img class="avatar" src="https://secure.nervefresh24.com/images/cbbrand/granny-close.jpg" alt="Kathy">
+        <div class="stars">★★★★★</div>
+        <p>"After suffering from neuropathy for years, I had given up on going for long walks. But since I started taking Nerve Fresh, I've noticed a significant improvement in my leg strength and balance. Now I can enjoy long walks with my dog and stand for hours without pain. Thank you!" *†</p>
+        <div class="author">Kathy T.</div>
+        <div class="location">Boston, MA</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PACKAGES -->
+<section class="packages" id="packages">
+  <div class="stock-banner">⚡ LIMITED TIME OFFER <span>IN STOCK</span></div>
+  <div class="container" style="padding-top:40px;">
+    <h2 class="section-title" style="color:white;">Special Internet Only Offer<br><span style="font-size:0.6em;color:#aaa;font-family:'Source Sans 3',sans-serif;font-weight:300;">To First Time Customers</span></h2>
+    <p class="packages-note">Save more with multi-bottle packages. <strong>Choose your package below:</strong></p>
+
+    <div class="packages-grid">
+
+      <!-- 6 BOTTLES - MOST POPULAR -->
+      <div class="pkg-card pkg-featured">
+        <div class="pkg-badge">MOST POPULAR</div>
+        <a href="https://secure.nervefresh24.com/index-nf-ds#aff=KylieJean" target="_blank" rel="noopener noreferrer">
+          <img src="https://secure.nervefresh24.com/images/tsl/nf_6_bottles_180_day_desktop.png" alt="6 Bottles Nerve Fresh" class="pkg-img">
+        </a>
+        <a href="https://secure.nervefresh24.com/index-nf-ds#aff=KylieJean" class="pkg-btn" target="_blank" rel="noopener noreferrer">ADD TO CART 🛒</a>
+        <div class="pkg-guarantee">✓ 180 Days Guarantee</div>
+      </div>
+
+      <!-- 3 BOTTLES -->
+      <div class="pkg-card">
+        <a href="https://secure.nervefresh24.com/index-nf-ds#aff=KylieJean" target="_blank" rel="noopener noreferrer">
+          <img src="https://secure.nervefresh24.com/images/tsl/nf_3_bottles_180_day_desktop.png" alt="3 Bottles Nerve Fresh" class="pkg-img">
+        </a>
+        <a href="https://secure.nervefresh24.com/index-nf-ds#aff=KylieJean" class="pkg-btn" target="_blank" rel="noopener noreferrer">ADD TO CART 🛒</a>
+        <div class="pkg-guarantee">✓ 180 Days Guarantee</div>
+      </div>
+
+      <!-- 1 BOTTLE -->
+      <div class="pkg-card">
+        <a href="https://secure.nervefresh24.com/index-nf-ds#aff=KylieJean" target="_blank" rel="noopener noreferrer">
+          <img src="https://secure.nervefresh24.com/images/tsl/nf_1_bottle_180_day_desktop.png" alt="1 Bottle Nerve Fresh" class="pkg-img">
+        </a>
+        <a href="https://secure.nervefresh24.com/index-nf-ds#aff=KylieJean" class="pkg-btn" target="_blank" rel="noopener noreferrer">ADD TO CART 🛒</a>
+        <div class="pkg-guarantee">✓ 180 Days Guarantee</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- BONUSES -->
+<section class="bonuses">
+  <div class="container">
+    <h2 class="section-title">Order Today & Get These <span>FREE Bonuses</span></h2>
+
+    <div class="bonus">
+      <img src="https://secure.nervefresh24.com/images/cbbrand/The-Neuropathy-Eradicating-System-E-Book.png" alt="Bonus 1">
+      <div>
+        <div class="bonus-badge">FREE BONUS #1</div>
+        <h3>The Neuropathy Eradicating System</h3>
+        <div class="price">Normally $47! Yours FREE When You Order Now</div>
+        <p>The #1 rated protocol for customer satisfaction. Combined with Nerve Fresh, this step-by-step blueprint will give you everything needed to manage, control and begin repairing your neurons — from the very first day.</p>
+      </div>
+    </div>
+
+    <div class="bonus">
+      <img src="https://secure.nervefresh24.com/images/cbbrand/Fat-Loss-Unlocked-The-Science-of-Fat-Loss-and-Transformation-E-Book.png" alt="Bonus 2">
+      <div>
+        <div class="bonus-badge">FREE BONUS #2</div>
+        <h3>Fat Loss Unlocked: The Science of Fat Loss and Transformation</h3>
+        <div class="price">Normally $37! Yours FREE When You Order Now</div>
+        <p>This easy-to-read book gives you tips and tricks on how to get in the best shape of your life. 98% of people who followed the simple advice reported an increase in energy levels naturally, boosted confidence, and extra weight loss while using Nerve Fresh.</p>
+      </div>
+    </div>
+
+    <div class="btn-wrap">
+      <a href="#packages" class="btn" onclick="document.getElementById('packages').scrollIntoView({behavior:'smooth'});return false;">Get Nerve Fresh + FREE Bonuses →</a>
+    </div>
+  </div>
+</section>
+
+<!-- GUARANTEE -->
+<div class="guarantee">
+  <img src="https://secure.nervefresh24.com/images/cbbrand/Nerve_Fresh_1_Bottle_60_Day_Guarantee_no_logo_180.png" alt="180 Day Guarantee">
+  <h2>All Backed By Our 180-Day 100% Money-Back Guarantee</h2>
+  <p>If you change your mind about this decision at any point in the next 6 months — all you need to do is call or email us for return instructions. It does not matter if your bottles are EMPTY. We will refund you 100%, no questions asked.</p>
+</div>
+
+<!-- SHIPPING -->
+<div class="shipping">
+  <img src="https://secure.nervefresh24.com/images/cbbrand/5830371_20180719T170928.png" alt="Free Shipping">
+  <h3>🚚 Free Shipping!</h3>
+  <p>Weekday orders are shipped within 1 business day. Weekend orders are shipped first thing on Monday. All products are shipped from our FDA registered facility. Standard Shipping In Continental United States: 5 to 8 business days.</p>
+</div>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <h2 class="section-title">Frequently Asked <span>Questions</span></h2>
+
+    <div class="faq-item">
+      <div class="faq-q">How long should I take Nerve Fresh?</div>
+      <div class="faq-a">To get the full results of Nerve Fresh we recommend taking the product for a minimum of 3–6 months. So we recommend the 3 bottle or 6 bottle option.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How many bottles should I order?</div>
+      <div class="faq-a">With the dangers of nerve pain always looming, we HIGHLY recommend stocking up and saving more today with our special package where you will get 6-Bottles of Nerve Fresh at the extremely low price of $49 per bottle. That's ONLY $1.63 a day — risk-free savings you'll want to take advantage of.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How should I take Nerve Fresh?</div>
+      <div class="faq-a">As a dietary supplement take one (1) capsule twice a day. For best results take 20–30 min before a meal with an 8oz. glass of water or as directed by your healthcare professional.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I know it will work for me?</div>
+      <div class="faq-a">We have combined years of medical and research experience together with medical studies from top universities to perfect this formula. That is why you can try it risk-free for up to 180 days. If you do not feel a difference — we will refund you 100%, no questions asked, even if the bottles are empty.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is my order secure?</div>
+      <div class="faq-a">Yes. We implement a variety of security measures to maintain the safety of your personal information. All transactions go through SSL 256-bit encryption — the industry standard for secure online transactions.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="research">
+  <h2>One Simple Change Can Make A Difference</h2>
+  <p>Try Nerve Fresh for 180 days to see if it makes a difference in your health. Click the button below to view order options.</p>
+  <img src="https://secure.nervefresh24.com/images/cbbrand/Nerve_Fresh_6_Bottles-60_Days_no_logo_180.png" alt="Nerve Fresh">
+  <div class="btn-wrap">
+    <a href="#packages" class="btn" onclick="document.getElementById('packages').scrollIntoView({behavior:'smooth'});return false;">🛒 BUY NOW — View Order Options</a>
+    <span class="btn-sub" style="color:#777;">✓ 180-Day Guarantee &nbsp;|&nbsp; ✓ Free Shipping &nbsp;|&nbsp; ✓ No Risk</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="links">
+    <a href="https://drdanielsnervefresh.com/privacy-policy-nf-1" target="_blank" rel="noopener noreferrer">Privacy</a>
+    <a href="https://drdanielsnervefresh.com/terms-nf-1">Terms</a>
+    <a href="https://drdanielsnervefresh.com/disclaimer-nf-1">Disclaimer</a>
+    <a href="https://drdanielsnervefresh.com/anti-spam-policy-nf-1">Anti-Spam Policy</a>
+    <a href="https://drdanielsnervefresh.com/about-us-nf-1">About Us</a>
+    <a href="https://drdanielsnervefresh.com/contact-nf-1">Contact Us</a>
+  </div>
+  <p>Copyright © GetNerveFresh.com — All Rights Reserved</p>
+  <p class="disclaimer" style="margin-top:12px;">† These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease. Results may vary from person to person. The material on this site is provided for informational purposes only and is not medical advice. Always consult your physician before beginning any diet or exercise program.</p>
+</footer>
+
+</body>
+</html>

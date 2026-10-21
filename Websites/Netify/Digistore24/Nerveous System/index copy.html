@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calm Haven — The Nervous System Reset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2B2A4C;
+    --ink-soft:#4A4870;
+    --mist:#F3EFE7;
+    --mist-deep:#E8E1D4;
+    --gold:#C9A24B;
+    --sage:#8AA399;
+    --clay:#C98477;
+    --paper:#FBF9F4;
+    --radius:22px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--mist);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    letter-spacing:-0.01em;
+  }
+  .mono{
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+
+  /* ---------- top disclosure bar ---------- */
+  .disclosure-bar{
+    background:var(--ink);
+    color:var(--mist);
+    text-align:center;
+    font-size:0.72rem;
+    padding:8px 16px;
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.02em;
+    opacity:0.9;
+  }
+
+  /* ---------- hero (COMPACTED FOR ABOVE-THE-FOLD VIEW) ---------- */
+  .hero{
+    position:relative;
+    background:radial-gradient(120% 100% at 50% 0%, #38366080 0%, var(--ink) 60%);
+    background-color:var(--ink);
+    color:var(--paper);
+    padding:40px 24px 110px; /* Reduced top padding from 90px to 40px, bottom from 130px to 110px */
+    text-align:center;
+    overflow:hidden;
+  }
+  .breathe-wrap{
+    width:140px; height:140px; /* Reduced from 200px to 140px to save vertical space */
+    margin:0 auto 24px; /* Reduced bottom margin from 38px to 24px */
+    position:relative;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .breathe-ring{
+    position:absolute;
+    border-radius:50%;
+    border:1px solid #D9C68C66;
+  }
+  .ring1{width:140px;height:140px; animation:breathe 6s ease-in-out infinite;}
+  .ring2{width:105px;height:105px; animation:breathe 6s ease-in-out infinite; animation-delay:-1.5s;}
+  .ring3{width:70px;height:70px; background:radial-gradient(circle, #D9C68C30, transparent 70%); animation:breathe 6s ease-in-out infinite; animation-delay:-3s;}
+  .breathe-core{
+    position:relative; z-index:2;
+    width:44px; height:44px; /* Reduced from 64px to 44px */
+    border-radius:50%;
+    background:linear-gradient(160deg, var(--gold), #a8823a);
+    box-shadow:0 0 30px #C9A24B55;
+  }
+  @keyframes breathe{
+    0%, 100%{ transform:scale(0.82); opacity:0.55;}
+    50%{ transform:scale(1); opacity:1;}
+  }
+  .eyebrow{
+    font-size:0.74rem;
+    color:#D9C68C;
+    margin-bottom:12px; /* Reduced from 18px to 12px */
+  }
+  .hero h1{
+    font-size:clamp(1.9rem, 5vw, 3.2rem); /* Slightly optimized size for better wrapping above the fold */
+    line-height:1.15;
+    max-width:760px;
+    margin:0 auto 16px; /* Reduced from 22px to 16px */
+    color:var(--paper);
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:#D9C68C;
+  }
+  .hero p{
+    max-width:560px;
+    margin:0 auto 28px; /* Reduced bottom margin from 38px to 28px */
+    font-size:1.02rem;
+    line-height:1.55;
+    color:#D7D4E8;
+  }
+  .hero-cta{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:var(--gold);
+    color:var(--ink);
+    font-weight:600;
+    padding:14px 28px; /* Slightly compacted padding */
+    border-radius:100px;
+    font-size:0.95rem;
+    transition:transform .25s ease, box-shadow .25s ease;
+    box-shadow:0 10px 30px -10px #C9A24B99;
+    border:none;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .hero-cta:hover{ transform:translateY(-2px); box-shadow:0 14px 34px -8px #C9A24Bbb;}
+  .hero-note{
+    margin-top:14px; /* Reduced from 18px to 14px */
+    font-size:0.78rem;
+    color:#9C99BE;
+  }
+  .wave{
+    position:absolute;
+    bottom:-2px; left:0; width:100%;
+    line-height:0;
+  }
+
+  /* ---------- reassurance strip ---------- */
+  .strip{
+    background:var(--paper);
+    padding:56px 24px;
+    text-align:center;
+  }
+  .strip-grid{
+    max-width:900px; margin:0 auto;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+  }
+  .strip-item .mono{ font-size:0.68rem; color:var(--sage); display:block; margin-bottom:6px;}
+  .strip-item p{ font-size:0.95rem; color:var(--ink-soft); line-height:1.5;}
+
+  /* ---------- symptom picker / quiz ---------- */
+  .picker{
+    max-width:920px;
+    margin:0 auto;
+    padding:20px 24px 10px;
+  }
+  .picker-card{
+    background:var(--ink);
+    border-radius:var(--radius);
+    padding:42px 36px;
+    text-align:center;
+    color:var(--paper);
+  }
+  .picker-card .eyebrow{ margin-bottom:10px;}
+  .picker-card h2{
+    font-size:clamp(1.5rem, 3.4vw, 2rem);
+    margin-bottom:10px;
+  }
+  .picker-card > p{
+    color:#C9C6E0;
+    max-width:480px;
+    margin:0 auto 30px;
+    font-size:0.95rem;
+    line-height:1.55;
+  }
+  .picker-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:14px;
+  }
+  .picker-btn{
+    background:#3a3866;
+    border:1px solid #4d4b80;
+    color:var(--paper);
+    border-radius:16px;
+    padding:20px 14px;
+    font-family:inherit;
+    font-size:0.86rem;
+    line-height:1.4;
+    cursor:pointer;
+    transition:background .2s ease, transform .2s ease, border-color .2s ease;
+  }
+  .picker-btn:hover{ background:#494682; transform:translateY(-2px); border-color:var(--gold);}
+  .picker-btn .pick-emoji{ display:block; font-size:1.5rem; margin-bottom:8px;}
+  .picker-result{
+    margin-top:22px;
+    font-size:0.85rem;
+    color:var(--gold);
+    min-height:20px;
+  }
+  @media (max-width: 700px){
+    .picker-grid{ grid-template-columns:repeat(2,1fr); }
+  }
+
+  /* ---------- list section ---------- */
+  .list-section{
+    max-width:920px;
+    margin:0 auto;
+    padding:80px 24px 60px;
+  }
+  .list-heading{ text-align:center; margin-bottom:64px;}
+  .list-heading .eyebrow{ color:var(--clay); }
+  .list-heading h2{
+    font-size:clamp(1.8rem, 4vw, 2.6rem);
+    color:var(--ink);
+    max-width:640px;
+    margin:14px auto 16px;
+  }
+  .list-heading p{
+    color:var(--ink-soft);
+    max-width:520px;
+    margin:0 auto;
+    line-height:1.6;
+  }
+
+  .card{
+    position:relative;
+    background:var(--paper);
+    border-radius:var(--radius);
+    padding:42px;
+    margin-bottom:30px;
+    display:grid;
+    grid-template-columns:170px 1fr;
+    gap:38px;
+    border:1px solid #E3DCC9;
+    transition:box-shadow .3s ease, transform .3s ease, border-color .3s ease;
+  }
+  .card:hover{ box-shadow:0 30px 60px -28px #2B2A4C2e; transform:translateY(-3px);}
+  .card.highlight{
+    border-color:var(--gold);
+    box-shadow:0 0 0 3px #C9A24B40, 0 30px 60px -28px #2B2A4C2e;
+  }
+  
+  /* Bestseller Badge */
+  .bestseller-badge {
+    position: absolute;
+    top: -14px;
+    right: 36px;
+    background: var(--gold);
+    color: var(--ink);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 100px;
+    box-shadow: 0 4px 12px rgba(201, 162, 75, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .rank-ring{
+    position:absolute;
+    top:-18px; left:36px;
+    width:42px; height:42px;
+    border-radius:50%;
+    background:var(--ink);
+    color:#D9C68C;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.85rem;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 16px -4px #2B2A4C66;
+  }
+
+  /* Clickable Bottle Wrap (With Hover Effect) */
+  .bottle-wrap{
+    display:flex; align-items:center; justify-content:center;
+    background:var(--mist-deep);
+    border-radius:16px;
+    padding:14px;
+    align-self: start;
+    cursor: pointer;
+    transition: transform .25s ease, background-color .25s ease, box-shadow .25s ease;
+  }
+  .bottle-wrap:hover {
+    transform: scale(1.03);
+    background-color: #dfd7c9;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+  }
+
+  .card-body .best-for{
+    display:inline-block;
+    font-size:0.68rem;
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--ink);
+    background:#EFE6C8;
+    padding:5px 11px;
+    border-radius:100px;
+    margin-bottom:12px;
+  }
+  .card-body h3{
+    font-size:1.5rem;
+    margin-bottom:4px;
+    color:var(--ink);
+  }
+  .card-tag{
+    font-size:0.78rem;
+    color:var(--sage);
+    margin-bottom:16px;
+    font-weight:500;
+  }
+  .card-body ul{
+    list-style:none;
+    margin-bottom:16px;
+  }
+  .card-body li{
+    position:relative;
+    padding-left:22px;
+    font-size:0.94rem;
+    color:var(--ink-soft);
+    line-height:1.7;
+    margin-bottom: 8px;
+  }
+  .card-body li::before{
+    content:"";
+    position:absolute;
+    left:0; top:9px;
+    width:8px; height:8px;
+    border-radius:50%;
+    background:var(--gold);
+  }
+  .chip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:18px;
+  }
+  .chip{
+    font-size:0.72rem;
+    color:var(--ink-soft);
+    background:var(--mist-deep);
+    border:1px solid #DDD2B8;
+    padding:5px 11px;
+    border-radius:100px;
+  }
+
+  /* Cross-Sell / Stacking Box */
+  .cross-sell-box {
+    background: rgba(138, 163, 153, 0.1);
+    border: 1px dashed var(--sage);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .cross-sell-box span.icon {
+    font-size: 1.1rem;
+    line-height: 1.2;
+  }
+  .cross-sell-text p {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin: 0;
+  }
+  .cross-sell-text strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .cross-sell-text a {
+    color: var(--sage);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-weight: 500;
+  }
+  .cross-sell-text a:hover {
+    color: var(--ink);
+  }
+
+  .badge-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px;
+    margin-bottom:8px;
+    padding-top:18px;
+    border-top:1px dashed #DDD5C2;
+  }
+  .badge{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+  }
+  .badge .dot{
+    width:6px; height:6px; border-radius:50%; background:var(--sage); flex-shrink:0;
+  }
+  .card-footer{
+    margin-top:18px;
+  }
+  .card-cta{
+    background:var(--ink);
+    color:var(--paper);
+    padding:13px 24px;
+    border-radius:100px;
+    font-size:0.88rem;
+    font-weight:500;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:background .25s ease, transform .25s ease;
+  }
+  .card-cta:hover{ background:#3f3d6e; transform:translateY(-1px);}
+  .card-cta .arrow{ transition:transform .25s ease;}
+  .card-cta:hover .arrow{ transform:translateX(3px);}
+
+  @media (max-width: 640px){
+    .card{ grid-template-columns:1fr; padding:30px 22px;}
+    .bottle-wrap{ height:130px; align-self: center;}
+    .strip-grid{ grid-template-columns:1fr; gap:24px;}
+  }
+
+  /* ---------- marketing-brain buying guide ---------- */
+  .guide{
+    max-width:920px;
+    margin:0 auto;
+    padding:20px 24px 80px;
+  }
+  .guide-card{
+    background:var(--paper);
+    border:1px solid #E3DCC9;
+    border-radius:var(--radius);
+    padding:42px;
+  }
+  .guide-card h2{
+    font-size:clamp(1.5rem, 3.4vw, 1.9rem);
+    margin-bottom:8px;
+  }
+  .guide-card > p.lead{
+    color:var(--ink-soft);
+    max-width:560px;
+    margin-bottom:30px;
+    line-height:1.6;
+    font-size:0.95rem;
+  }
+  .guide-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:26px;
+  }
+  .guide-item{
+    display:flex;
+    gap:14px;
+  }
+  .guide-num{
+    font-family:'Fraunces', serif;
+    font-size:1.4rem;
+    color:var(--gold);
+    flex-shrink:0;
+    width:32px;
+  }
+  .guide-item h4{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.02rem;
+    margin-bottom:6px;
+    color:var(--ink);
+  }
+  .guide-item p{
+    font-size:0.88rem;
+    color:var(--ink-soft);
+    line-height:1.6;
+  }
+  @media (max-width:700px){
+    .guide-grid{ grid-template-columns:1fr;}
+    .guide-card{ padding:30px 24px;}
+  }
+
+  /* ---------- closing ---------- */
+  .closing{
+    background:var(--ink);
+    color:var(--paper);
+    text-align:center;
+    padding:90px 24px 70px;
+  }
+  .closing h2{
+    font-size:clamp(1.7rem, 4vw, 2.3rem);
+    max-width:560px;
+    margin:0 auto 18px;
+  }
+  .closing p{
+    color:#C9C6E0;
+    max-width:460px;
+    margin:0 auto 34px;
+    line-height:1.6;
+    font-size:0.98rem;
+  }
+
+  footer{
+    background:var(--mist-deep);
+    padding:36px 24px 50px;
+    text-align:center;
+  }
+  footer p{
+    max-width:640px;
+    margin:0 auto 8px;
+    font-size:0.72rem;
+    color:#7B7868;
+    line-height:1.6;
+  }
+  footer .brand{
+    font-family:'Fraunces', serif;
+    font-size:1.1rem;
+    color:var(--ink);
+    margin-bottom:14px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .breathe-ring, .breathe-core{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="breathe-wrap">
+    <div class="breathe-ring ring1"></div>
+    <div class="breathe-ring ring2"></div>
+    <div class="breathe-ring ring3"></div>
+    <div class="breathe-core"></div>
+  </div>
+  <div class="eyebrow mono">Calm Haven — The Calm Complex</div>
+  <h1>Welcome back to your natural state of calm. <em>Let your body gently unwind.</em></h1>
+  <p>A carefully curated complex of supplements we trust to lower cortisol, ease anxiety, and soothe restlessness, allowing your body to fully rest.</p>
+  <button class="hero-cta" onclick="document.getElementById('picker').scrollIntoView({behavior:'smooth'})">Discover the best of calm ↓</button>
+  <div class="hero-note">Takes 5 seconds. Build your perfect complex.</div>
+
+  <svg class="wave" viewBox="0 0 1440 80" preserveAspectRatio="none">
+    <path d="M0,40 C240,90 480,0 720,30 C960,60 1200,10 1440,40 L1440,80 L0,80 Z" fill="#F3EFE7"></path>
+  </svg>
+</section>
+
+<!-- ============ REASSURANCE STRIP ============ -->
+<section class="strip">
+  <div class="strip-grid">
+    <div class="strip-item">
+      <span class="mono">01 · How to build your complex</span>
+      <p>We believe in building a complete routine. You start with a core foundation (like Magnesium) to lower baseline cortisol, and add targeted boosters for daytime focus or physical tension.</p>
+    </div>
+    <div class="strip-item">
+      <span class="mono">02 · Clean formulas only</span>
+      <p>We only feature products with clear ingredient labels.</p>
+    </div>
+    <div class="strip-item">
+      <span class="mono">03 · Who this is for</span>
+      <p>For anyone seeking daily balance, the soothing comfort of quiet solitude, and a gentle ritual that brings harmony to both mind and body.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WELLNESS MATCHER ============ -->
+<section class="picker" id="picker">
+  <div class="picker-card">
+    <div class="eyebrow mono">Personalized Calm Matcher</div>
+    <h2>What would you like to invite into your life today?</h2>
+    <p>Select your desired wellness state below. We will guide you directly to the finest formula chosen to support it.</p>
+    <div class="picker-grid">
+      <button class="picker-btn" onclick="goTo('card-1')"><span class="pick-emoji">☀️🌙</span>The Peaceful Day and Deep Sleep Stack</button>
+      <button class="picker-btn" onclick="goTo('card-2')"><span class="pick-emoji">🧠</span>Crystal-clear focus & natural mental energy</button>
+      <button class="picker-btn" onclick="goTo('card-3')"><span class="pick-emoji">⚡️</span>Soothing physical ease & deep body relaxation</button>
+      <button class="picker-btn" onclick="goTo('card-4')"><span class="pick-emoji">🌀</span>Grounding, steady balance & inner harmony</button>
+    </div>
+    <div class="picker-result" id="picker-result"></div>
+  </div>
+</section>
+
+<!-- ============ LIST ============ -->
+<section class="list-section" id="list">
+  <div class="list-heading">
+    <div class="eyebrow mono">The Shortlist</div>
+    <h2>The Day and Night Calm Complex</h2>
+    <p>Start with foundational Magnesium to restore your natural balance, then choose the targeted support that best matches your body's unique needs.</p>
+  </div>
+
+  <!-- CARD 1: MAGNESIUM -->
+  <div class="card highlight" id="card-1">
+    <div class="bestseller-badge">📌 Pinterest Community Favorite</div>
+    <div class="rank-ring">01</div>
+    
+    <!-- Clickable SVG Wrap -->
+    <a href="https://magbreakthrough.com/a/classic/digistore/index?gl=65a7fd463f5d60721f8b4567#aff=KylieJean" target="_blank" rel="nofollow noopener" class="bottle-wrap">
+      <svg width="100" height="150" viewBox="0 0 100 150">
+        <rect x="32" y="0" width="36" height="16" rx="4" fill="#D9C68C"/>
+        <rect x="24" y="16" width="52" height="14" rx="6" fill="#c2ad6f"/>
+        <rect x="16" y="30" width="68" height="112" rx="14" fill="#F7F4ED" stroke="#C9A24B" stroke-width="2"/>
+        <rect x="16" y="70" width="68" height="44" fill="#D9C68C"/>
+        <path d="M40 92 l8 -14 l6 10 l8 -16" stroke="#2B2A4C" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+    
+    <div class="card-body">
+      <span class="best-for">The Foundation: Deep Sleep & Cortisol Cleanse</span>
+      <h3>Magnesium Breakthrough</h3>
+      <div class="card-tag">By BIOptimizers — The ultimate 7-form magnesium blend</div>
+      <ul>
+        <li><strong>Why it's #1:</strong> Magnesium is rapidly depleted by stress. This is one of the rare formulas combining all 7 forms to regulate cortisol and drop you into deep, restorative sleep.</li>
+        <li>Works as a "nervous system switch-off" button. Best taken 30 minutes before bed as the final step of your wind-down routine.</li>
+        <li><strong>Pro tip:</strong> Resetting severe burnout takes consistency. The 3 or 5-bottle bundles come with steep discounts and are recommended for a full system reset.</li>
+      </ul>
+      
+      <div class="chip-row">
+        <span class="chip">7 magnesium forms</span>
+        <span class="chip">Cortisol support</span>
+        <span class="chip">Deep REM sleep</span>
+        <span class="chip">No synthetic fillers</span>
+      </div>
+      
+      <div class="cross-sell-box">
+        <span class="icon">💡</span>
+        <div class="cross-sell-text">
+          <p><strong>Build your complex:</strong> This is your nighttime foundation. Pair it with <a href="#card-2" onclick="goTo('card-2'); return false;">CogniCare Pro</a> in the morning to enjoy all-day mental clarity, effortless productivity, and natural daily calming.</p>
+        </div>
+      </div>
+
+      <div class="badge-row">
+        <div class="badge"><span class="dot"></span>Thousands of 5-star reviews</div>
+        <div class="badge"><span class="dot"></span>Tested for purity</div>
+      </div>
+      <div class="card-footer">
+        <a href="https://magbreakthrough.com/a/classic/digistore/index?gl=65a7fd463f5d60721f8b4567#aff=KylieJean" class="card-cta" target="_blank" rel="nofollow noopener">Check bundles & availability <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 2: COGNICARE -->
+  <div class="card" id="card-2">
+    <div class="rank-ring">02</div>
+    
+    <!-- Clickable SVG Wrap -->
+    <a href="https://cognicarepro.com/d/order-now.php#aff=KylieJean" target="_blank" rel="nofollow noopener" class="bottle-wrap">
+      <svg width="100" height="150" viewBox="0 0 100 150">
+        <rect x="30" y="0" width="40" height="16" rx="4" fill="#8AA399"/>
+        <rect x="22" y="16" width="56" height="14" rx="6" fill="#6C8C80"/>
+        <rect x="14" y="30" width="72" height="112" rx="14" fill="#F7F4ED" stroke="#8AA399" stroke-width="2"/>
+        <rect x="14" y="62" width="72" height="48" fill="#8AA399"/>
+        <circle cx="50" cy="86" r="13" fill="none" stroke="#F7F4ED" stroke-width="2.4"/>
+        <path d="M44 86 a6 6 0 1 1 12 0" stroke="#F7F4ED" stroke-width="2.2" fill="none"/>
+      </svg>
+    </a>
+    
+    <div class="card-body">
+      <span class="best-for">The Day Shift: Clarity & Daytime Vitality</span>
+      <h3>CogniCare Pro</h3>
+      <div class="card-tag">Mental clarity</div>
+      <ul>
+        <li>When your nervous system is fried, focusing feels impossible. This 11-ingredient blend (including Bacopa Monnieri & Rhodiola) is built to clear the "fog" naturally.</li>
+        <li>Zero stimulants. It won't trigger anxiety or jitters like coffee does; it supports sustained, calm mental energy.</li>
+        <li>Larger bundles (3-6 bottles) include free wellness e-books to help you rebuild your daily routine.</li>
+      </ul>
+      
+      <div class="chip-row">
+        <span class="chip">Bacopa Monnieri</span>
+        <span class="chip">Rhodiola Root</span>
+        <span class="chip">Non-stimulant</span>
+        <span class="chip">Focus repair</span>
+      </div>
+
+      <div class="cross-sell-box">
+        <span class="icon">🧩</span>
+        <div class="cross-sell-text">
+          <p><strong>The "Clear Mind" Routine:</strong> Take CogniCare Pro in the morning for calm focus, and <a href="#card-1" onclick="goTo('card-1'); return false;">Magnesium</a> at night to flush out the day's stress.</p>
+        </div>
+      </div>
+
+      <div class="badge-row">
+        <div class="badge"><span class="dot"></span>4.98/5 customer rating</div>
+        <div class="badge"><span class="dot"></span>Made in the USA</div>
+      </div>
+      <div class="card-footer">
+        <a href="https://cognicarepro.com/d/order-now.php#aff=KylieJean" class="card-cta" target="_blank" rel="nofollow noopener">Check bundles & availability <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 3: NERVE FRESH -->
+  <div class="card" id="card-3">
+    <div class="rank-ring">03</div>
+    
+    <!-- Clickable SVG Wrap -->
+    <a href="https://secure.nervefresh24.com/index-nf-ds#aff=KylieJean" target="_blank" rel="nofollow noopener" class="bottle-wrap">
+      <svg width="100" height="150" viewBox="0 0 100 150">
+        <rect x="32" y="0" width="36" height="16" rx="4" fill="#2B2A4C"/>
+        <rect x="24" y="16" width="52" height="14" rx="6" fill="#3a3866"/>
+        <rect x="16" y="30" width="68" height="112" rx="14" fill="#F7F4ED" stroke="#2B2A4C" stroke-width="2"/>
+        <rect x="16" y="58" width="68" height="56" fill="#2B2A4C"/>
+        <path d="M30 86 q20 -22 40 0" stroke="#D9C68C" stroke-width="2.4" fill="none"/>
+        <path d="M30 94 q20 -18 40 0" stroke="#D9C68C" stroke-width="2" fill="none" opacity="0.6"/>
+      </svg>
+    </a>
+    
+    <div class="card-body">
+      <span class="best-for">Targeted Relief: Somatic Tension & Restless Legs</span>
+      <h3>Nerve Fresh</h3>
+      <div class="card-tag">Quiet the physical symptoms of stress</div>
+      <ul>
+        <li>Anxiety doesn't just live in the mind—it gets trapped in the body as twitching, tingling, and restless legs that keep you awake.</li>
+        <li>Built around calming botanicals like Passionflower and California Poppy to soothe overactive nerve endings and physical tension.</li>
+        <li>Uses an advanced Phytosome delivery system, meaning your stressed body can actually absorb the calming compounds.</li>
+      </ul>
+      
+      <div class="chip-row">
+        <span class="chip">Passionflower</span>
+        <span class="chip">Somatic relief</span>
+        <span class="chip">California Poppy</span>
+        <span class="chip">Doctor-formulated</span>
+      </div>
+
+      <div class="cross-sell-box">
+        <span class="icon">🧘‍♀️</span>
+        <div class="cross-sell-text">
+          <p><strong>The "Full Body Release" Routine:</strong> If stress manifests physically for you, pair Nerve Fresh with <a href="#card-1" onclick="goTo('card-1'); return false;">Magnesium</a> to completely relax your muscles at night.</p>
+        </div>
+      </div>
+
+      <div class="badge-row">
+        <div class="badge"><span class="dot"></span>High-absorption formula</div>
+        <div class="badge"><span class="dot"></span>GMP certified</div>
+      </div>
+      <div class="card-footer">
+        <a href="https://secure.nervefresh24.com/index-nf-ds#aff=KylieJean" class="card-cta" target="_blank" rel="nofollow noopener">Check bundles & availability <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 4: VERTIGENICS -->
+  <div class="card" id="card-4">
+    <div class="rank-ring">04</div>
+    
+    <!-- Clickable SVG Wrap -->
+    <a href="https://getmyvertigenics24.com/text.php#aff=KylieJean" target="_blank" rel="nofollow noopener" class="bottle-wrap">
+      <svg width="100" height="150" viewBox="0 0 100 150">
+        <rect x="32" y="0" width="36" height="16" rx="4" fill="#C98477"/>
+        <rect x="24" y="16" width="52" height="14" rx="6" fill="#b06f63"/>
+        <rect x="16" y="30" width="68" height="112" rx="14" fill="#F7F4ED" stroke="#C98477" stroke-width="2"/>
+        <rect x="16" y="66" width="68" height="48" fill="#C98477"/>
+        <circle cx="50" cy="90" r="3" fill="#F7F4ED"/>
+        <path d="M50 90 m-16 0 a16 16 0 0 1 32 0" stroke="#F7F4ED" stroke-width="2" fill="none" stroke-dasharray="4 4"/>
+      </svg>
+    </a>
+    
+    <div class="card-body">
+      <span class="best-for">Targeted Relief Stress-Dizziness</span>
+      <h3>Vertigenics</h3>
+      <div class="card-tag">To restore your natural balance and inner alignment</div>
+      <ul>
+        <li>High cortisol and panic can cause a "floating" sensation, loss of balance, or stress-induced dizzy spells. This formula is designed to help you feel grounded again.</li>
+        <li>Contains 10 balancing ingredients like Green Tea Leaf and Korean Ginseng to stabilize healthy brain function and steadiness.</li>
+        <li>Bundle packs include excellent free guides on maintaining balance and protecting your physical stability.</li>
+      </ul>
+      
+      <div class="chip-row">
+        <span class="chip">Natural balance</span>
+        <span class="chip">Korean Ginseng</span>
+        <span class="chip">Balance & steadiness</span>
+        <span class="chip">Non-GMO</span>
+      </div>
+
+      <div class="badge-row">
+        <div class="badge"><span class="dot"></span>12,000+ happy customers</div>
+        <div class="badge"><span class="dot"></span>Natural, non-GMO</div>
+      </div>
+      <div class="card-footer">
+        <a href="https://getmyvertigenics24.com/text.php#aff=KylieJean" class="card-cta" target="_blank" rel="nofollow noopener">Check bundles & availability <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARKETING-BRAIN BUYING GUIDE ============ -->
+<section class="guide">
+  <div class="guide-card">
+    <h2>How to shop like a biohacker</h2>
+    <p class="lead">A few quick tips to maximize your results (and save money) when building your wellness complex.</p>
+    <div class="guide-grid">
+      <div class="guide-item">
+        <div class="guide-num">01</div>
+        <div>
+          <h4>Yes, you can combine them</h4>
+          <p>We highly recommend starting with Magnesium as your nighttime baseline, and adding the targeted support your body calls for during the day—whether that is CogniCare for mental clarity, Nerve Fresh for physical ease, or Vertigenics for steady balance.</p>
+        </div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-num">02</div>
+        <div>
+          <h4>Bundles = Better Results + Savings</h4>
+          <p>Resetting a stressed nervous system doesn't happen in 5 days. Brands know this, which is why they offer massive discounts (and free shipping/bonuses) on their 3 and 6-bottle bundles. That's the smart play.</p>
+        </div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-num">03</div>
+        <div>
+          <h4>Consistency is everything</h4>
+          <p>Natural botanicals and minerals work by building up in your system over time. Pick your complex to nourish your nervous system with energy and calm, and enjoy a beautiful life.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CLOSING ============ -->
+<section class="closing">
+  <div class="breathe-wrap" style="width:120px;height:120px;margin-bottom:30px;">
+    <div class="breathe-ring ring1" style="width:120px;height:120px;"></div>
+    <div class="breathe-ring ring2" style="width:88px;height:88px;"></div>
+    <div class="breathe-core" style="width:38px;height:38px;"></div>
+  </div>
+  <h2>Give your body the support it's asking for.</h2>
+  <p>Start with foundational Magnesium, or build your perfect complex by adding the targeted support your body calls for right now.</p>
+  <a href="#list" class="hero-cta">Explore the complex ↑</a>
+</section>
+
+<footer>
+  <div class="brand">Calm Haven</div>
+  <p>This page is for informational purposes and reflects personal opinion, not medical advice. These statements have not been evaluated by the FDA. These products are not intended to diagnose, treat, cure, or prevent any disease. Always check with a healthcare provider before starting a new supplement, especially if pregnant, nursing, or taking medication. As an affiliate, we may earn a commission from qualifying purchases made through the links above, at no additional cost to you.</p>
+</footer>
+
+<script>
+  function goTo(id){
+    // Remove highlight from all cards
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('highlight'));
+    
+    // Add highlight to the matched card
+    var el = document.getElementById(id);
+    el.classList.add('highlight');
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+    
+    // Positive transition names
+    var names = {
+      'card-1': 'your Deep Sleep Foundation',
+      'card-2': 'your Mental Clarity Booster',
+      'card-3': 'your Physical Relaxation Essentials',
+      'card-4': 'your Grounding & Balance Formula'
+    };
+    
+    var resultEl = document.getElementById('picker-result');
+    if(resultEl) {
+      resultEl.textContent = 'Guiding you to ' + names[id] + ' →';
+    }
+  }
+</script>
+
+</body>
+</html>

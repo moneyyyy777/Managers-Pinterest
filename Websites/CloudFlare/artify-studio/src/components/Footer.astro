@@ -1,0 +1,33 @@
+---
+// src/components/Footer.astro
+import categories from "../data/categories.json";
+---
+
+<footer class="mt-20 border-t border-neutral-800 bg-[#09090b] text-neutral-400 text-xs sm:text-sm">
+	<div class="container mx-auto px-4 py-12 max-w-7xl">
+		<div class="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+
+			<div>
+				<a href="/" class="text-base sm:text-lg font-extrabold text-white tracking-tight">
+					Artify Studio
+				</a>
+				<p class="mt-2 text-neutral-500 max-w-sm leading-relaxed">
+					Curated discovery platform for digital designers, crafters & creators.
+				</p>
+			</div>
+
+			<!-- Динамические ссылки подвала -->
+			<div class="flex flex-wrap gap-6 text-neutral-300 font-semibold">
+				{categories.map((cat) => (
+					<a href={cat.href} class="hover:text-[#22c55e] transition">{cat.title}</a>
+				))}
+			</div>
+
+		</div>
+
+		<div class="mt-10 pt-6 border-t border-neutral-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-neutral-600 text-xs">
+			<p>© {new Date().getFullYear()} Artify Studio. All rights reserved.</p>
+			<p>Powered by Creative Fabrica Affiliate Partner Program</p>
+		</div>
+	</div>
+</footer>
