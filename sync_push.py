@@ -37,17 +37,17 @@ def sync_artify(commit_msg):
     ok, stdout, _ = run(f'{git_cmd_base} status --porcelain', cwd=ARTIFY_DIR)
     has_changes = bool(stdout.strip())
 
-    # 2. Подтягиваем обновления от менеджера (pull --rebase)
-    print("   📥 Подтягиваем обновления с GitHub (artify-studio)...")
-    ok, out, err = run(f'{git_cmd_base} pull --rebase origin main', cwd=ARTIFY_DIR)
-    if not ok:
-        print(f"   ⚠️ Предупреждение при pull artify-studio: {err or out}")
-
-    # 3. Если есть локальные изменения — коммитим
+    # 2. Если есть локальные изменения — сначала фиксируем их
     if has_changes:
-        print(f"   📝 Фиксируем изменения в artify-studio...")
+        print(f"   📝 Фиксируем локальные изменения в artify-studio...")
         run(f'{git_cmd_base} add -A', cwd=ARTIFY_DIR)
         run(f'{git_cmd_base} commit -m "{commit_msg}"', cwd=ARTIFY_DIR)
+
+    # 3. Подтягиваем обновления от менеджера (pull --rebase)
+    print("   📥 Подтягиваем обновления с GitHub (artify-studio)...")
+    ok, out, err = run(f'{git_cmd_base} pull --rebase origin main', cwd=ARTIFY_DIR)
+    if not ok and "up to date" not in (err + out).lower():
+        print(f"   ℹ️ Статус pull artify-studio: {err or out}")
 
     # 4. Проверяем, нужно ли пушить (есть ли незапушенные коммиты)
     ok, ahead, _ = run(f'{git_cmd_base} rev-list origin/main..HEAD --count', cwd=ARTIFY_DIR)
@@ -73,17 +73,17 @@ def sync_managers_pinterest(commit_msg):
     ok, stdout, _ = run('git status --porcelain', cwd=ROOT_DIR)
     has_changes = bool(stdout.strip())
 
-    # 2. Подтягиваем обновления (если ветка уже существует на remote)
+    # 2. Если есть локальные изменения — сначала фиксируем их
+    if has_changes:
+        print(f"   📝 Фиксируем локальные изменения в Managers-Pinterest...")
+        run('git add -A', cwd=ROOT_DIR)
+        run(f'git commit -m "{commit_msg}"', cwd=ROOT_DIR)
+
+    # 3. Подтягиваем обновления (если ветка уже существует на remote)
     ok, remotes, _ = run('git ls-remote origin refs/heads/main', cwd=ROOT_DIR)
     if ok and remotes:
         print("   📥 Подтягиваем обновления с GitHub (Managers-Pinterest)...")
         run('git pull --rebase origin main', cwd=ROOT_DIR)
-
-    # 3. Коммитим изменения
-    if has_changes:
-        print(f"   📝 Фиксируем изменения в Managers-Pinterest...")
-        run('git add -A', cwd=ROOT_DIR)
-        run(f'git commit -m "{commit_msg}"', cwd=ROOT_DIR)
 
     # 4. Пушим
     print("   🚀 Отправляем на GitHub (moneyyyy777/Managers-Pinterest)...")
