@@ -171,7 +171,8 @@ function findFirstStrategyFolder(baseDir) {
  * 4. Generates Prompt 0: Architecture Advisor (Single-Core vs Multi-Segment).
  * Analyzes product assortment and determines optimal architecture.
  */
-export { buildArchitectureAdvisorPrompt, buildSeedTagsPrompt } from './promptBuilders.js';
+import { buildArchitectureAdvisorPrompt, buildSeedTagsPrompt } from './promptBuilders.js';
+export { buildArchitectureAdvisorPrompt, buildSeedTagsPrompt };
 
 /**
  * 6. Generate Master-Orchestrator Prompt (Step 6)

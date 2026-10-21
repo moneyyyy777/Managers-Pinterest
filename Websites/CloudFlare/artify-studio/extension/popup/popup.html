@@ -23,6 +23,85 @@
             </div>
         </header>
 
+        <!-- Центр управления сервисами & Push на GitHub -->
+        <section class="card services-card">
+            <div class="services-header">
+                <div class="services-title-box">
+                    <span class="card-icon">⚡</span>
+                    <span class="card-title">Сервисы & Менеджеры</span>
+                </div>
+                <button type="button" id="refreshServicesBtn" class="mini-icon-btn" title="Обновить статусы сервисов">🔄</button>
+            </div>
+
+            <!-- Список 3-х сервисов с онлайн-индикаторами и кнопками -->
+            <div class="services-list">
+                <!-- 1. Админка -->
+                <div class="service-item" id="service-item-admin">
+                    <div class="service-item-left">
+                        <span class="service-status-dot offline" id="dot-admin" title="Офлайн"></span>
+                        <div class="service-meta">
+                            <span class="service-name">🛠️ Админка</span>
+                            <span class="service-port">:3333</span>
+                        </div>
+                    </div>
+                    <div class="service-item-right">
+                        <button type="button" class="btn-service-action btn-open hidden" id="open-admin-btn" title="Открыть админку в новой вкладке">Открыть ↗</button>
+                        <button type="button" class="btn-service-action btn-start" id="start-admin-btn" title="Запустить админку">Запустить</button>
+                    </div>
+                </div>
+
+                <!-- 2. Локальный сайт -->
+                <div class="service-item" id="service-item-site">
+                    <div class="service-item-left">
+                        <span class="service-status-dot offline" id="dot-site" title="Офлайн"></span>
+                        <div class="service-meta">
+                            <span class="service-name">🌐 Локальный сайт</span>
+                            <span class="service-port">:4321</span>
+                        </div>
+                    </div>
+                    <div class="service-item-right">
+                        <button type="button" class="btn-service-action btn-open hidden" id="open-site-btn" title="Открыть сайт в новой вкладке">Открыть ↗</button>
+                        <button type="button" class="btn-service-action btn-start" id="start-site-btn" title="Запустить локальный сайт">Запустить</button>
+                    </div>
+                </div>
+
+                <!-- 3. Менеджер тегов & Студия -->
+                <div class="service-item" id="service-item-manager">
+                    <div class="service-item-left">
+                        <span class="service-status-dot offline" id="dot-manager" title="Офлайн"></span>
+                        <div class="service-meta">
+                            <span class="service-name">🏷️ Менеджер тегов</span>
+                            <span class="service-port">:3001</span>
+                        </div>
+                    </div>
+                    <div class="service-item-right">
+                        <button type="button" class="btn-service-action btn-open hidden" id="open-manager-btn" title="Открыть Pinterest Manager Studio в новой вкладке">Открыть ↗</button>
+                        <button type="button" class="btn-service-action btn-start" id="start-manager-btn" title="Запустить Менеджер тегов">Запустить</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Главные действия: Запустить всё & Push на GitHub -->
+            <div class="services-actions-group">
+                <button type="button" id="startAllServicesBtn" class="btn btn-primary" style="margin-bottom: 6px; width: 100%;">
+                    <span id="startAllBtnText">⚡ Включить все сервисы</span>
+                </button>
+                <button type="button" id="gitPushAllBtn" class="btn btn-github" style="width: 100%;">
+                    <span class="github-icon">🚀</span>
+                    <span id="gitPushBtnText">Запушить всё на GitHub (2 репозитория)</span>
+                </button>
+            </div>
+
+            <!-- Раскрывающийся лог Git Push -->
+            <div id="pushLogBox" class="push-log-box hidden">
+                <div class="push-log-header">
+                    <span id="pushLogTitle">Лог синхронизации с GitHub:</span>
+                    <button type="button" id="closePushLogBtn" class="link-btn" style="font-size: 11px;">✕ Закрыть</button>
+                </div>
+                <pre id="pushLogContent" class="push-log-content"></pre>
+            </div>
+        </section>
+
         <!-- Целевая подборка -->
         <section class="card">
             <div class="card-header">

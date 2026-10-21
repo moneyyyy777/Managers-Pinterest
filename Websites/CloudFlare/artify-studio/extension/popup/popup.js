@@ -47,6 +47,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     const saveApiUrlBtn = document.getElementById("saveApiUrlBtn");
     const popupToast = document.getElementById("popupToast");
 
+    // Сервисы & Git Push Элементы
+    const refreshServicesBtn = document.getElementById("refreshServicesBtn");
+    const dotAdmin = document.getElementById("dot-admin");
+    const openAdminBtnRow = document.getElementById("open-admin-btn");
+    const startAdminBtn = document.getElementById("start-admin-btn");
+
+    const dotSite = document.getElementById("dot-site");
+    const openSiteBtn = document.getElementById("open-site-btn");
+    const startSiteBtn = document.getElementById("start-site-btn");
+
+    const dotManager = document.getElementById("dot-manager");
+    const openManagerBtn = document.getElementById("open-manager-btn");
+    const startManagerBtn = document.getElementById("start-manager-btn");
+
+    const startAllServicesBtn = document.getElementById("startAllServicesBtn");
+    const startAllBtnText = document.getElementById("startAllBtnText");
+
+    const gitPushAllBtn = document.getElementById("gitPushAllBtn");
+    const gitPushBtnText = document.getElementById("gitPushBtnText");
+    const pushLogBox = document.getElementById("pushLogBox");
+    const pushLogTitle = document.getElementById("pushLogTitle");
+    const pushLogContent = document.getElementById("pushLogContent");
+    const closePushLogBtn = document.getElementById("closePushLogBtn");
+
+    let servicesState = {
+        admin: false,
+        site: false,
+        manager: false
+    };
+
     let categoriesData = [];
     let collectionsBasket = {}; // key: "category/collection" -> array of products
     let selectionHistory = [];
@@ -153,6 +183,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         "apiUrl",
         "selectedCategory",
         "selectedCollection",
+        "cachedCategoriesData",
         "mode",
         "position",
         "lastAddedSlugs",
@@ -168,6 +199,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (Array.isArray(stored.lastAddedSlugs)) state.lastAddedSlugs = stored.lastAddedSlugs;
     if (stored.collectionsBasket && typeof stored.collectionsBasket === "object") {
         collectionsBasket = stored.collectionsBasket;
+    }
+
+    // МГНОВЕННАЯ ИНИЦИАЛИЗАЦИЯ ИЗ КЭША (без задержек сети!)
+    if (Array.isArray(stored.cachedCategoriesData) && stored.cachedCategoriesData.length > 0) {
+        categoriesData = stored.cachedCategoriesData;
+        populateCategories();
     }
 
     const initialKey = getBasketKey();
@@ -186,11 +223,70 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderSelectedProducts();
     updateUndoRedoUI();
 
-    // 2. Проверка соединения с админкой и загрузка категорий
+    // 2. Инициализация и проверка статусов сервисов
+    await checkAllServicesStatus();
+
+    // 3. Проверка соединения с админкой и обновление категорий
     await checkServerAndLoadCategories();
 
-    // 3. Проверка текущей вкладки (находимся ли мы на Creative Fabrica)
+    // Периодический опрос статусов каждые 5 сек для мгновенной реакции на запуск/остановку
+    setInterval(() => {
+        checkAllServicesStatus();
+    }, 5000);
+
+    // 4. Проверка текущей вкладки (находимся ли мы на Creative Fabrica)
     await checkActiveTab();
+
+    // Слушатели управления сервисами
+    if (openAdminBtnRow) {
+        openAdminBtnRow.addEventListener("click", () => {
+            chrome.tabs.create({ url: state.apiUrl || "http://localhost:3333" });
+        });
+    }
+    if (openSiteBtn) {
+        openSiteBtn.addEventListener("click", () => {
+            chrome.tabs.create({ url: "http://localhost:4321" });
+        });
+    }
+    if (openManagerBtn) {
+        openManagerBtn.addEventListener("click", () => {
+            chrome.tabs.create({ url: "http://localhost:3001" });
+        });
+    }
+
+    if (startAdminBtn) startAdminBtn.addEventListener("click", () => launchService("admin", startAdminBtn));
+    if (startSiteBtn) startSiteBtn.addEventListener("click", () => launchService("site", startSiteBtn));
+    if (startManagerBtn) startManagerBtn.addEventListener("click", () => launchService("manager", startManagerBtn));
+
+    if (startAllServicesBtn) {
+        startAllServicesBtn.addEventListener("click", async () => {
+            const allOnline = servicesState.admin && servicesState.site && servicesState.manager;
+            if (allOnline) {
+                showToast("Все 3 сервиса уже активны!");
+                await checkAllServicesStatus();
+                return;
+            }
+            startAllServicesBtn.disabled = true;
+            if (startAllBtnText) startAllBtnText.innerText = "⏳ Запуск всех сервисов...";
+            await launchService("all");
+            startAllServicesBtn.disabled = false;
+        });
+    }
+
+    if (refreshServicesBtn) {
+        refreshServicesBtn.addEventListener("click", checkAllServicesStatus);
+    }
+
+    // Слушатель Git Push All
+    if (gitPushAllBtn) {
+        gitPushAllBtn.addEventListener("click", handleGitPushAll);
+    }
+
+    if (closePushLogBtn && pushLogBox) {
+        closePushLogBtn.addEventListener("click", () => {
+            pushLogBox.classList.add("hidden");
+        });
+    }
 
     // Event Listeners - Selectors
     categorySelect.addEventListener("change", async () => {
@@ -927,18 +1023,72 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
+    async function smartPingAdmin(baseUrl, timeoutMs = 2000) {
+        const cleanUrl = baseUrl.replace(/\/+$/, "");
+
+        // 1. Быстрый пинг текущего URL (/api/health)
+        try {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), timeoutMs);
+            const res = await fetch(`${cleanUrl}/api/health`, { signal: controller.signal });
+            clearTimeout(timer);
+            if (res.ok) return { ok: true, activeUrl: cleanUrl };
+        } catch {}
+
+        // 2. Умный автоматический фоллбек: localhost <-> 127.0.0.1
+        let altUrl = null;
+        if (cleanUrl.includes("localhost")) {
+            altUrl = cleanUrl.replace("localhost", "127.0.0.1");
+        } else if (cleanUrl.includes("127.0.0.1")) {
+            altUrl = cleanUrl.replace("127.0.0.1", "localhost");
+        }
+
+        if (altUrl) {
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), timeoutMs);
+                const res = await fetch(`${altUrl}/api/health`, { signal: controller.signal });
+                clearTimeout(timer);
+                if (res.ok) return { ok: true, activeUrl: altUrl };
+            } catch {}
+        }
+
+        // 3. Резервный пинг корня
+        try {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 1200);
+            const res = await fetch(cleanUrl, { signal: controller.signal });
+            clearTimeout(timer);
+            if (res.ok || res.status < 500) return { ok: true, activeUrl: cleanUrl };
+        } catch {}
+
+        return { ok: false, activeUrl: cleanUrl };
+    }
+
     async function checkServerAndLoadCategories() {
         statusBadge.className = "status-badge status-checking";
         statusText.innerText = "Проверка...";
 
+        const ping = await smartPingAdmin(state.apiUrl);
+        if (ping.ok) {
+            if (ping.activeUrl !== state.apiUrl) {
+                state.apiUrl = ping.activeUrl;
+                apiUrlInput.value = ping.activeUrl;
+                await chrome.storage.local.set({ apiUrl: ping.activeUrl });
+            }
+            statusBadge.className = "status-badge status-connected";
+            statusText.innerText = "Подключено";
+        }
+
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3500);
+            const timeoutId = setTimeout(() => controller.abort(), 7000);
             const res = await fetch(`${state.apiUrl}/api/categories`, { signal: controller.signal });
             clearTimeout(timeoutId);
 
             if (!res.ok) throw new Error("HTTP " + res.status);
             categoriesData = await res.json();
+            await chrome.storage.local.set({ cachedCategoriesData: categoriesData });
 
             statusBadge.className = "status-badge status-connected";
             statusText.innerText = "Подключено";
@@ -948,12 +1098,243 @@ document.addEventListener("DOMContentLoaded", async () => {
                 await fetchCollectionStats();
             }
         } catch (e) {
-            statusBadge.className = "status-badge status-disconnected";
-            statusText.innerText = "Выключен";
-            categorySelect.innerHTML = `<option value="">Админка выключена (${state.apiUrl})</option>`;
-            collectionSelect.innerHTML = `<option value="">Запустите: npm run admin</option>`;
-            categorySelect.disabled = true;
-            collectionSelect.disabled = true;
+            if (!ping.ok) {
+                statusBadge.className = "status-badge status-disconnected";
+                statusText.innerText = "Офлайн";
+            }
+            // ВАЖНО: Если данные уже есть (из кэша или прошлого запроса), НЕ очищаем и НЕ отключаем интерфейс!
+            if (!categoriesData || categoriesData.length === 0) {
+                categorySelect.innerHTML = `<option value="">Админка офлайн (${state.apiUrl})</option>`;
+                collectionSelect.innerHTML = `<option value="">Нажмите "Запустить" вверху</option>`;
+                categorySelect.disabled = true;
+                collectionSelect.disabled = true;
+            }
+        }
+    }
+
+    async function checkServicePing(url, timeoutMs = 700) {
+        try {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), timeoutMs);
+            await fetch(url, { signal: controller.signal, mode: "no-cors" });
+            clearTimeout(timer);
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
+    async function checkAllServicesStatus() {
+        if (refreshServicesBtn) refreshServicesBtn.classList.add("rotating");
+
+        // 1. Опрашиваем админку (3333) или студию (3001) через API
+        let statusData = null;
+        try {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 1200);
+            const res = await fetch(`${state.apiUrl}/api/services/status`, { signal: controller.signal });
+            clearTimeout(timer);
+            if (res.ok) statusData = await res.json();
+        } catch {}
+
+        if (!statusData) {
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 1200);
+                const res = await fetch("http://localhost:3001/api/services/status", { signal: controller.signal });
+                clearTimeout(timer);
+                if (res.ok) statusData = await res.json();
+            } catch {}
+        }
+
+        if (statusData) {
+            servicesState.admin = !!statusData.admin?.running;
+            servicesState.site = !!statusData.site?.running;
+            servicesState.manager = !!statusData.manager?.running;
+        } else {
+            // Прямой пинг каждого сервиса
+            const [adminPing, sitePing, managerPing] = await Promise.all([
+                checkServicePing(`${state.apiUrl}/api/health`),
+                checkServicePing("http://localhost:4321/"),
+                checkServicePing("http://localhost:3001/")
+            ]);
+            servicesState.admin = adminPing;
+            servicesState.site = sitePing;
+            servicesState.manager = managerPing;
+        }
+
+        updateServicesUI();
+        if (refreshServicesBtn) {
+            setTimeout(() => refreshServicesBtn.classList.remove("rotating"), 350);
+        }
+    }
+
+    function updateServicesUI() {
+        // 1. Админка (:3333)
+        if (dotAdmin && openAdminBtnRow && startAdminBtn) {
+            if (servicesState.admin) {
+                dotAdmin.className = "service-status-dot online";
+                dotAdmin.title = "Онлайн (:3333)";
+                openAdminBtnRow.classList.remove("hidden");
+                startAdminBtn.classList.add("hidden");
+            } else {
+                dotAdmin.className = "service-status-dot offline";
+                dotAdmin.title = "Офлайн (:3333)";
+                openAdminBtnRow.classList.add("hidden");
+                startAdminBtn.classList.remove("hidden");
+                startAdminBtn.disabled = false;
+                startAdminBtn.innerText = "Запустить";
+            }
+        }
+
+        // 2. Локальный сайт (:4321)
+        if (dotSite && openSiteBtn && startSiteBtn) {
+            if (servicesState.site) {
+                dotSite.className = "service-status-dot online";
+                dotSite.title = "Онлайн (:4321)";
+                openSiteBtn.classList.remove("hidden");
+                startSiteBtn.classList.add("hidden");
+            } else {
+                dotSite.className = "service-status-dot offline";
+                dotSite.title = "Офлайн (:4321)";
+                openSiteBtn.classList.add("hidden");
+                startSiteBtn.classList.remove("hidden");
+                startSiteBtn.disabled = false;
+                startSiteBtn.innerText = "Запустить";
+            }
+        }
+
+        // 3. Менеджер тегов & Студия (:3001)
+        if (dotManager && openManagerBtn && startManagerBtn) {
+            if (servicesState.manager) {
+                dotManager.className = "service-status-dot online";
+                dotManager.title = "Онлайн (:3001)";
+                openManagerBtn.classList.remove("hidden");
+                startManagerBtn.classList.add("hidden");
+            } else {
+                dotManager.className = "service-status-dot offline";
+                dotManager.title = "Офлайн (:3001)";
+                openManagerBtn.classList.add("hidden");
+                startManagerBtn.classList.remove("hidden");
+                startManagerBtn.disabled = false;
+                startManagerBtn.innerText = "Запустить";
+            }
+        }
+
+        // Мастер-кнопка "Включить все сервисы"
+        if (startAllServicesBtn && startAllBtnText) {
+            const allOnline = servicesState.admin && servicesState.site && servicesState.manager;
+            if (allOnline) {
+                startAllBtnText.innerText = "✅ Все 3 сервиса работают";
+                startAllServicesBtn.style.background = "linear-gradient(135deg, #10b981 0%, #059669 100%)";
+            } else {
+                startAllBtnText.innerText = "⚡ Включить все сервисы";
+                startAllServicesBtn.style.background = "";
+            }
+        }
+    }
+
+    async function launchService(serviceName, btnEl = null) {
+        if (btnEl) {
+            btnEl.disabled = true;
+            btnEl.innerText = "Запуск...";
+        }
+
+        let launched = false;
+        const endpoints = [
+            `${state.apiUrl}/api/services/start`,
+            "http://127.0.0.1:3333/api/services/start",
+            "http://localhost:3001/api/services/start"
+        ];
+
+        for (const ep of endpoints) {
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 2000);
+                const res = await fetch(ep, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ service: serviceName }),
+                    signal: controller.signal
+                });
+                clearTimeout(timer);
+                if (res.ok) {
+                    launched = true;
+                    break;
+                }
+            } catch {}
+        }
+
+        if (!launched) {
+            showToast("Сервер выключен. Запустите ./start_all_mac.sh или START_ALL.bat", 4000);
+            if (btnEl) {
+                btnEl.disabled = false;
+                btnEl.innerText = "Запустить";
+            }
+            return;
+        }
+
+        showToast(`Запуск: ${serviceName}... Ожидание готовности`);
+        // Опрашиваем статусы до 7 секунд
+        for (let i = 0; i < 7; i++) {
+            await new Promise(r => setTimeout(r, 1000));
+            await checkAllServicesStatus();
+            if (serviceName === "all" && servicesState.admin && servicesState.site && servicesState.manager) break;
+            if (serviceName === "site" && servicesState.site) break;
+            if (serviceName === "manager" && servicesState.manager) break;
+            if (serviceName === "admin" && servicesState.admin) break;
+        }
+        await checkServerAndLoadCategories();
+    }
+
+    async function handleGitPushAll() {
+        if (!gitPushAllBtn) return;
+        gitPushAllBtn.disabled = true;
+        if (gitPushBtnText) gitPushBtnText.innerText = "⏳ Синхронизация (Artify + Studio)...";
+
+        if (pushLogBox) pushLogBox.classList.remove("hidden");
+        if (pushLogTitle) pushLogTitle.innerText = "🚀 Синхронизация с GitHub...";
+        if (pushLogContent) pushLogContent.innerText = "Запуск sync_push.py...\nПодтягиваем изменения и отправляем в artify-studio и Managers-Pinterest...";
+
+        let pushRes = null;
+        const pushEndpoints = [
+            `${state.apiUrl}/api/git/push-all`,
+            "http://127.0.0.1:3333/api/git/push-all",
+            "http://localhost:3001/api/git/push"
+        ];
+
+        for (const ep of pushEndpoints) {
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 120000);
+                const res = await fetch(ep, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: "" }),
+                    signal: controller.signal
+                });
+                clearTimeout(timer);
+                if (res.ok) {
+                    pushRes = await res.json();
+                    break;
+                }
+            } catch {}
+        }
+
+        if (pushRes && pushRes.success) {
+            if (pushLogTitle) pushLogTitle.innerText = "✅ Успешно синхронизировано на GitHub!";
+            if (pushLogContent) pushLogContent.innerText = pushRes.output || "ВСЁ ГОТОВО! Оба репозитория успешно обновлены на GitHub!";
+            if (gitPushBtnText) gitPushBtnText.innerText = "✅ Запушено на GitHub!";
+            showToast("🎉 Оба репозитория успешно синхронизированы на GitHub!", 4000);
+            setTimeout(() => {
+                if (gitPushBtnText) gitPushBtnText.innerText = "Запушить всё на GitHub (2 репозитория)";
+                gitPushAllBtn.disabled = false;
+            }, 5000);
+        } else {
+            if (pushLogTitle) pushLogTitle.innerText = "⚠️ Внимание / Ошибка при отправке:";
+            if (pushLogContent) pushLogContent.innerText = pushRes ? (pushRes.output || pushRes.error) : "Не удалось связаться с сервером для выполнения пуша. Убедитесь, что админка запущена.";
+            if (gitPushBtnText) gitPushBtnText.innerText = "⚠️ Ошибка пуша (см. лог)";
+            gitPushAllBtn.disabled = false;
         }
     }
 
