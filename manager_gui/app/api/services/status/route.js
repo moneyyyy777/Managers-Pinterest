@@ -20,17 +20,34 @@ async function checkService(url, timeoutMs = 1500) {
 }
 
 export async function GET() {
-  const [adminRunning, browserRunning, streamlitRunning] = await Promise.all([
-    checkService('http://127.0.0.1:3333', 1500),
-    checkService('http://127.0.0.1:9222/json/version', 1500),
-    checkService('http://127.0.0.1:8501', 1500)
+  const [adminRunning, siteRunning, browserRunning, streamlitRunning] = await Promise.all([
+    checkService('http://127.0.0.1:3333/api/health', 1200),
+    checkService('http://127.0.0.1:4321', 1200),
+    checkService('http://127.0.0.1:9222/json/version', 1200),
+    checkService('http://127.0.0.1:8501', 1200)
   ]);
 
   return NextResponse.json({
     admin: {
+      id: 'admin',
+      name: 'Визуальная админка',
       running: adminRunning,
       port: 3333,
       url: 'http://localhost:3333'
+    },
+    site: {
+      id: 'site',
+      name: 'Локальный сайт',
+      running: siteRunning,
+      port: 4321,
+      url: 'http://localhost:4321'
+    },
+    manager: {
+      id: 'manager',
+      name: 'Менеджер тегов & Студия',
+      running: true,
+      port: 3001,
+      url: 'http://localhost:3001'
     },
     browser: {
       running: browserRunning,

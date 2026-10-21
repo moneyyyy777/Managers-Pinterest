@@ -2,17 +2,39 @@ import http from "node:http";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { exec } from "node:child_process";
+import { exec, spawn } from "node:child_process";
 import { promisify } from "node:util";
+import net from "node:net";
 
 const execAsync = promisify(exec);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = path.resolve(__dirname, "../..");
+const WORKSPACE_ROOT = path.resolve(PROJECT_ROOT, "../../..");
 const CONTENT_DIR = path.join(PROJECT_ROOT, "content");
 const HTML_FILE = path.join(__dirname, "index.html");
 const PORT = 3333;
 const CATEGORIES_FILE = path.join(PROJECT_ROOT, "src", "data", "categories.json");
+
+function checkPortOpen(port, host = "127.0.0.1", timeoutMs = 600) {
+    return new Promise((resolve) => {
+        const socket = new net.Socket();
+        socket.setTimeout(timeoutMs);
+        socket.on("connect", () => {
+            socket.destroy();
+            resolve(true);
+        });
+        socket.on("error", () => {
+            socket.destroy();
+            resolve(false);
+        });
+        socket.on("timeout", () => {
+            socket.destroy();
+            resolve(false);
+        });
+        socket.connect(port, host);
+    });
+}
 
 async function readCategoriesJson() {
     try {
@@ -339,6 +361,142 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "OPTIONS") {
         res.writeHead(204);
         res.end();
+        return;
+    }
+
+    // 0.1 Мгновенный легковесный пинг (Health Check)
+    if (pathname === "/api/health" && req.method === "GET") {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({
+            ok: true,
+            service: "admin",
+            port: PORT,
+            uptime: Math.round(process.uptime()),
+            timestamp: Date.now()
+        }));
+        return;
+    }
+
+    // 0.2 Статус всех локальных сервисов студии (Админка, Локальный сайт, Менеджер тегов / Студия)
+    if (pathname === "/api/services/status" && req.method === "GET") {
+        const [siteRunning, managerRunning] = await Promise.all([
+            checkPortOpen(4321),
+            checkPortOpen(3001)
+        ]);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({
+            admin: {
+                id: "admin",
+                name: "Визуальная админка",
+                port: 3333,
+                url: "http://localhost:3333",
+                running: true
+            },
+            site: {
+                id: "site",
+                name: "Локальный сайт",
+                port: 4321,
+                url: "http://localhost:4321",
+                running: siteRunning
+            },
+            manager: {
+                id: "manager",
+                name: "Менеджер тегов & Студия",
+                port: 3001,
+                url: "http://localhost:3001",
+                running: managerRunning
+            }
+        }));
+        return;
+    }
+
+    // 0.3 Запуск локальных сервисов из браузерного расширения
+    if (pathname === "/api/services/start" && req.method === "POST") {
+        let body = {};
+        try {
+            body = await parseJsonBody(req);
+        } catch {}
+
+        const target = body.service || "all";
+        const results = [];
+        const isWin = process.platform === "win32";
+
+        if (target === "site" || target === "all") {
+            const isRunning = await checkPortOpen(4321);
+            if (!isRunning) {
+                const cmd = isWin ? "npx.cmd" : "npx";
+                const child = spawn(cmd, ["astro", "dev", "--port", "4321", "--host"], {
+                    cwd: PROJECT_ROOT,
+                    detached: true,
+                    stdio: "ignore",
+                    shell: isWin
+                });
+                child.unref();
+                results.push({ service: "site", started: true, port: 4321, url: "http://localhost:4321" });
+            } else {
+                results.push({ service: "site", alreadyRunning: true, port: 4321, url: "http://localhost:4321" });
+            }
+        }
+
+        if (target === "manager" || target === "all") {
+            const isRunning = await checkPortOpen(3001);
+            if (!isRunning) {
+                const mgrDir = path.join(WORKSPACE_ROOT, "manager_gui");
+                const cmd = isWin ? "npm.cmd" : "npm";
+                const child = spawn(cmd, ["run", "dev"], {
+                    cwd: mgrDir,
+                    detached: true,
+                    stdio: "ignore",
+                    shell: isWin
+                });
+                child.unref();
+                results.push({ service: "manager", started: true, port: 3001, url: "http://localhost:3001" });
+            } else {
+                results.push({ service: "manager", alreadyRunning: true, port: 3001, url: "http://localhost:3001" });
+            }
+        }
+
+        if (target === "admin") {
+            results.push({ service: "admin", alreadyRunning: true, port: 3333, url: "http://localhost:3333" });
+        }
+
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ success: true, results }));
+        return;
+    }
+
+    // 0.4 Безопасный единый пуш на GitHub (в 2 репозитория)
+    if (pathname === "/api/git/push-all" && req.method === "POST") {
+        let body = {};
+        try {
+            body = await parseJsonBody(req);
+        } catch {}
+
+        const scriptPath = path.join(WORKSPACE_ROOT, "sync_push.py");
+        const customMsg = (body.message || "").trim();
+        const cmd = customMsg
+            ? `python3 "${scriptPath}" "${customMsg.replace(/"/g, '\\"')}"`
+            : `python3 "${scriptPath}"`;
+
+        try {
+            const { stdout, stderr } = await execAsync(cmd, { cwd: WORKSPACE_ROOT, timeout: 180000 });
+            const output = (stdout || "").trim() || (stderr || "").trim();
+            const isSuccess = output.includes("ВСЁ ГОТОВО") || (!output.includes("ВНИМАНИЕ: GitHub заблокировал") && !output.includes("Ошибка при отправке"));
+
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({
+                success: isSuccess,
+                output,
+                timestamp: new Date().toISOString()
+            }));
+        } catch (err) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({
+                success: false,
+                error: err.message,
+                output: (err.stdout || err.stderr || "").trim()
+            }));
+        }
         return;
     }
 
@@ -3830,9 +3988,9 @@ const server = http.createServer(async (req, res) => {
     res.end("Not Found");
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
     console.log(`\n==================================================`);
     console.log(`🚀 ВИЗУАЛЬНАЯ АДМИНКА ЗАПУЩЕНА!`);
-    console.log(`🌐 Откройте в браузере: http://localhost:${PORT}`);
+    console.log(`🌐 Локально: http://localhost:${PORT} (или http://127.0.0.1:${PORT})`);
     console.log(`==================================================\n`);
 });

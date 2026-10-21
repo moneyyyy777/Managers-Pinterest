@@ -42,11 +42,11 @@ export async function POST(request) {
     const body = await request.json();
     const { service, nichePath, segment } = body || {};
 
-    if (!service || !['admin', 'browser', 'streamlit'].includes(service)) {
+    if (!service || !['admin', 'site', 'all', 'manager', 'browser', 'streamlit'].includes(service)) {
       return NextResponse.json(
         {
           success: false,
-          error: `Invalid service specified. Expected 'admin', 'browser', or 'streamlit'. Received: '${service}'`
+          error: `Invalid service specified. Expected 'admin', 'site', 'all', 'browser', or 'streamlit'. Received: '${service}'`
         },
         { status: 400 }
       );
@@ -54,7 +54,28 @@ export async function POST(request) {
 
     const root = getProjectRoot();
 
-    if (service === 'admin') {
+    if (service === 'site' || service === 'all') {
+      const siteDir = path.join(root, 'Websites', 'CloudFlare', 'artify-studio');
+      const isWin = process.platform === 'win32';
+      const cmd = isWin ? 'npx.cmd' : 'npx';
+      const child = spawn(cmd, ['astro', 'dev', '--port', '4321', '--host'], {
+        cwd: siteDir,
+        detached: true,
+        stdio: 'ignore',
+        shell: isWin
+      });
+      child.unref();
+
+      if (service === 'site') {
+        return NextResponse.json({
+          success: true,
+          service,
+          message: 'Local site started on port 4321'
+        });
+      }
+    }
+
+    if (service === 'admin' || service === 'all') {
       const adminDir = path.join(root, 'Websites', 'CloudFlare', 'artify-studio');
       const adminScript = path.join(adminDir, 'scripts', 'admin', 'server.js');
 
