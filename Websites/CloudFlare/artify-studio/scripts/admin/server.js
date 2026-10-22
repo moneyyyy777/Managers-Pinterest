@@ -465,6 +465,8 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    let isGitBusy = false;
+
     async function getPythonBin() {
         const candidates = process.platform === "win32" ? ["python", "py", "python3"] : ["python3", "python"];
         for (const bin of candidates) {
@@ -478,6 +480,16 @@ const server = http.createServer(async (req, res) => {
 
     // 0.4 Безопасный единый пуш на GitHub (в 2 репозитория)
     if (pathname === "/api/git/push-all" && req.method === "POST") {
+        if (isGitBusy) {
+            res.writeHead(409, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({
+                success: false,
+                error: "Операция Git уже выполняется в фоне. Пожалуйста, подождите несколько секунд..."
+            }));
+            return;
+        }
+        isGitBusy = true;
+
         let body = {};
         try {
             body = await parseJsonBody(req);
@@ -491,7 +503,7 @@ const server = http.createServer(async (req, res) => {
             : `${pyBin} "${scriptPath}"`;
 
         try {
-            const { stdout, stderr } = await execAsync(cmd, { cwd: WORKSPACE_ROOT, timeout: 180000 });
+            const { stdout, stderr } = await execAsync(cmd, { cwd: WORKSPACE_ROOT, timeout: 90000 });
             const output = (stdout || "").trim() || (stderr || "").trim();
             const isSuccess = output.includes("ВСЁ ГОТОВО") || (!output.includes("ВНИМАНИЕ: GitHub заблокировал") && !output.includes("Ошибка при отправке"));
 
@@ -508,18 +520,30 @@ const server = http.createServer(async (req, res) => {
                 error: err.message,
                 output: (err.stdout || err.stderr || "").trim()
             }));
+        } finally {
+            isGitBusy = false;
         }
         return;
     }
 
     // 0.5 Безопасное обновление с GitHub (Git Pull All с авто-сохранением локальных товаров)
     if (pathname === "/api/git/pull-all" && req.method === "POST") {
+        if (isGitBusy) {
+            res.writeHead(409, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({
+                success: false,
+                error: "Операция Git уже выполняется в фоне. Пожалуйста, подождите несколько секунд..."
+            }));
+            return;
+        }
+        isGitBusy = true;
+
         const scriptPath = path.join(WORKSPACE_ROOT, "sync_pull.py");
         const pyBin = await getPythonBin();
         const cmd = `${pyBin} "${scriptPath}"`;
 
         try {
-            const { stdout, stderr } = await execAsync(cmd, { cwd: WORKSPACE_ROOT, timeout: 120000 });
+            const { stdout, stderr } = await execAsync(cmd, { cwd: WORKSPACE_ROOT, timeout: 90000 });
             const output = (stdout || "").trim() || (stderr || "").trim();
             const isSuccess = output.includes("ВСЁ ГОТОВО") || !output.includes("Обнаружен конфликт");
 
@@ -536,6 +560,8 @@ const server = http.createServer(async (req, res) => {
                 error: err.message,
                 output: (err.stdout || err.stderr || "").trim()
             }));
+        } finally {
+            isGitBusy = false;
         }
         return;
     }

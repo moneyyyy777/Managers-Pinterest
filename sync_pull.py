@@ -13,6 +13,9 @@ import shutil
 import subprocess
 from datetime import datetime
 
+os.environ["GIT_TERMINAL_PROMPT"] = "0"
+os.environ["GIT_EDITOR"] = "true"
+
 if sys.platform == "win32":
     try:
         sys.stdout.reconfigure(encoding='utf-8', errors='replace')
@@ -31,6 +34,15 @@ def log(msg, emoji="ℹ️"):
 def run(cmd, cwd=ROOT_DIR):
     res = subprocess.run(cmd, shell=True, cwd=cwd, text=True, capture_output=True)
     return res.returncode == 0, res.stdout.strip(), res.stderr.strip()
+
+def check_and_clean_rebase(git_cmd_base, cwd):
+    ok, out, _ = run(f'{git_cmd_base} status', cwd=cwd)
+    out_lower = out.lower()
+    if "rebase in progress" in out_lower or "editing a commit" in out_lower:
+        print("   ⚠️ Обнаружен незавершённый rebase, пробуем продолжить автоматически...")
+        ok_c, _, _ = run(f'{git_cmd_base} rebase --continue', cwd=cwd)
+        if not ok_c:
+            run(f'{git_cmd_base} rebase --abort', cwd=cwd)
 
 def ensure_artify_git():
     if os.path.isdir(ARTIFY_DIR) and not os.path.isdir(ARTIFY_GIT_DIR):
@@ -61,6 +73,8 @@ def pull_artify():
     git_cmd_base = "git"
     if os.path.isdir(ARTIFY_GIT_DIR):
         git_cmd_base = f'git --git-dir="{ARTIFY_GIT_DIR}" --work-tree="{ARTIFY_DIR}"'
+
+    check_and_clean_rebase(git_cmd_base, ARTIFY_DIR)
 
     # 1. Проверяем локальные изменения менеджера
     ok, stdout, _ = run(f'{git_cmd_base} status --porcelain', cwd=ARTIFY_DIR)
@@ -94,7 +108,11 @@ def pull_artify():
 
     # 3. Подтягиваем обновления с GitHub
     print("   📥 Применяем обновления кода с GitHub (artify-studio)...")
-    ok, out, err = run(f'{git_cmd_base} pull --rebase --autostash origin main', cwd=ARTIFY_DIR)
+    ok, out, err = run(f'{git_cmd_base} -c rebase.empty=drop -c rebase.autoStash=true pull --rebase --autostash origin main', cwd=ARTIFY_DIR)
+    if not ok:
+        ok_c, _, _ = run(f'{git_cmd_base} rebase --continue', cwd=ARTIFY_DIR)
+        if not ok_c and "up to date" not in (err + out).lower():
+            run(f'{git_cmd_base} rebase --abort', cwd=ARTIFY_DIR)
     combined = (out + "\n" + err).strip()
 
     if ok:
@@ -110,6 +128,8 @@ def pull_artify():
 
 def pull_managers_pinterest():
     log("Шаг 2/2: Обновление общего репозитория Managers Pinterest...", "📁")
+
+    check_and_clean_rebase("git", ROOT_DIR)
 
     # 1. Проверяем локальные изменения менеджера
     ok, stdout, _ = run('git status --porcelain', cwd=ROOT_DIR)
@@ -143,7 +163,11 @@ def pull_managers_pinterest():
 
     # 3. Подтягиваем обновления
     print("   📥 Применяем обновления студии с GitHub (Managers-Pinterest)...")
-    ok, out, err = run('git pull --rebase --autostash origin main', cwd=ROOT_DIR)
+    ok, out, err = run('git -c rebase.empty=drop -c rebase.autoStash=true pull --rebase --autostash origin main', cwd=ROOT_DIR)
+    if not ok:
+        ok_c, _, _ = run('git rebase --continue', cwd=ROOT_DIR)
+        if not ok_c and "up to date" not in (err + out).lower():
+            run('git rebase --abort', cwd=ROOT_DIR)
     combined = (out + "\n" + err).strip()
 
     if ok:
