@@ -164,3 +164,6 @@ https://www.creativefabrica.com/product/king-knight/
 https://www.creativefabrica.com/product/retroma-vibes/
 >>>>>>> a4ccfb68 (sync: auto update studio & artify (2026-10-22 21:24))
 >>>>>>> 7cc2504 (sync: auto update studio & artify (2026-10-22 21:24))
+https://www.creativefabrica.com/product/stand-for-honour/
+https://www.creativefabrica.com/product/antaline/
+https://www.creativefabrica.com/product/armour-horse/
