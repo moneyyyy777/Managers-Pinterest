@@ -23,7 +23,11 @@ cat <<EOF > "$PLIST_FILE"
         <string>/bin/bash</string>
         <string>$DIR/start_all_background.sh</string>
     </array>
+    <key>WorkingDirectory</key>
+    <string>$DIR</string>
     <key>RunAtLoad</key>
+    <true/>
+    <key>AbandonProcessGroup</key>
     <true/>
     <key>StandardOutPath</key>
     <string>$HOME/Library/Logs/artify_services.log</string>
