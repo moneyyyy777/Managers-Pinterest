@@ -1,9 +1,30 @@
 import { NextResponse } from 'next/server';
-import { spawn } from 'child_process';
+import { spawn, exec } from 'child_process';
+import { promisify } from 'util';
 import path from 'path';
 import fs from 'fs';
 import net from 'net';
 import { getProjectRoot } from '@/lib/paths';
+
+const execPromise = promisify(exec);
+
+async function freePort(port) {
+  try {
+    if (process.platform === 'win32') {
+      const { stdout } = await execPromise(`netstat -ano | findstr :${port} | findstr LISTENING`);
+      const lines = stdout.trim().split('\n');
+      for (const line of lines) {
+        const parts = line.trim().split(/\s+/);
+        const pid = parts[parts.length - 1];
+        if (pid && !isNaN(pid) && pid !== '0') {
+          await execPromise(`taskkill /F /PID ${pid}`);
+        }
+      }
+    } else {
+      await execPromise(`lsof -ti :${port} | xargs kill -9`);
+    }
+  } catch (_) {}
+}
 
 function checkPortOpen(port, host = '127.0.0.1', timeoutMs = 4500) {
   const startTime = Date.now();
@@ -174,16 +195,23 @@ export async function POST(request) {
       }
 
       // Check if already running on port 8501
-      const alreadyRunning = await checkPortOpen(8501, '127.0.0.1', 500);
+      const alreadyRunning = await checkPortOpen(8501, '127.0.0.1', 800);
       if (alreadyRunning) {
-        return NextResponse.json({
-          success: true,
-          service,
-          running: true,
-          port: 8501,
-          url: 'http://localhost:8501',
-          message: 'Streamlit server is already running on port 8501'
-        });
+        try {
+          const testRes = await fetch('http://127.0.0.1:8501', { method: 'HEAD', signal: AbortSignal.timeout(1000) });
+          if (testRes.ok || testRes.status < 500) {
+            return NextResponse.json({
+              success: true,
+              service,
+              running: true,
+              port: 8501,
+              url: 'http://localhost:8501',
+              message: 'Streamlit server is already running on port 8501'
+            });
+          }
+        } catch (_) {}
+        // Port is occupied but not responding healthy, free it cleanly
+        await freePort(8501);
       }
 
       const logsDir = path.join(root, 'manager_gui', '.logs');
@@ -221,8 +249,8 @@ export async function POST(request) {
       });
       child.unref();
 
-      // Wait for port 8501 to open
-      const isUp = await checkPortOpen(8501, '127.0.0.1', 5000);
+      // Wait for port 8501 to open (up to 12s on cold start)
+      const isUp = await checkPortOpen(8501, '127.0.0.1', 12000);
       if (isUp) {
         return NextResponse.json({
           success: true,
