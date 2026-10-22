@@ -6,7 +6,25 @@
     "description": "Handpicked collections of cliparts.",
     "image": "https://i.pinimg.com/1200x/0f/ff/e5/0fffe500521042d1eae37d57e0f2cb20.jpg",
     "href": "/cliparts",
-    "count": "10+ Collections"
+    "count": "15 Collections"
+  },
+  {
+    "id": "patterns",
+    "title": "Patterns",
+    "subtitle": "Patterns",
+    "description": "Curated collections of Patterns.",
+    "image": "https://cdn.creativefabrica.com/2026/09/24/Classic-Christmas-Tartan-Plaid-seamless-Graphics-158635501-2-580x387.png",
+    "href": "/patterns",
+    "count": "2 Collections"
+  },
+  {
+    "id": "christmas",
+    "title": "Christmas",
+    "subtitle": "Best Christmas Collections",
+    "description": "Handpicked collections of Christmas materials.",
+    "image": "https://i.pinimg.com/1200x/82/88/ee/8288ee49f8f820da1f1ecbf2ae31d1dd.jpg",
+    "href": "/christmas",
+    "count": "9 Collections"
   },
   {
     "id": "procreate",
@@ -25,15 +43,6 @@
     "image": "https://cdn.creativefabrica.com/2025/12/29/AllinOne-Digital-Planner-Graphics-108361968.png",
     "href": "/planners",
     "count": "1 Collection"
-  },
-  {
-    "id": "christmas",
-    "title": "Christmas",
-    "subtitle": "Best Christmas Collections",
-    "description": "Handpicked collections of Christmas materials.",
-    "image": "https://i.pinimg.com/1200x/82/88/ee/8288ee49f8f820da1f1ecbf2ae31d1dd.jpg",
-    "href": "/christmas",
-    "count": "5+ Collections"
   },
   {
     "id": "fonts",
