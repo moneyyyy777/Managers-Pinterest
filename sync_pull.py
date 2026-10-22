@@ -70,8 +70,24 @@ def pull_artify():
         run(f'{git_cmd_base} add -A', cwd=ARTIFY_DIR)
         run(f'{git_cmd_base} commit -m "sync: auto-save manager products before pull ({now_str})"', cwd=ARTIFY_DIR)
 
-    # 2. Подтягиваем обновления с GitHub
-    print("   📥 Подтягиваем обновления кода с GitHub (artify-studio)...")
+    # 2. Проверяем новые коммиты с GitHub перед слиянием
+    ok_rem_old, old_remote_head, _ = run(f'{git_cmd_base} rev-parse origin/main', cwd=ARTIFY_DIR)
+    run(f'{git_cmd_base} fetch origin main', cwd=ARTIFY_DIR)
+    ok_rem_new, new_remote_head, _ = run(f'{git_cmd_base} rev-parse origin/main', cwd=ARTIFY_DIR)
+
+    if ok_rem_old and ok_rem_new and old_remote_head != new_remote_head:
+        ok_log, commits_log, _ = run(
+            f'{git_cmd_base} log --format="   🔹 [%%cd] %%h — %%s (%%an)" --date=format:"%%d.%%m.%%Y %%H:%%M" {old_remote_head}..{new_remote_head}',
+            cwd=ARTIFY_DIR
+        )
+        if commits_log.strip():
+            print("   📦 Новые обновления с GitHub (Artify Studio):")
+            print(commits_log)
+    else:
+        print("   ✨ На GitHub новых обновлений Artify Studio нет, всё актуально.")
+
+    # 3. Подтягиваем обновления с GitHub
+    print("   📥 Применяем обновления кода с GitHub (artify-studio)...")
     ok, out, err = run(f'{git_cmd_base} pull --rebase --autostash origin main', cwd=ARTIFY_DIR)
     combined = (out + "\n" + err).strip()
 
@@ -97,8 +113,24 @@ def pull_managers_pinterest():
         run('git add -A', cwd=ROOT_DIR)
         run(f'git commit -m "sync: auto-save manager studio work before pull ({now_str})"', cwd=ROOT_DIR)
 
-    # 2. Подтягиваем обновления
-    print("   📥 Подтягиваем обновления студии с GitHub (Managers-Pinterest)...")
+    # 2. Проверяем новые коммиты с GitHub перед слиянием
+    ok_rem_old, old_remote_head, _ = run('git rev-parse origin/main', cwd=ROOT_DIR)
+    run('git fetch origin main', cwd=ROOT_DIR)
+    ok_rem_new, new_remote_head, _ = run('git rev-parse origin/main', cwd=ROOT_DIR)
+
+    if ok_rem_old and ok_rem_new and old_remote_head != new_remote_head:
+        ok_log, commits_log, _ = run(
+            f'git log --format="   🔹 [%%cd] %%h — %%s (%%an)" --date=format:"%%d.%%m.%%Y %%H:%%M" {old_remote_head}..{new_remote_head}',
+            cwd=ROOT_DIR
+        )
+        if commits_log.strip():
+            print("   📦 Новые обновления с GitHub (Managers-Pinterest):")
+            print(commits_log)
+    else:
+        print("   ✨ На GitHub новых обновлений Managers Pinterest нет, всё актуально.")
+
+    # 3. Подтягиваем обновления
+    print("   📥 Применяем обновления студии с GitHub (Managers-Pinterest)...")
     ok, out, err = run('git pull --rebase --autostash origin main', cwd=ROOT_DIR)
     combined = (out + "\n" + err).strip()
 
