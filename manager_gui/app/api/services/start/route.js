@@ -13,19 +13,35 @@ let currentStreamlitNiche = null;
 async function freePort(port) {
   try {
     if (process.platform === 'win32') {
-      const { stdout } = await execPromise(`netstat -ano | findstr :${port} | findstr LISTENING`);
-      const lines = stdout.trim().split('\n');
-      for (const line of lines) {
-        const parts = line.trim().split(/\s+/);
-        const pid = parts[parts.length - 1];
-        if (pid && !isNaN(pid) && pid !== '0') {
-          await execPromise(`taskkill /F /PID ${pid}`);
-        }
-      }
+      await execPromise(`powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort ${port} -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }"`);
     } else {
       await execPromise(`lsof -ti :${port} | xargs kill -9`);
     }
   } catch (_) {}
+}
+
+function findAvailablePort(startPort = 8501, endPort = 8515) {
+  return new Promise((resolve) => {
+    let port = startPort;
+    const checkNext = () => {
+      if (port > endPort) {
+        resolve(startPort);
+        return;
+      }
+      const server = net.createServer();
+      server.unref();
+      server.on('error', () => {
+        port++;
+        checkNext();
+      });
+      server.listen(port, '127.0.0.1', () => {
+        server.close(() => {
+          resolve(port);
+        });
+      });
+    };
+    checkNext();
+  });
 }
 
 function checkPortOpen(port, host = '127.0.0.1', timeoutMs = 4500) {
@@ -198,35 +214,21 @@ export async function POST(request) {
 
       const requestedNiche = (resolvedNiche || nichePath || '').trim();
 
-      // Check if already running on port 8501
-      const alreadyRunning = await checkPortOpen(8501, '127.0.0.1', 800);
-      if (alreadyRunning) {
-        // Если та же ниша уже работает и отвечает — мгновенно отдаем ее
-        if (currentStreamlitNiche && currentStreamlitNiche === requestedNiche) {
-          try {
-            const testRes = await fetch('http://127.0.0.1:8501', { method: 'HEAD', signal: AbortSignal.timeout(1000) });
-            if (testRes.ok || testRes.status < 500) {
-              return NextResponse.json({
-                success: true,
-                service,
-                running: true,
-                port: 8501,
-                url: 'http://localhost:8501',
-                message: 'Streamlit уже запущен для этой ниши на порту 8501'
-              });
-            }
-          } catch (_) {}
-        }
-        // Если выбрана ДРУГАЯ ниша (или сервер завис) — мягко освобождаем порт и перезапускаем
-        await freePort(8501);
-        await new Promise(r => setTimeout(r, 600));
-      }
+      // 1. Пытаемся освободить 8501 от старых процессов
+      await freePort(8501);
+      await new Promise(r => setTimeout(r, 400));
+
+      // 2. Ищем свободный порт (8501 или следующий свободный 8502, 8503...)
+      const targetPort = await findAvailablePort(8501, 8515);
 
       const logsDir = path.join(root, 'manager_gui', '.logs');
       if (!fs.existsSync(logsDir)) {
         fs.mkdirSync(logsDir, { recursive: true });
       }
       const logFile = path.join(logsDir, 'streamlit.log');
+      try {
+        fs.writeFileSync(logFile, `=== Streamlit launch on port ${targetPort}: ${new Date().toISOString()} ===\n`, 'utf8');
+      } catch (_) {}
       const outLog = fs.openSync(logFile, 'a');
       const errLog = fs.openSync(logFile, 'a');
 
@@ -243,7 +245,7 @@ export async function POST(request) {
         'streamlit',
         'run',
         targetScript,
-        '--server.port=8501',
+        `--server.port=${targetPort}`,
         '--server.address=127.0.0.1',
         '--server.headless=true',
         '--browser.gatherUsageStats=false'
@@ -257,20 +259,19 @@ export async function POST(request) {
       });
       child.unref();
 
-      // Wait for port 8501 to open (up to 12s on cold start)
-      const isUp = await checkPortOpen(8501, '127.0.0.1', 12000);
+      // Ждем запуска Streamlit (до 12 сек)
+      const isUp = await checkPortOpen(targetPort, '127.0.0.1', 12000);
       if (isUp) {
         currentStreamlitNiche = requestedNiche;
         return NextResponse.json({
           success: true,
           service,
           running: true,
-          port: 8501,
-          url: 'http://localhost:8501',
-          message: `Streamlit server started on port 8501 with script ${path.basename(targetScript)}`
+          port: targetPort,
+          url: `http://localhost:${targetPort}`,
+          message: `Streamlit server started on port ${targetPort} with script ${path.basename(targetScript)}`
         });
       } else {
-        // Read recent log output to provide helpful error message
         let errorDetails = '';
         try {
           if (fs.existsSync(logFile)) {
@@ -284,7 +285,7 @@ export async function POST(request) {
             success: false,
             service,
             running: false,
-            error: `Streamlit did not respond on port 8501 within 5s. ${errorDetails}`
+            error: `Streamlit did not respond on port ${targetPort} within 12s. ${errorDetails}`
           },
           { status: 500 }
         );
