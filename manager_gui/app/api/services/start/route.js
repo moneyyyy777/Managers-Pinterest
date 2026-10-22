@@ -8,6 +8,8 @@ import { getProjectRoot } from '@/lib/paths';
 
 const execPromise = promisify(exec);
 
+let currentStreamlitNiche = null;
+
 async function freePort(port) {
   try {
     if (process.platform === 'win32') {
@@ -194,24 +196,30 @@ export async function POST(request) {
         );
       }
 
+      const requestedNiche = (resolvedNiche || nichePath || '').trim();
+
       // Check if already running on port 8501
       const alreadyRunning = await checkPortOpen(8501, '127.0.0.1', 800);
       if (alreadyRunning) {
-        try {
-          const testRes = await fetch('http://127.0.0.1:8501', { method: 'HEAD', signal: AbortSignal.timeout(1000) });
-          if (testRes.ok || testRes.status < 500) {
-            return NextResponse.json({
-              success: true,
-              service,
-              running: true,
-              port: 8501,
-              url: 'http://localhost:8501',
-              message: 'Streamlit server is already running on port 8501'
-            });
-          }
-        } catch (_) {}
-        // Port is occupied but not responding healthy, free it cleanly
+        // Если та же ниша уже работает и отвечает — мгновенно отдаем ее
+        if (currentStreamlitNiche && currentStreamlitNiche === requestedNiche) {
+          try {
+            const testRes = await fetch('http://127.0.0.1:8501', { method: 'HEAD', signal: AbortSignal.timeout(1000) });
+            if (testRes.ok || testRes.status < 500) {
+              return NextResponse.json({
+                success: true,
+                service,
+                running: true,
+                port: 8501,
+                url: 'http://localhost:8501',
+                message: 'Streamlit уже запущен для этой ниши на порту 8501'
+              });
+            }
+          } catch (_) {}
+        }
+        // Если выбрана ДРУГАЯ ниша (или сервер завис) — мягко освобождаем порт и перезапускаем
         await freePort(8501);
+        await new Promise(r => setTimeout(r, 600));
       }
 
       const logsDir = path.join(root, 'manager_gui', '.logs');
@@ -252,6 +260,7 @@ export async function POST(request) {
       // Wait for port 8501 to open (up to 12s on cold start)
       const isUp = await checkPortOpen(8501, '127.0.0.1', 12000);
       if (isUp) {
+        currentStreamlitNiche = requestedNiche;
         return NextResponse.json({
           success: true,
           service,
