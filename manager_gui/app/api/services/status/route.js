@@ -20,12 +20,16 @@ async function checkService(url, timeoutMs = 1500) {
 }
 
 export async function GET() {
-  const [adminRunning, siteRunning, browserRunning, streamlitRunning] = await Promise.all([
+  const [adminRunning, siteRunning, browserRunning, streamlitRunning8520, streamlitRunning8501] = await Promise.all([
     checkService('http://127.0.0.1:3333/api/health', 1200),
     checkService('http://127.0.0.1:4321', 1200),
     checkService('http://127.0.0.1:9222/json/version', 1200),
+    checkService('http://127.0.0.1:8520', 1200),
     checkService('http://127.0.0.1:8501', 1200)
   ]);
+
+  const streamlitRunning = streamlitRunning8520 || streamlitRunning8501;
+  const activeStreamlitPort = streamlitRunning8520 ? 8520 : 8501;
 
   return NextResponse.json({
     admin: {
@@ -56,8 +60,8 @@ export async function GET() {
     },
     streamlit: {
       running: streamlitRunning,
-      port: 8501,
-      url: 'http://localhost:8501'
+      port: activeStreamlitPort,
+      url: `http://localhost:${activeStreamlitPort}`
     }
   });
 }

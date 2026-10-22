@@ -24,6 +24,11 @@ for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":8501" ^| findstr "LISTENING
     taskkill /f /pid %%a >nul 2>nul
 )
 
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":8520" ^| findstr "LISTENING"') do (
+    echo Остановка Streamlit QC (PID %%a)...
+    taskkill /f /pid %%a >nul 2>nul
+)
+
 echo.
 echo ✅ Все фоновые сервисы остановлены.
 pause

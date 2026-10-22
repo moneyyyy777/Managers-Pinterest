@@ -214,12 +214,12 @@ export async function POST(request) {
 
       const requestedNiche = (resolvedNiche || nichePath || '').trim();
 
-      // 1. Пытаемся освободить 8501 от старых процессов
-      await freePort(8501);
+      // 1. Пытаемся освободить 8520 от старых процессов
+      await freePort(8520);
       await new Promise(r => setTimeout(r, 400));
 
-      // 2. Ищем свободный порт (8501 или следующий свободный 8502, 8503...)
-      const targetPort = await findAvailablePort(8501, 8515);
+      // 2. Ищем свободный порт (начинаем с 8520, который свободен от системных резервов Windows WinNAT)
+      const targetPort = await findAvailablePort(8520, 8540);
 
       const logsDir = path.join(root, 'manager_gui', '.logs');
       if (!fs.existsSync(logsDir)) {

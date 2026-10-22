@@ -97,8 +97,8 @@ export default function TabAuditor({ selectedNiche = null, onSelectNiche }) {
 
       setStreamlitNotification({
         type: 'success',
-        message: 'Streamlit QC сервер запускается на порту 8501',
-        url: 'http://localhost:8501'
+        message: data.message || `Streamlit QC сервер запущен на порту ${data.port || 8520}`,
+        url: data.url || `http://localhost:${data.port || 8520}`
       });
     } catch (err) {
       setStreamlitNotification({
@@ -402,7 +402,7 @@ export default function TabAuditor({ selectedNiche = null, onSelectNiche }) {
                 ) : (
                   <Rocket className="w-3.5 h-3.5" />
                 )}
-                <span>Запустить Streamlit QC (8501)</span>
+                <span>Запустить Streamlit QC</span>
               </button>
 
               {/* Run / Repeat Button */}
