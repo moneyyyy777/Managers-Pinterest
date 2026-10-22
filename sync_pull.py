@@ -72,7 +72,7 @@ def pull_artify():
 
     # 2. Подтягиваем обновления с GitHub
     print("   📥 Подтягиваем обновления кода с GitHub (artify-studio)...")
-    ok, out, err = run(f'{git_cmd_base} pull --no-edit origin main', cwd=ARTIFY_DIR)
+    ok, out, err = run(f'{git_cmd_base} pull --rebase --autostash origin main', cwd=ARTIFY_DIR)
     combined = (out + "\n" + err).strip()
 
     if ok:
@@ -99,7 +99,7 @@ def pull_managers_pinterest():
 
     # 2. Подтягиваем обновления
     print("   📥 Подтягиваем обновления студии с GitHub (Managers-Pinterest)...")
-    ok, out, err = run('git pull --no-edit origin main', cwd=ROOT_DIR)
+    ok, out, err = run('git pull --rebase --autostash origin main', cwd=ROOT_DIR)
     combined = (out + "\n" + err).strip()
 
     if ok:

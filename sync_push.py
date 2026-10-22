@@ -74,7 +74,7 @@ def sync_artify(commit_msg):
 
     # 3. Подтягиваем обновления от менеджера (pull --rebase)
     print("   📥 Подтягиваем обновления с GitHub (artify-studio)...")
-    ok, out, err = run(f'{git_cmd_base} pull --rebase origin main', cwd=ARTIFY_DIR)
+    ok, out, err = run(f'{git_cmd_base} pull --rebase --autostash origin main', cwd=ARTIFY_DIR)
     if not ok and "up to date" not in (err + out).lower():
         print(f"   ℹ️ Статус pull artify-studio: {err or out}")
 
@@ -112,7 +112,7 @@ def sync_managers_pinterest(commit_msg):
     ok, remotes, _ = run('git ls-remote origin refs/heads/main', cwd=ROOT_DIR)
     if ok and remotes:
         print("   📥 Подтягиваем обновления с GitHub (Managers-Pinterest)...")
-        run('git pull --rebase origin main', cwd=ROOT_DIR)
+        run('git pull --rebase --autostash origin main', cwd=ROOT_DIR)
 
     # 4. Пушим
     print("   🚀 Отправляем на GitHub (moneyyyy777/Managers-Pinterest)...")

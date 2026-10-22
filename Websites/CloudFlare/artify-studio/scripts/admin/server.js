@@ -465,6 +465,17 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    async function getPythonBin() {
+        const candidates = process.platform === "win32" ? ["python", "py", "python3"] : ["python3", "python"];
+        for (const bin of candidates) {
+            try {
+                await execAsync(`${bin} --version`);
+                return bin;
+            } catch {}
+        }
+        return process.platform === "win32" ? "python" : "python3";
+    }
+
     // 0.4 Безопасный единый пуш на GitHub (в 2 репозитория)
     if (pathname === "/api/git/push-all" && req.method === "POST") {
         let body = {};
@@ -474,9 +485,10 @@ const server = http.createServer(async (req, res) => {
 
         const scriptPath = path.join(WORKSPACE_ROOT, "sync_push.py");
         const customMsg = (body.message || "").trim();
+        const pyBin = await getPythonBin();
         const cmd = customMsg
-            ? `python3 "${scriptPath}" "${customMsg.replace(/"/g, '\\"')}"`
-            : `python3 "${scriptPath}"`;
+            ? `${pyBin} "${scriptPath}" "${customMsg.replace(/"/g, '\\"')}"`
+            : `${pyBin} "${scriptPath}"`;
 
         try {
             const { stdout, stderr } = await execAsync(cmd, { cwd: WORKSPACE_ROOT, timeout: 180000 });
@@ -503,7 +515,8 @@ const server = http.createServer(async (req, res) => {
     // 0.5 Безопасное обновление с GitHub (Git Pull All с авто-сохранением локальных товаров)
     if (pathname === "/api/git/pull-all" && req.method === "POST") {
         const scriptPath = path.join(WORKSPACE_ROOT, "sync_pull.py");
-        const cmd = `python3 "${scriptPath}"`;
+        const pyBin = await getPythonBin();
+        const cmd = `${pyBin} "${scriptPath}"`;
 
         try {
             const { stdout, stderr } = await execAsync(cmd, { cwd: WORKSPACE_ROOT, timeout: 120000 });
