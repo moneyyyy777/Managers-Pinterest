@@ -130,7 +130,8 @@ export default function NicheSelector({
       (Array.isArray(activeNiche?.stepStatuses)
         ? activeNiche.stepStatuses.filter(Boolean).length
         : currentStep - 1);
-    return Math.min(100, Math.round((completed / 8) * 100));
+    const totalSteps = activeNiche?.totalSteps || 10;
+    return Math.min(100, Math.round((completed / totalSteps) * 100));
   }, [activeNiche, currentStep]);
 
   // Nicely formatted display title for a niche
@@ -435,7 +436,7 @@ export default function NicheSelector({
               <span className="text-slate-600 font-medium flex items-center gap-1.5">
                 <span>Прогресс воронки:</span>
                 <span className="text-slate-900 font-semibold">
-                  {currentStep} из 8 этапов
+                  {currentStep} из 10 этапов
                 </span>
               </span>
               <span className="font-mono font-bold text-[#E60023]">

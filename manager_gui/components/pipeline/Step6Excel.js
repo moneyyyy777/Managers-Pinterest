@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   FileSpreadsheet,
   CheckCircle2,
@@ -9,27 +9,37 @@ import {
   Smile,
   Hash,
   Sparkles,
-  HelpCircle,
-  FileCheck2
+  FileCheck2,
+  Play,
+  ExternalLink,
+  Loader2,
+  FileText,
+  Zap
 } from 'lucide-react';
 
 const REQUIREMENTS = [
   {
     id: 'rows',
     title: 'Ровно 100 строк данных',
-    desc: 'Каждая таблица должна содержать ровно 100 сгенерированных пинов (без учета строки заголовков).',
+    desc: 'Каждая таблица должна содержать ровно 100 сгенерированных строк метаданных (без учета строки заголовков).',
     icon: Hash
   },
   {
+    id: 'titles',
+    title: 'Чистые заголовки (0 эмодзи!)',
+    desc: 'В заголовках (Titles) строго 0 эмодзи! Без точек в конце, длина 3-8 слов, органичные ключи и актуальные годы 2026/2027.',
+    icon: FileText
+  },
+  {
     id: 'emojis',
-    title: 'Разнообразие эмодзи (≥ 10 видов)',
-    desc: 'В заголовках и описаниях должно быть использовано не менее 10 уникальных тематических эмодзи.',
+    title: 'Эмодзи в Descriptions (≥ 10 видов)',
+    desc: 'Каждая строка Descriptions начинается с тематического эмодзи (максимум разнообразия!), без артикля "A" в начале, без CTA.',
     icon: Smile
   },
   {
     id: 'cta',
-    title: 'Триггер FREE в CTA',
-    desc: 'В призыве к действию (CTA) каждого пина обязательно используется триггер выгоды (Free / Download / Access).',
+    title: 'Триггер FREE в CTA (≥ 70% строк)',
+    desc: 'В 70% строк обязательно слово FREE заглавными буквами, тип товара с большой буквы (Clipart, Fonts) и триггеры выгоды (Instant Download).',
     icon: Sparkles
   }
 ];
@@ -39,8 +49,87 @@ export default function Step6Excel({
   nicheDetail,
   activeSegment = null
 }) {
+  const [isRunningScript, setIsRunningScript] = useState(false);
+  const [isStartingStreamlit, setIsStartingStreamlit] = useState(false);
+  const [actionNotification, setActionNotification] = useState(null);
+
   const excelFiles = nicheDetail?.niche?.excelFiles || [];
   const totalExcels = excelFiles.length;
+
+  const handleStartStreamlit = async () => {
+    try {
+      setIsStartingStreamlit(true);
+      setActionNotification(null);
+
+      const res = await fetch('/api/services/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service: 'streamlit',
+          nichePath: selectedNiche?.keywordPath,
+          segment: activeSegment
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Ошибка запуска Streamlit QC');
+      }
+
+      setActionNotification({
+        type: 'success',
+        message: data.message || `Streamlit QC запущен на порту ${data.port || 8520}`,
+        url: data.url || `http://localhost:${data.port || 8520}`
+      });
+
+      // Auto open Streamlit tab
+      if (data.url || data.port) {
+        window.open(data.url || `http://localhost:${data.port || 8520}`, '_blank');
+      }
+    } catch (err) {
+      setActionNotification({
+        type: 'error',
+        message: err.message
+      });
+    } finally {
+      setIsStartingStreamlit(false);
+    }
+  };
+
+  const handleRunScript = async () => {
+    try {
+      setIsRunningScript(true);
+      setActionNotification(null);
+
+      const res = await fetch('/api/services/run-excel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          category: selectedNiche?.category,
+          collection: selectedNiche?.collection,
+          nichePath: selectedNiche?.keywordPath,
+          segment: activeSegment
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Ошибка запуска скрипта генерации Excel');
+      }
+
+      setActionNotification({
+        type: 'success',
+        message: `${data.message} (всего папок для обработки: ${data.totalFolders})`
+      });
+    } catch (err) {
+      setActionNotification({
+        type: 'error',
+        message: err.message
+      });
+    } finally {
+      setIsRunningScript(false);
+    }
+  };
 
   return (
     <div className="w-full bg-white border border-gray-200 rounded-2xl p-6 shadow-xs space-y-6 text-slate-800">
@@ -61,7 +150,7 @@ export default function Step6Excel({
             )}
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Контроль наличия и соответствия стандартам готовых Excel таблиц с метаданными пинов.
+            Контроль наличия и соответствия стандартам готовых Excel таблиц (100 уникальных пинов для каждой папки интента).
           </p>
         </div>
 
@@ -70,7 +159,7 @@ export default function Step6Excel({
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-50 border border-gray-200 text-xs">
             <FileSpreadsheet className="w-3.5 h-3.5 text-slate-500" />
             <span className="text-slate-500">Найдено таблиц:</span>
-            <span className="font-bold text-slate-900 font-mono">{totalExcels} из 4</span>
+            <span className="font-bold text-slate-900 font-mono">{totalExcels} шт.</span>
           </div>
 
           <div
@@ -85,19 +174,92 @@ export default function Step6Excel({
             ) : (
               <AlertCircle className="w-3.5 h-3.5 text-amber-600" />
             )}
-            <span>{totalExcels >= 4 ? 'Все 4 таблицы готовы' : 'Ожидаются таблицы'}</span>
+            <span>{totalExcels >= 4 ? 'Все таблицы готовы' : 'Ожидаются таблицы'}</span>
           </div>
         </div>
       </div>
+
+      {/* Action Buttons Panel */}
+      <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
+        <div className="space-y-0.5">
+          <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+            <Zap className="w-4 h-4 text-[#E60023]" />
+            <span>Инструменты генерации контента для папок ниши</span>
+          </div>
+          <p className="text-[11px] text-slate-500">
+            Запустите визуальный генератор Streamlit QC с предпросмотром промпта или выполните автономный скрипт run_folder.py.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+          <button
+            onClick={handleStartStreamlit}
+            disabled={isStartingStreamlit}
+            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[#E60023] hover:bg-[#ad081b] text-white shadow-xs transition-colors disabled:opacity-50 cursor-pointer"
+          >
+            {isStartingStreamlit ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Play className="w-3.5 h-3.5" />
+            )}
+            <span>Streamlit QC (8501)</span>
+          </button>
+
+          <button
+            onClick={handleRunScript}
+            disabled={isRunningScript}
+            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-gray-300 shadow-xs transition-colors disabled:opacity-50 cursor-pointer"
+            title="Запустить автономный run_folder.py для первой подходящей папки ниши"
+          >
+            {isRunningScript ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Zap className="w-3.5 h-3.5 text-amber-500" />
+            )}
+            <span>run_folder.py в 1 клик</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Notification Banner */}
+      {actionNotification && (
+        <div
+          className={`p-3.5 rounded-xl border text-xs flex items-center justify-between gap-3 ${
+            actionNotification.type === 'success'
+              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+              : 'bg-rose-50 text-rose-800 border-rose-200'
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            {actionNotification.type === 'success' ? (
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            ) : (
+              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+            )}
+            <span>{actionNotification.message}</span>
+          </div>
+          {actionNotification.url && (
+            <a
+              href={actionNotification.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-bold underline hover:opacity-80 shrink-0"
+            >
+              <span>Открыть в браузере</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          )}
+        </div>
+      )}
 
       {/* Checklist Requirements Banner */}
       <div className="bg-red-50/50 border border-red-100 rounded-xl p-4 space-y-3">
         <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
           <FileCheck2 className="w-4 h-4 text-[#E60023]" />
-          <span>Обязательный чек-лист качества генерации Excel</span>
+          <span>Обязательный чек-лист качества контента Excel (Шаг 6)</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
           {REQUIREMENTS.map((req) => {
             const Icon = req.icon;
             return (
@@ -131,7 +293,7 @@ export default function Step6Excel({
               Файлы .xlsx пока не обнаружены в папках интентов.
             </p>
             <p className="text-[11px] text-slate-500 max-w-md mx-auto">
-              Используйте генератор контента (Step 6 Prompt) для создания 100 строк пинов для каждой из папок интентов.
+              Используйте Streamlit QC или автономный run_folder.py для генерации ровно 100 строк пинов для каждой из папок интентов.
             </p>
           </div>
         ) : (

@@ -957,20 +957,22 @@ if "just_regenerated" not in st.session_state: st.session_state.just_regenerated
 MAX_LINE_COUNT_RETRIES = 3
 
 # ─── ЛОГИКА PLAYWRIGHT ДЛЯ UI ─────────────────────────────────────────────────
-def run_ai_for_current_task(task_index, target="ALL", niche_mode=None):
+def run_ai_for_current_task(task_index, target="ALL", niche_mode=None, custom_prompt=None):
     task = tasks[task_index]
     if niche_mode is None:
         niche_mode = st.session_state.get("niche_mode", False)
     excluded_niches = get_excluded_niches_for_task(task_index)
     niche_hint = get_niche_hint_for_task(task_index)
     use_json = st.session_state.get("use_json", True)
-    prompt, missing, expected_blocks, json_file, blocks_order = build_prompt(
+    default_prompt, missing, expected_blocks, json_file, blocks_order = build_prompt(
         task["path"], base_dir, target, niche_mode=niche_mode, excluded_niches=excluded_niches, use_json=use_json,
         niche_hint=niche_hint
     )
     if missing:
         st.session_state["_last_ai_error"] = f"❌ Не хватает файлов: {', '.join(missing)}"
         return False
+
+    prompt = custom_prompt if custom_prompt else default_prompt
 
     blocks = interact_with_ai_studio(prompt, expected_blocks, json_file)
     if not blocks or len(blocks) < expected_blocks:
@@ -1354,6 +1356,26 @@ with top_left:
         c_lines = clean_lines(st.session_state.get("ta_ctas", ""))
         if t_lines and d_lines and c_lines:
             write_xlsx(st.session_state.tasks[cur_task_idx]["xlsx"], t_lines, d_lines, c_lines)
+
+    with st.expander("👁️ Предпросмотр и правка промпта перед отправкой", expanded=False):
+        default_p, _, _, _, _ = build_prompt(
+            task["path"], base_dir, "ALL",
+            niche_mode=st.session_state.get("niche_mode", False),
+            excluded_niches=get_excluded_niches_for_task(cur),
+            use_json=st.session_state.get("use_json", True),
+            niche_hint=get_niche_hint_for_task(cur)
+        )
+        user_p = st.text_area(
+            "Промпт перед отправкой в AI Studio (можно редактировать):",
+            value=default_p,
+            height=240,
+            key=f"preview_p_{cur}"
+        )
+        if st.button("🚀 Отправить отредактированный промпт", key=f"run_custom_{cur}", use_container_width=True):
+            with st.spinner("Генерируем по вашему промпту..."):
+                if run_ai_for_current_task(cur, "ALL", custom_prompt=user_p):
+                    try_auto_save(cur)
+                    st.rerun()
 
     mc1, mc2 = st.columns(2)
     with mc1:

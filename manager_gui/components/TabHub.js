@@ -42,7 +42,7 @@ export default function TabHub({
   }, [niches]);
 
   const completedCountTotal = useMemo(() => {
-    return niches.filter((n) => (n.completedCount ?? 0) === 8).length;
+    return niches.filter((n) => (n.completedCount ?? 0) >= 10).length;
   }, [niches]);
 
   const totalProducts = useMemo(() => {
@@ -203,9 +203,10 @@ export default function TabHub({
               (Array.isArray(niche.stepStatuses)
                 ? niche.stepStatuses.filter(Boolean).length
                 : currentStep - 1);
+            const totalSteps = niche.totalSteps || 10;
             const percent =
               niche.progress?.percent ??
-              Math.min(100, Math.round((completedCount / 8) * 100));
+              Math.min(100, Math.round((completedCount / totalSteps) * 100));
             const isInitLoading = Boolean(initializingKeys[nicheId]);
 
             const isMulti =
@@ -290,7 +291,7 @@ export default function TabHub({
                           key={seg.name}
                           onClick={() => onSelectNiche?.(nicheId, 'pipeline')}
                           className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-slate-50 hover:bg-red-50 text-slate-700 hover:text-[#E60023] border border-gray-200 hover:border-red-200 transition-colors cursor-pointer"
-                          title={`Сегмент: ${seg.name} (${seg.completedCount}/8 шагов)`}
+                          title={`Сегмент: ${seg.name} (${seg.completedCount}/10 шагов)`}
                         >
                           <span className="w-1 h-1 rounded-full bg-[#E60023]" />
                           <span className="truncate max-w-[130px]">{seg.name}</span>
@@ -309,7 +310,7 @@ export default function TabHub({
                 <div className="space-y-1.5 pt-1">
                   <div className="flex items-center justify-between text-[11px]">
                     <span className="text-slate-500 font-medium">
-                      Шаг {currentStep} из 8
+                      Шаг {currentStep} из 10
                     </span>
                     <span className="font-mono text-[#E60023] font-bold">
                       {percent}%
