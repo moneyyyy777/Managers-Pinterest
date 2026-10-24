@@ -30,7 +30,7 @@ def ask_suffix():
 
 def process_folder(target_dir_path, folder_name, platform, suffix, update_links,
                    last_link, path_prefix, today_date, new_folder_paths_list, root_for_paths):
-    clean_name = re.sub(r'\s+\S.*\s+\d{6}$', '', folder_name)
+    clean_name = re.sub(r'\s+(?:Cloudflare|Netify|Gole)?\s*(?:WL|LU)?\s*\d{6}$', '', folder_name, flags=re.IGNORECASE).strip()
     print(f"\n  >>> Обработка: {clean_name}")
 
     old_folder_path = os.path.join(target_dir_path, folder_name)
@@ -145,7 +145,7 @@ def mass_rename_folders():
                     last_link, path_prefix, today_date, new_folder_paths_list, root_for_paths
                 )
             else:
-                clean_name = re.sub(r'\s+\S.*\s+\d{6}$', '', folder_name)
+                clean_name = re.sub(r'\s+(?:Cloudflare|Netify|Gole)?\s*(?:WL|LU)?\s*\d{6}$', '', folder_name, flags=re.IGNORECASE).strip()
                 print(f"\n  >>> Обработка: {clean_name}")
 
                 current_link = last_link

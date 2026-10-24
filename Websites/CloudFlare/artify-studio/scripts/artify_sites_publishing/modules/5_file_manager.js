@@ -12,7 +12,7 @@ function getTodayDateStr() {
 }
 
 function cleanFolderName(folderName) {
-    return folderName.replace(/\s+\S.*\s+\d{6}$/, '').trim();
+    return folderName.replace(/\s+(?:Cloudflare|Netify|Gole)?\s*(?:WL|LU)?\s*\d{6}$/i, '').trim();
 }
 
 async function findTargetDirectories(startDir) {
