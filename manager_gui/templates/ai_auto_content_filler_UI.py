@@ -25,6 +25,13 @@ COL_CTA = 13
 COL_TITLE = 14
 REQUIRED_LINES = 100
 
+# Настройки защиты от зависаний в AI Studio
+CHUNK_LINES = 20                   # Строк в одной порции при постепенном вводе
+CHUNK_DELAY_SEC = 1.2              # Задержка между порциями (сек) для снятия нагрузки с Event Loop
+MAX_FREEZE_WAIT_SEC = 180          # Максимальное ожидание отвисания окна (3 минуты)
+FREEZE_POLL_INTERVAL_SEC = 10      # Интервал проверки отклика окна (каждые 10 секунд)
+JSON_STABILIZE_WAIT_SEC = 12       # Стартовое ожидание для индексации JSON в AI Studio (10-15 сек)
+
 CHROME_DEBUG_URL = "http://127.0.0.1:9222"
 
 st.set_page_config(page_title="🤖 Pinterest Filler & QC", layout="wide", initial_sidebar_state="expanded")
@@ -89,7 +96,165 @@ textarea[disabled] {
 """, unsafe_allow_html=True)
 
 
-# ─── ИНТЕГРАЦИЯ С PLAYWRIGHT (AI STUDIO) ──────────────────────────────────────
+# ─── ИНТЕГРАЦИЯ С PLAYWRIGHT (AI STUDIO С ЗАЩИТОЙ ОТ ЗАВИСАНИЙ) ───────────────
+def is_page_responsive(page, timeout_ms: int = 3000) -> bool:
+    """Проверяет отзывчивость главного потока вкладки браузера (Heartbeat)."""
+    try:
+        return page.evaluate("() => true", timeout=timeout_ms) is True
+    except Exception:
+        return False
+
+
+def wait_until_responsive(page, max_wait_sec: int = MAX_FREEZE_WAIT_SEC, check_interval_sec: int = FREEZE_POLL_INTERVAL_SEC, reason: str = "обработки", status_box=None) -> bool:
+    """
+    Ожидает отвисания вкладки AI Studio до max_wait_sec (3 минуты).
+    Опрашивает отклик каждые check_interval_sec (10 секунд).
+    Обновляет лог в консоли и в Streamlit UI.
+    """
+    start_time = time.time()
+    while time.time() - start_time < max_wait_sec:
+        elapsed = int(time.time() - start_time)
+        remains = max(0, max_wait_sec - elapsed)
+
+        # Проверяем отзывчивость страницы
+        if is_page_responsive(page, timeout_ms=3000):
+            if elapsed > 0:
+                msg = f"✅ Окно AI Studio отвисло и снова отвечает (ждали {elapsed} сек)."
+                print(msg)
+                if status_box:
+                    status_box.success(msg)
+                    time.sleep(1)
+            return True
+
+        msg = f"⏳ Окно AI Studio занято ({reason}). Ждём отклика: прошло {elapsed}с / лимит {max_wait_sec}с (проверка каждые {check_interval_sec}с)..."
+        print(msg)
+        if status_box:
+            status_box.warning(msg)
+
+        time.sleep(check_interval_sec)
+
+    msg = f"❌ Окно AI Studio не ответило за {max_wait_sec} сек (глухой завис)."
+    print(msg)
+    if status_box:
+        status_box.error(msg)
+    return False
+
+
+def type_prompt_chunked(page, prompt: str, status_box=None, chunk_lines: int = CHUNK_LINES, chunk_delay: float = CHUNK_DELAY_SEC) -> bool:
+    """
+    Построчно-блочный ввод промпта в textarea.
+    Вставляет порциями по chunk_lines строк, делает паузу chunk_delay секунд,
+    и проверяет, не зависло ли окно после каждой порции.
+    Если зависло — включает адаптивное ожидание до 3 минут с проверкой раз в 10 сек.
+    """
+    text_area = page.locator("textarea").last
+    try:
+        text_area.focus()
+    except Exception:
+        pass
+    page.wait_for_timeout(300)
+
+    # Очищаем поле перед вводом без тяжелых событий
+    try:
+        page.evaluate('''() => {
+            const textareas = document.querySelectorAll('textarea');
+            if (textareas.length > 0) {
+                const ta = textareas[textareas.length - 1];
+                ta.value = '';
+                ta.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        }''')
+    except Exception:
+        pass
+    page.wait_for_timeout(300)
+
+    # Разбиваем промпт на строки
+    all_lines = prompt.splitlines(keepends=True)
+    if not all_lines:
+        return True
+
+    # Группируем строки в порции
+    chunks = []
+    current_chunk = []
+    for line in all_lines:
+        current_chunk.append(line)
+        if len(current_chunk) >= chunk_lines:
+            chunks.append("".join(current_chunk))
+            current_chunk = []
+    if current_chunk:
+        chunks.append("".join(current_chunk))
+
+    total_chunks = len(chunks)
+    print(f"📝 Начало постепенного ввода промпта: {len(all_lines)} строк, {total_chunks} порций...")
+
+    for idx, chunk in enumerate(chunks, 1):
+        # 1. Проверяем отзывчивость перед вставкой порции
+        if not is_page_responsive(page):
+            if not wait_until_responsive(page, max_wait_sec=MAX_FREEZE_WAIT_SEC, check_interval_sec=FREEZE_POLL_INTERVAL_SEC, reason=f"вводом блока {idx}/{total_chunks}", status_box=status_box):
+                return False
+
+        # 2. Вставляем порцию текста (нативный insertText эмулирует естественный ввод без заморозки)
+        inserted = False
+        try:
+            inserted = page.evaluate('''(text) => {
+                const textareas = document.querySelectorAll('textarea');
+                if (textareas.length === 0) return false;
+                const ta = textareas[textareas.length - 1];
+                ta.focus();
+                const prevLen = ta.value ? ta.value.length : 0;
+                const ok = document.execCommand('insertText', false, text);
+                const curLen = ta.value ? ta.value.length : 0;
+                if (!ok || curLen <= prevLen) {
+                    ta.value = (ta.value || '') + text;
+                    ta.dispatchEvent(new Event('input', { bubbles: true }));
+                    ta.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                return true;
+            }''', chunk)
+        except Exception:
+            pass
+
+        if not inserted:
+            try:
+                page.keyboard.insert_text(chunk)
+            except Exception as e:
+                print(f"⚠️ Ошибка insert_text: {e}")
+
+        pct = int((idx / total_chunks) * 100)
+        msg = f"✍️ Плавный ввод промпта: порция {idx}/{total_chunks} ({pct}%)..."
+        if status_box:
+            status_box.info(msg)
+
+        # 3. Проверяем отзывчивость после вставки порции
+        if not is_page_responsive(page):
+            msg_freeze = f"⏳ Окно подвисло на порции {idx}/{total_chunks}. Ожидаем стабилизации..."
+            print(msg_freeze)
+            if status_box:
+                status_box.warning(msg_freeze)
+            if not wait_until_responsive(page, max_wait_sec=MAX_FREEZE_WAIT_SEC, check_interval_sec=FREEZE_POLL_INTERVAL_SEC, reason=f"токенизацией блока {idx}/{total_chunks}", status_box=status_box):
+                return False
+        else:
+            # Комфортная задержка 1-2 сек между порциями
+            time.sleep(chunk_delay)
+
+    # Финальная проверка длины промпта в DOM
+    try:
+        final_len = page.evaluate('''() => {
+            const textareas = document.querySelectorAll('textarea');
+            return textareas.length ? (textareas[textareas.length - 1].value || '').length : 0;
+        }''')
+        print(f"📊 Промпт введен: {final_len} символов в textarea (исходный: ~{len(prompt)}).")
+        if final_len == 0 and len(prompt) > 0:
+            print("⚠️ Промпт не зафиксировался в DOM, выполняем fallback через fill()...")
+            text_area = page.locator("textarea").last
+            text_area.fill(prompt)
+    except Exception as e:
+        print(f"⚠️ Ошибка финальной проверки длины промпта: {e}")
+
+    time.sleep(1.5)
+    return True
+
+
 def interact_with_ai_studio(prompt: str, expected_blocks: int, json_file_path: str, max_attempts: int = 15):
     with sync_playwright() as p:
         try:
@@ -97,37 +262,69 @@ def interact_with_ai_studio(prompt: str, expected_blocks: int, json_file_path: s
             context = browser.contexts[0]
 
             page = None
-            for p_ext in context.pages:
-                if "aistudio" in p_ext.url:
-                    page = p_ext
-                    break
-            if not page:
-                page = context.new_page()
+            status_box = st.empty()
 
             for attempt in range(1, max_attempts + 1):
                 try:
-                    # Убрано page.bring_to_front() чтобы окно не дергалось и работало в фоне
+                    # Если страницы нет или она закрыта из-за предыдущего зависания — открываем новую
+                    if not page or page.is_closed():
+                        for p_ext in context.pages:
+                            if not p_ext.is_closed() and "aistudio" in p_ext.url:
+                                page = p_ext
+                                break
+                        if not page or page.is_closed():
+                            page = context.new_page()
+
                     st.toast(f"🔄 Попытка {attempt}/{max_attempts}: Подготовка AI Studio...")
+                    if status_box:
+                        status_box.info(f"🔄 Попытка {attempt}/{max_attempts}: Переход в Google AI Studio...")
 
                     page.goto("https://aistudio.google.com/app/u/1/prompts/new_chat", timeout=30000)
                     page.wait_for_timeout(2000)
 
+                    # 1. Прикрепление JSON файла (если есть) с паузой 10-15 сек и проверкой отклика
                     if json_file_path and os.path.exists(json_file_path):
+                        if status_box:
+                            status_box.info(f"📎 Загрузка JSON ({os.path.basename(json_file_path)})...")
                         try:
                             file_input = page.locator('input[type="file"]').first
                             file_input.set_input_files(json_file_path)
-                            page.wait_for_timeout(3000)
+
+                            # Стартовое ожидание 10-12 секунд для индексации файла в интерфейсе
+                            for sec in range(JSON_STABILIZE_WAIT_SEC):
+                                time.sleep(1)
+                                if (sec + 1) % 3 == 0 and status_box:
+                                    status_box.info(f"📎 Индексация JSON в AI Studio: ({sec + 1}/{JSON_STABILIZE_WAIT_SEC} сек)...")
+
+                            # Проверяем отзывчивость страницы
+                            if not is_page_responsive(page):
+                                if status_box:
+                                    status_box.warning("⏳ Окно AI Studio подвисло от JSON файла. Ожидаем стабилизации...")
+                                ok = wait_until_responsive(page, max_wait_sec=MAX_FREEZE_WAIT_SEC, check_interval_sec=FREEZE_POLL_INTERVAL_SEC, reason="индексацией JSON", status_box=status_box)
+                                if not ok:
+                                    raise Exception("Окно AI Studio намертво зависло при обработке JSON файла (> 3 минут).")
                         except Exception as e:
-                            print(f"⚠️ Ошибка загрузки файла: {e}")
+                            print(f"⚠️ Ошибка загрузки JSON: {e}")
+                            if "намертво зависло" in str(e):
+                                raise e
 
-                    text_area = page.locator("textarea").last
-                    text_area.fill(prompt)
-                    page.wait_for_timeout(500)
+                    # 2. Построчный плавный ввод промпта порциями
+                    if status_box:
+                        status_box.info("✍️ Запуск построчного ввода промпта...")
+                    type_ok = type_prompt_chunked(page, prompt, status_box=status_box, chunk_lines=CHUNK_LINES, chunk_delay=CHUNK_DELAY_SEC)
+                    if not type_ok:
+                        raise Exception("Окно AI Studio намертво зависло при вводе промпта (> 3 минут).")
 
+                    # 3. Проверка отклика окна перед отправкой
+                    if not is_page_responsive(page):
+                        ok = wait_until_responsive(page, max_wait_sec=MAX_FREEZE_WAIT_SEC, check_interval_sec=FREEZE_POLL_INTERVAL_SEC, reason="финализацией перед запуском", status_box=status_box)
+                        if not ok:
+                            raise Exception("Окно AI Studio намертво зависло перед кликом Run (> 3 минут).")
+
+                    # 4. Отключение Grounding и URL context
                     try:
                         grounding_sw = page.locator('button[role="switch"][aria-label*="Grounding with Google Search"]')
-                        if grounding_sw.is_visible(timeout=500) and grounding_sw.get_attribute(
-                                "aria-checked") == "true":
+                        if grounding_sw.is_visible(timeout=500) and grounding_sw.get_attribute("aria-checked") == "true":
                             grounding_sw.click()
                             page.wait_for_timeout(300)
 
@@ -138,6 +335,8 @@ def interact_with_ai_studio(prompt: str, expected_blocks: int, json_file_path: s
                     except Exception:
                         pass
 
+                    # 5. Клик по кнопке Run / Submit
+                    text_area = page.locator("textarea").last
                     try:
                         clicked = page.evaluate('''() => {
                             const btn = document.querySelector('button[mattooltipclass="run-button-tooltip"]') 
@@ -152,13 +351,25 @@ def interact_with_ai_studio(prompt: str, expected_blocks: int, json_file_path: s
                         page.keyboard.press("Meta+Enter")
 
                     st.toast(f"⏳ Попытка {attempt}: AI генерирует ответ...")
+                    if status_box:
+                        status_box.info(f"⏳ Попытка {attempt}: Промпт отправлен! AI Studio генерирует {expected_blocks} блоков кода...")
 
                     prev_len = 0
                     stable_ticks = 0
 
-                    for _ in range(90):  # До 3 минут генерации
+                    for tick in range(120):  # До 4 минут генерации
                         time.sleep(2)
-                        page_content = page.content()
+
+                        # Проверяем не зависло ли окно в процессе вывода
+                        if not is_page_responsive(page, timeout_ms=3000):
+                            print(f"⏳ Окно AI Studio занято потоковым выводом... ({tick * 2}с)")
+                            continue
+
+                        try:
+                            page_content = page.content()
+                        except Exception:
+                            continue
+
                         if "An internal error has occurred" in page_content or "Failed to generate content" in page_content:
                             raise Exception("AI Studio выдал внутреннюю ошибку.")
 
@@ -179,6 +390,10 @@ def interact_with_ai_studio(prompt: str, expected_blocks: int, json_file_path: s
                                             f"AI вернул {len(final_blocks)} блоков кода вместо ожидаемых {expected_blocks} "
                                             f"— результат ненадёжен, переспрашиваю заново."
                                         )
+                                    if status_box:
+                                        status_box.success(f"🎉 Успешно получено {expected_blocks} блоков кода!")
+                                        time.sleep(1)
+                                        status_box.empty()
                                     return final_blocks[-expected_blocks:]
                             else:
                                 stable_ticks = 0
@@ -187,10 +402,24 @@ def interact_with_ai_studio(prompt: str, expected_blocks: int, json_file_path: s
                     raise Exception("Таймаут ожидания ответа AI.")
 
                 except Exception as attempt_err:
-                    warning_placeholder = st.empty()
-                    warning_placeholder.warning(f"⚠️ Попытка {attempt} сбой: {attempt_err}. Перезапуск через 5 сек...")
+                    err_text = str(attempt_err)
+                    print(f"⚠️ Сбой попытки {attempt}: {err_text}")
+
+                    # Если произошел завис на 3 минуты или окно умерло — закрываем зависшую вкладку
+                    if "намертво зависло" in err_text or "зависло более чем на 3 минуты" in err_text or "Target closed" in err_text:
+                        print(f"🚫 Закрываем зависшую вкладку AI Studio...")
+                        try:
+                            if page and not page.is_closed():
+                                page.close()
+                        except Exception:
+                            pass
+                        page = None
+
+                    if status_box:
+                        status_box.warning(f"⚠️ Попытка {attempt} сбой: {err_text}. Перезапуск через 5 сек...")
                     time.sleep(5)
-                    warning_placeholder.empty()
+                    if status_box:
+                        status_box.empty()
 
             raise Exception(f"Все {max_attempts} попыток завершились ошибкой AI Studio.")
         except Exception as e:
