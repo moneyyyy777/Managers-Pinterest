@@ -30,17 +30,21 @@ const affiliateUrl = buildAffiliateUrl(
     category
 );
 
-const mainCover = optimizeImageUrl(product.image);
-let images = mainCover ? [mainCover] : [];
+const rawImages = product.image ? [product.image] : [];
 
 // 2. Добавляем остальные фото из галереи, исключая служебные прозрачные preview-файлы
 if (product.gallery && product.gallery.length > 0) {
     for (const img of product.gallery) {
-        if (img && img !== product.image && !img.includes('preview') && !images.includes(optimizeImageUrl(img))) {
-            images.push(optimizeImageUrl(img));
+        if (img && img !== product.image && !img.includes('preview') && !rawImages.includes(img)) {
+            rawImages.push(img);
         }
     }
 }
+
+const images = rawImages.map(img => ({
+    url: optimizeImageUrl(img),
+    fallback: img
+}));
 ---
 
 <div class="group flex flex-col rounded-2xl border border-neutral-800 bg-[#121212] overflow-hidden transition duration-300 hover:border-neutral-700 hover:shadow-2xl hover:shadow-emerald-900/10">
@@ -48,7 +52,7 @@ if (product.gallery && product.gallery.length > 0) {
 	<!-- 1. КАРАУСЕЛЬ ФОТОГРАФИЙ (ТОЛЬКО ДЛЯ СВАЙПА И ПРОСМОТРА) -->
 	<div class="relative aspect-[3/2] overflow-hidden bg-neutral-900 group/carousel">
 		<div class="flex h-full w-full overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth carousel-scroll-container">
-			{images.map((imgUrl, index) => {
+			{images.map((imgItem, index) => {
 				const isEager = index === 0 && priority;
 				return (
 					<a
@@ -59,8 +63,10 @@ if (product.gallery && product.gallery.length > 0) {
 						title="Click to view on Creative Fabrica"
 					>
 						<img
-							src={isEager ? imgUrl : "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="}
-							data-src={!isEager ? imgUrl : null}
+							src={isEager ? imgItem.url : "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="}
+							data-src={!isEager ? imgItem.url : null}
+							data-fallback={imgItem.fallback}
+							onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; }"
 							alt={`${product.title} - photo ${index + 1}`}
 							loading={isEager ? "eager" : "lazy"}
 							decoding="async"

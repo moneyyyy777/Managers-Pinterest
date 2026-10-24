@@ -36,6 +36,8 @@ const {
 				loading={priority ? "eager" : "lazy"}
 				decoding="async"
 				fetchpriority={priority ? "high" : "auto"}
+				data-fallback={image}
+				onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; }"
 				class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
 			/>
 			<!-- Мягкий градиент -->

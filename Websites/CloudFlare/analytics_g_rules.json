@@ -100,7 +100,7 @@
       "code": "G-FE7GLTG64Y"
     },
     {
-      "brand": "Netify",
+      "brand": "Cloudflare",
       "suffix": "WL",
       "thematic": "Fonts Bubble",
       "code": "G-7YBS7QZVPK"
@@ -219,6 +219,12 @@
       "suffix": "WL",
       "thematic": "Christmas Bundles Sublimation",
       "code": "G-9VBYJ2FGLL"
+    },
+    "Fonts/Fonts Bubble": {
+      "brand": "Cloudflare",
+      "suffix": "WL",
+      "thematic": "Fonts Bubble",
+      "code": "G-7YBS7QZVPK"
     }
   }
 }
