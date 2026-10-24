@@ -185,7 +185,7 @@
 ## 10. Генерация Excel-контента (Промпт 6) — Bundles Christmas Fonts
 ### 2 Bundles Christmas Fonts Intent Cursive and Calligraphy
 - **Тип стратегии:** Интент (Cursive and Calligraphy / Рукописные, каллиграфические и курсивные праздничные шрифты для открыток, приглашений и праздничной полиграфии).
-- **Доска:** `Christmas Fonts Cursive`
+- **Доска:** `Christmas Font Cursive` (Boards_Tags.txt: 546 тегов).
 - **Стоп-слова из соседних подниш:**
   - *Clipart:* `clipart`, `cliparts`
   - *SVG:* `svg`, `cricut`, `silhouette`, `cut file`, `cut files`
@@ -198,7 +198,7 @@
 
 ### 3 Bundles Christmas Fonts Intent Cute and Fun
 - **Тип стратегии:** Интент (Cute and Fun / Милые, забавные, детские рождественские шрифты: леденцы / candy cane, bubble fonts, doodle fonts, ugly sweater fonts).
-- **Доска:** `Candy Cane Fonts` (Boards_Tags.txt: 22 тега).
+- **Доска:** `Candy Cane Fonts` (Boards_Tags.txt: 118 тегов).
 - **Стоп-слова из соседних подниш:**
   - *Clipart:* `clipart`, `cliparts`
   - *SVG:* `svg`, `cricut`, `silhouette`, `cut file`, `cut files`, `laser cut`
@@ -210,9 +210,22 @@
 - **Сгенерировано:** Ровно 100 уникальных строк (Title, Description, CTA) силами нейросети без кода и скриптов. Во всех CTA содержится слово "FREE", тип продукта капитализирован (Fonts, Font Bundle, Typeface), описания начинаются с тематических эмодзи без артикля "A". Все 100 строк на 100% уникальны.
 - **Файл результата:** `Keywords/Artify Studio/Christmas/Bundles/Bundles Christmas Fonts/3 Bundles Christmas Fonts Intent Cute and Fun/Generated_Excel_Content.md`.
 
+### 4 Bundles Christmas Fonts Intent Vintage and Retro
+- **Тип стратегии:** Интент (Vintage and Retro / Ностальгические, ретро и викторианские рождественские шрифты: 60s, 80s, винтажные гарнитуры, засечки).
+- **Доска:** `Christmas Vintage Font` (Boards_Tags.txt: 61 тег).
+- **Стоп-слова из соседних подниш:**
+  - *Clipart:* `clipart`, `cliparts`
+  - *SVG:* `svg`, `cricut`, `silhouette`, `cut file`, `cut files`
+  - *Sublimation:* `sublimation`, `tumbler`, `mug wrap`
+  - *Planners:* `planner`, `planners`, `goodnotes`, `tracker`
+  - *Journaling:* `journal`, `junk journal`, `scrapbook`
+- **Правило визуального стиля:** Фокус на винтажной и ретро-типографике, праздничных засечках, ностальгических шрифтах. Без упоминания watercolor или стороннего ПО.
+- **Сгенерировано:** Ровно 100 уникальных строк (Title, Description, CTA) силами нейросети без скриптов.
+- **Файл результата:** `Keywords/Artify Studio/Christmas/Bundles/Bundles Christmas Fonts/4 Bundles Christmas Fonts Intent Vintage and Retro/Generated_Excel_Content.md`.
+
 ### 5 Bundles Christmas Fonts Intent Typography and Design
 - **Тип стратегии:** Интент (Typography and Design / Праздничная типографика, текстовый дизайн, постерные макеты, 3D и современные акцидентные рождественские шрифты).
-- **Доска:** `Christmas Typography` (Boards_Tags.txt: 20 тегов).
+- **Доска:** `Christmas Typography` (Boards_Tags.txt: 507 тегов).
 - **Стоп-слова из соседних подниш:**
   - *Clipart:* `clipart`, `cliparts`
   - *SVG:* `svg`, `cricut`, `silhouette`, `cut file`, `cut files`, `vinyl`
@@ -226,7 +239,7 @@
 
 ### 1 Bundles Christmas Fonts Filter by OpenAI
 - **Тип стратегии:** Общий (Filter by OpenAI / Все темы праздничной типографики: каллиграфия, скрипты, леденцовые и милые шрифты, винтаж, дисплейные гарнитуры, рукописные и современные зимние шрифты).
-- **Доска:** `Christmas Font Bundle` (Boards_Tags.txt: 1479 тегов).
+- **Доска:** `Christmas Font Bundle` (Boards_Tags.txt: 1294 тега).
 - **Стоп-слова из соседних подниш:**
   - *Clipart:* `clipart`, `cliparts`, `illustration`, `watercolor`, `character`
   - *SVG:* `svg`, `cricut`, `silhouette`, `cut file`, `cut files`, `laser cut`
@@ -234,7 +247,7 @@
   - *Planners:* `planner`, `planners`, `planning`, `goodnotes`, `tracker`, `budget`, `calendar`, `agenda`
   - *Journaling:* `journal`, `journaling`, `junk journal`, `scrapbook`, `scrapbooking`, `ephemera`, `bujo`, `bullet journal`, `washi`
   - *Маркетплейсы-конкуренты & Софт:* `Etsy`, `Creative Fabrica`, `Design Bundles`, `Font Bundles`, `Creative Market`, `Canva`, `Adobe`
-- **Правило визуального стиля:** Поскольку это общий файл подниши (1479 разнообразных тегов), контент сбалансирован на универсальном уровне («золотая середина»). Охвачены все ключевые направления праздничной типографики (шрифты для открыток, баннеров, сезонных подарков, леттеринг, праздничные надписи), без навязывания единого узкого стиля (например, watercolor) и без привязки к одиночным элементам. Любая случайно скрапленная картинка со шрифтом или праздничной надписью идеально сочетается с текстами.
+- **Правило визуального стиля:** Поскольку это общий файл подниши (1294 очищенных от баннеров/рекламы/SMM тегов), контент сбалансирован на универсальном уровне («золотая середина»). Охвачены все ключевые направления праздничной типографики (шрифты для открыток, праздничные надписи, сезонные гарнитуры, леттеринг), без навязывания единого узкого стиля (например, watercolor) и без привязки к не-шрифтовой графике. Любая скрапленная картинка со шрифтом идеально сочетается с текстами.
 - **Сгенерировано:** Ровно 100 уникальных строк (Title, Description, CTA) силами нейросети без использования кода и скриптов. В 70%+ CTA содержится акцент на слово "FREE", названия типов товаров капитализированы (Fonts, Font Bundle, Typefaces), описания начинаются с праздничных эмодзи без артикля "A" и без преждевременных CTA. Все 100 строк на 100% уникальны.
 - **Файл результата:** `Keywords/Artify Studio/Christmas/Bundles/Bundles Christmas Fonts/1 Bundles Christmas Fonts Filter by OpenAI/Generated_Excel_Content.md`.
 

@@ -1,6 +1,18 @@
 {
   "version": 1,
   "skills": {
+    "copywriting-cta": {
+      "source": "samber/cc-skills",
+      "sourceType": "github",
+      "skillPath": "skills/copywriting-cta/SKILL.md",
+      "computedHash": "890f28368af32e53380f9fbf2909346a6224beae08fee322b1528523462187f6"
+    },
+    "cro": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "skillPath": "skills/cro/SKILL.md",
+      "computedHash": "f1974581536c4c860a0f7da4b663e2520dfc79a065327b576b12013dd62ad45e"
+    },
     "etsy-digital-products": {
       "source": "nexscope-ai/ecommerce-skills",
       "sourceType": "github",
@@ -25,11 +37,23 @@
       "skillPath": "skills/frontend-design/SKILL.md",
       "computedHash": "89496d5dd00f4810205f351759594fc2742bf8eea85a2f2b2d1de59f4bd91576"
     },
+    "hook-writer-sms": {
+      "source": "blacktwist/social-media-skills",
+      "sourceType": "github",
+      "skillPath": "skills/hook-writer-sms/SKILL.md",
+      "computedHash": "92d8693aeb96fc0c8108cd21d503da5eebeda8f28c4ca040fa39a404bc3048ec"
+    },
     "pinterest-growth": {
       "source": "social-media-skills/skills",
       "sourceType": "github",
       "skillPath": "skills/pinterest-growth/SKILL.md",
       "computedHash": "91eb1979b5498179d1d4c17ba3e85463289ec1d0fe6b587a22cce73d88e31f63"
+    },
+    "pinterest-pin-design": {
+      "source": "social-media-skills/skills",
+      "sourceType": "github",
+      "skillPath": "skills/pinterest-pin-design/SKILL.md",
+      "computedHash": "24c9fd47fdb7d35825b86beacf279d107b7c3cb4f808888d5edf8c3e25be2c69"
     },
     "pinterest-seo": {
       "source": "social-media-skills/skills",
