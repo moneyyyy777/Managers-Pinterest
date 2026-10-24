@@ -2,6 +2,37 @@ import sys
 import subprocess
 import os
 
+# Принудительно устанавливаем UTF-8 для ввода/вывода на любых платформах (Windows/Mac/Linux)
+os.environ["PYTHONIOENCODING"] = "utf-8"
+os.environ["PYTHONUTF8"] = "1"
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+if hasattr(sys.stderr, 'reconfigure'):
+    try:
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
+
+def safe_print(*args, **kwargs):
+    """Безопасный вывод в консоль без риска падения от кодировок (charmap/cp1251)."""
+    try:
+        print(*args, **kwargs)
+    except Exception:
+        try:
+            clean_args = []
+            for a in args:
+                if isinstance(a, str):
+                    clean_args.append(a.encode('ascii', errors='backslashreplace').decode('ascii'))
+                else:
+                    clean_args.append(a)
+            print(*clean_args, **kwargs)
+        except Exception:
+            pass
+
 # 1. ПРОВЕРЯЕМ АВТОЗАПУСК СТРОГО ДО ИМПОРТА STREAMLIT!
 if "streamlit" not in sys.modules:
     script = os.path.abspath(__file__)
@@ -99,8 +130,11 @@ textarea[disabled] {
 # ─── ИНТЕГРАЦИЯ С PLAYWRIGHT (AI STUDIO С ЗАЩИТОЙ ОТ ЗАВИСАНИЙ) ───────────────
 def is_page_responsive(page, timeout_ms: int = 3000) -> bool:
     """Проверяет отзывчивость главного потока вкладки браузера (Heartbeat)."""
+    if not page or page.is_closed():
+        return False
     try:
-        return page.evaluate("() => true", timeout=timeout_ms) is True
+        page.wait_for_function("() => true", timeout=timeout_ms)
+        return True
     except Exception:
         return False
 
@@ -120,21 +154,21 @@ def wait_until_responsive(page, max_wait_sec: int = MAX_FREEZE_WAIT_SEC, check_i
         if is_page_responsive(page, timeout_ms=3000):
             if elapsed > 0:
                 msg = f"✅ Окно AI Studio отвисло и снова отвечает (ждали {elapsed} сек)."
-                print(msg)
+                safe_print(msg)
                 if status_box:
                     status_box.success(msg)
                     time.sleep(1)
             return True
 
         msg = f"⏳ Окно AI Studio занято ({reason}). Ждём отклика: прошло {elapsed}с / лимит {max_wait_sec}с (проверка каждые {check_interval_sec}с)..."
-        print(msg)
+        safe_print(msg)
         if status_box:
             status_box.warning(msg)
 
         time.sleep(check_interval_sec)
 
     msg = f"❌ Окно AI Studio не ответило за {max_wait_sec} сек (глухой завис)."
-    print(msg)
+    safe_print(msg)
     if status_box:
         status_box.error(msg)
     return False
@@ -185,7 +219,7 @@ def type_prompt_chunked(page, prompt: str, status_box=None, chunk_lines: int = C
         chunks.append("".join(current_chunk))
 
     total_chunks = len(chunks)
-    print(f"📝 Начало постепенного ввода промпта: {len(all_lines)} строк, {total_chunks} порций...")
+    safe_print(f"📝 Начало постепенного ввода промпта: {len(all_lines)} строк, {total_chunks} порций...")
 
     for idx, chunk in enumerate(chunks, 1):
         # 1. Проверяем отзывчивость перед вставкой порции
@@ -218,7 +252,7 @@ def type_prompt_chunked(page, prompt: str, status_box=None, chunk_lines: int = C
             try:
                 page.keyboard.insert_text(chunk)
             except Exception as e:
-                print(f"⚠️ Ошибка insert_text: {e}")
+                safe_print(f"⚠️ Ошибка insert_text: {e}")
 
         pct = int((idx / total_chunks) * 100)
         msg = f"✍️ Плавный ввод промпта: порция {idx}/{total_chunks} ({pct}%)..."
@@ -228,7 +262,7 @@ def type_prompt_chunked(page, prompt: str, status_box=None, chunk_lines: int = C
         # 3. Проверяем отзывчивость после вставки порции
         if not is_page_responsive(page):
             msg_freeze = f"⏳ Окно подвисло на порции {idx}/{total_chunks}. Ожидаем стабилизации..."
-            print(msg_freeze)
+            safe_print(msg_freeze)
             if status_box:
                 status_box.warning(msg_freeze)
             if not wait_until_responsive(page, max_wait_sec=MAX_FREEZE_WAIT_SEC, check_interval_sec=FREEZE_POLL_INTERVAL_SEC, reason=f"токенизацией блока {idx}/{total_chunks}", status_box=status_box):
@@ -243,13 +277,13 @@ def type_prompt_chunked(page, prompt: str, status_box=None, chunk_lines: int = C
             const textareas = document.querySelectorAll('textarea');
             return textareas.length ? (textareas[textareas.length - 1].value || '').length : 0;
         }''')
-        print(f"📊 Промпт введен: {final_len} символов в textarea (исходный: ~{len(prompt)}).")
+        safe_print(f"📊 Промпт введен: {final_len} символов в textarea (исходный: ~{len(prompt)}).")
         if final_len == 0 and len(prompt) > 0:
-            print("⚠️ Промпт не зафиксировался в DOM, выполняем fallback через fill()...")
+            safe_print("⚠️ Промпт не зафиксировался в DOM, выполняем fallback через fill()...")
             text_area = page.locator("textarea").last
             text_area.fill(prompt)
     except Exception as e:
-        print(f"⚠️ Ошибка финальной проверки длины промпта: {e}")
+        safe_print(f"⚠️ Ошибка финальной проверки длины промпта: {e}")
 
     time.sleep(1.5)
     return True
@@ -304,7 +338,7 @@ def interact_with_ai_studio(prompt: str, expected_blocks: int, json_file_path: s
                                 if not ok:
                                     raise Exception("Окно AI Studio намертво зависло при обработке JSON файла (> 3 минут).")
                         except Exception as e:
-                            print(f"⚠️ Ошибка загрузки JSON: {e}")
+                            safe_print(f"⚠️ Ошибка загрузки JSON: {e}")
                             if "намертво зависло" in str(e):
                                 raise e
 
@@ -362,7 +396,7 @@ def interact_with_ai_studio(prompt: str, expected_blocks: int, json_file_path: s
 
                         # Проверяем не зависло ли окно в процессе вывода
                         if not is_page_responsive(page, timeout_ms=3000):
-                            print(f"⏳ Окно AI Studio занято потоковым выводом... ({tick * 2}с)")
+                            safe_print(f"⏳ Окно AI Studio занято потоковым выводом... ({tick * 2}с)")
                             continue
 
                         try:
@@ -403,11 +437,11 @@ def interact_with_ai_studio(prompt: str, expected_blocks: int, json_file_path: s
 
                 except Exception as attempt_err:
                     err_text = str(attempt_err)
-                    print(f"⚠️ Сбой попытки {attempt}: {err_text}")
+                    safe_print(f"⚠️ Сбой попытки {attempt}: {err_text}")
 
                     # Если произошел завис на 3 минуты или окно умерло — закрываем зависшую вкладку
                     if "намертво зависло" in err_text or "зависло более чем на 3 минуты" in err_text or "Target closed" in err_text:
-                        print(f"🚫 Закрываем зависшую вкладку AI Studio...")
+                        safe_print(f"🚫 Закрываем зависшую вкладку AI Studio...")
                         try:
                             if page and not page.is_closed():
                                 page.close()
@@ -462,7 +496,7 @@ def save_qc_state(task_path, state):
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(state, f, ensure_ascii=False, indent=2)
     except Exception as e:
-        print(f"Ошибка сохранения QC: {e}")
+        safe_print(f"Ошибка сохранения QC: {e}")
 
 def scan_tasks(base_dir):
     tasks = []
