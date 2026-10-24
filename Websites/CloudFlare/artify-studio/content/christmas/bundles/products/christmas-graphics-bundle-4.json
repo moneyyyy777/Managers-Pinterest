@@ -3,16 +3,16 @@
   "title": "Christmas Graphics Bundle",
   "author": "PinkPearly",
   "canonical": "https://www.creativefabrica.com/product/christmas-graphics-bundle-4/",
-  "description": "Click here and download the Christmas Graphics Bundle bundle · Window, Mac, Linux · Last updated 2026 · Commercial licence included ✓",
-  "fullDescription": "Christmas Graphics Bundle\n\nThis bundle gathers 500+ items of digital papers, watercolor clipart, illustrations, sublimation, backgrounds, textures, and more!\n\nGet this great bundle for just $9 and save $283!",
+  "url": "https://www.creativefabrica.com/product/christmas-graphics-bundle-4/",
+  "description": "Christmas Graphics Bundle\nThis bundle gathers 500+ items of digital papers, watercolor clipart, illustrations, sublimation, backgrounds, textures, and more!\nGet this great bundle for just $9 and save $283!",
+  "fullDescription": "<p><span style=\"font-weight: 400;\">Christmas Graphics Bundle</span></p>\n<p><span style=\"font-weight: 400;\">This bundle gathers 500+ items of digital papers, watercolor clipart, illustrations, sublimation, backgrounds, textures, and more!</span></p>\n<p><span style=\"font-weight: 400;\">Get this great bundle for just $9 and save $283!</span></p>",
   "image": "https://cdn.creativefabrica.com/2022/11/28/Christmas-Graphics-Bundle-Bundles-fb-49039365-1.jpg",
   "gallery": [
+    "https://cdn.creativefabrica.com/2022/11/28/Christmas-Graphics-Bundle-Bundles-fb-49039365-1.jpg",
     "https://cdn.creativefabrica.com/2022/11/16/Christmas-Graphics-Bundle-Bundles-49039365-1.jpg"
   ],
-  "breadcrumbs": [],
-  "ogTitle": "Christmas Graphics Bundle Bundle · Creative Fabrica",
   "rating": 5,
-  "reviewsCount": 16,
+  "reviewsCount": 0,
   "favorites": 965,
   "favoritesRaw": "965",
   "designerTags": [
@@ -20,15 +20,14 @@
   ],
   "designerTagLinks": [
     {
-      "name": "Tags",
-      "url": "https://www.creativefabrica.com/tag/"
+      "text": "Tags",
+      "href": "https://www.creativefabrica.com/tag/"
     }
   ],
-  "categories": [],
   "tags": [
     "Tags"
   ],
-  "license": "Commercial licence included",
-  "lastUpdated": "",
-  "fileTypes": []
+  "isDraft": false,
+  "addedViaExtension": true,
+  "scrapedAt": "2026-10-23T18:45:22.572Z"
 }
