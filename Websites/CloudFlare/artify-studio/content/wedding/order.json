@@ -1,11 +1,10 @@
 {
   "order": [
-    "cliparts",
     "fonts",
     "invitation-templates",
+    "embroidery",
+    "cliparts",
     "svg",
-    "cricut",
-    "monograms",
-    "embroidery"
+    "monograms"
   ]
 }
