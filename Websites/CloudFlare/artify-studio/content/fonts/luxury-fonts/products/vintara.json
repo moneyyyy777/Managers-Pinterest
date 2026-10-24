@@ -3,8 +3,9 @@
   "title": "Vintara Font",
   "author": "Bundle",
   "canonical": "https://www.creativefabrica.com/product/vintara/",
-  "description": "Click here and download the Vintara font · Window, Mac, Linux · Last updated 2026 · Commercial licence included ✓",
-  "fullDescription": "Introducing Vintara Serif, a bold and sophisticated display serif typeface designed to bring a distinctive vintage character and editorial elegance to your creative projects.\n\nWith its high-contrast forms, dramatic curves, and stylish serif details, Vintara Serif is perfect for designs that need a strong, luxurious, and memorable typographic presence.\n\nWhether you’re creating a fashion identity, luxury packaging, editorial artwork, or an eye-catching logo, Vintara Serif adds an instant sense of elegance, heritage, and premium style.",
+  "url": "https://www.creativefabrica.com/product/vintara/",
+  "description": "Introducing Vintara Serif, a bold and sophisticated display serif typeface designed to bring a distinctive vintage character and editorial elegance to your creative projects.\nWith its high-contrast forms, dramatic curves, and stylish serif details, Vintara Serif is perfect for designs that need a strong, luxurious, and memorable typographic presence.\nWhether you’re creating a fashion identity, luxury packaging, editorial artwork, or an eye-catching logo, Vintara Serif adds an instant sense of elegance, heritage, and premium style.",
+  "fullDescription": "<p>Introducing Vintara Serif, a bold and sophisticated display serif typeface designed to bring a distinctive vintage character and editorial elegance to your creative projects.</p>\n<p>With its high-contrast forms, dramatic curves, and stylish serif details, Vintara Serif is perfect for designs that need a strong, luxurious, and memorable typographic presence.</p>\n<p>Whether you’re creating a fashion identity, luxury packaging, editorial artwork, or an eye-catching logo, Vintara Serif adds an instant sense of elegance, heritage, and premium style.</p>",
   "image": "https://cdn.creativefabrica.com/2026/08/30/Vintara-Fonts-156781949-1.jpg",
   "gallery": [
     "https://cdn.creativefabrica.com/2026/08/30/Vintara-Fonts-156781949-1.jpg",
@@ -13,13 +14,323 @@
     "https://cdn.creativefabrica.com/2026/08/30/Vintara-Fonts-156781949-4.jpg",
     "https://cdn.creativefabrica.com/2026/08/30/Vintara-Fonts-156781949-5.jpg"
   ],
-  "breadcrumbs": [],
-  "ogTitle": "Vintara Font by Bundle · Creative Fabrica",
   "rating": 5,
-  "reviewsCount": 1,
-  "categories": [],
-  "tags": [],
-  "license": "Commercial licence included",
-  "lastUpdated": "Listed on Aug 30, 2026",
-  "fileTypes": []
+  "reviewsCount": 0,
+  "favorites": 6,
+  "favoritesRaw": null,
+  "designerTags": [
+    "Beauty Font",
+    "Bold Serif",
+    "Boutique Branding",
+    "Boutique Font",
+    "Branding Font",
+    "Branding Typeface",
+    "Classic Serif",
+    "Classy Font",
+    "Cosmetic Font",
+    "Creative Serif",
+    "Decorative Serif",
+    "Display Serif",
+    "Editorial Font",
+    "Editorial Serif",
+    "Elegant Font",
+    "Elegant Serif",
+    "Fashion Branding",
+    "Fashion Font",
+    "Fashion Typography",
+    "Feminine Serif",
+    "Headline Font",
+    "High Contrast Serif",
+    "Invitation Font",
+    "Jewelry Branding",
+    "Label Font",
+    "Logo Font",
+    "Luxury Branding",
+    "Luxury Font",
+    "Luxury Logo",
+    "Luxury Typography",
+    "Magazine Font",
+    "Modern Vintage",
+    "Otf Font",
+    "Packaging Font",
+    "Perfume Branding",
+    "Poster Font",
+    "Premium Font",
+    "Product Packaging",
+    "Professional Font",
+    "Retro Serif",
+    "Serif Font",
+    "Sophisticated Font",
+    "Statement Font",
+    "Stationery Font",
+    "Stylish Font",
+    "Stylish Serif",
+    "Typography",
+    "Vintage Font",
+    "Vintage Serif",
+    "Vintara Serif",
+    "Tags"
+  ],
+  "designerTagLinks": [
+    {
+      "text": "Beauty Font",
+      "href": "https://www.creativefabrica.com/tag/beauty-font/"
+    },
+    {
+      "text": "Bold Serif",
+      "href": "https://www.creativefabrica.com/tag/bold-serif/"
+    },
+    {
+      "text": "Boutique Branding",
+      "href": "https://www.creativefabrica.com/tag/boutique-branding/"
+    },
+    {
+      "text": "Boutique Font",
+      "href": "https://www.creativefabrica.com/tag/boutique-font/"
+    },
+    {
+      "text": "Branding Font",
+      "href": "https://www.creativefabrica.com/tag/branding-font/"
+    },
+    {
+      "text": "Branding Typeface",
+      "href": "https://www.creativefabrica.com/tag/branding-typeface/"
+    },
+    {
+      "text": "Classic Serif",
+      "href": "https://www.creativefabrica.com/tag/classic-serif/"
+    },
+    {
+      "text": "Classy Font",
+      "href": "https://www.creativefabrica.com/tag/classy-font/"
+    },
+    {
+      "text": "Cosmetic Font",
+      "href": "https://www.creativefabrica.com/tag/cosmetic-font/"
+    },
+    {
+      "text": "Creative Serif",
+      "href": "https://www.creativefabrica.com/tag/creative-serif/"
+    },
+    {
+      "text": "Decorative Serif",
+      "href": "https://www.creativefabrica.com/tag/decorative-serif/"
+    },
+    {
+      "text": "Display Serif",
+      "href": "https://www.creativefabrica.com/tag/display-serif/"
+    },
+    {
+      "text": "Editorial Font",
+      "href": "https://www.creativefabrica.com/tag/editorial-font/"
+    },
+    {
+      "text": "Editorial Serif",
+      "href": "https://www.creativefabrica.com/tag/editorial-serif/"
+    },
+    {
+      "text": "Elegant Font",
+      "href": "https://www.creativefabrica.com/tag/elegant-font/"
+    },
+    {
+      "text": "Elegant Serif",
+      "href": "https://www.creativefabrica.com/tag/elegant-serif/"
+    },
+    {
+      "text": "Fashion Branding",
+      "href": "https://www.creativefabrica.com/tag/fashion-branding/"
+    },
+    {
+      "text": "Fashion Font",
+      "href": "https://www.creativefabrica.com/tag/fashion-font/"
+    },
+    {
+      "text": "Fashion Typography",
+      "href": "https://www.creativefabrica.com/tag/fashion-typography/"
+    },
+    {
+      "text": "Feminine Serif",
+      "href": "https://www.creativefabrica.com/tag/feminine-serif/"
+    },
+    {
+      "text": "Headline Font",
+      "href": "https://www.creativefabrica.com/tag/headline-font/"
+    },
+    {
+      "text": "High Contrast Serif",
+      "href": "https://www.creativefabrica.com/tag/high-contrast-serif/"
+    },
+    {
+      "text": "Invitation Font",
+      "href": "https://www.creativefabrica.com/tag/invitation-font/"
+    },
+    {
+      "text": "Jewelry Branding",
+      "href": "https://www.creativefabrica.com/tag/jewelry-branding/"
+    },
+    {
+      "text": "Label Font",
+      "href": "https://www.creativefabrica.com/tag/label-font/"
+    },
+    {
+      "text": "Logo Font",
+      "href": "https://www.creativefabrica.com/tag/logo-font/"
+    },
+    {
+      "text": "Luxury Branding",
+      "href": "https://www.creativefabrica.com/tag/luxury-branding/"
+    },
+    {
+      "text": "Luxury Font",
+      "href": "https://www.creativefabrica.com/tag/luxury-font/"
+    },
+    {
+      "text": "Luxury Logo",
+      "href": "https://www.creativefabrica.com/tag/luxury-logo/"
+    },
+    {
+      "text": "Luxury Typography",
+      "href": "https://www.creativefabrica.com/tag/luxury-typography-1/"
+    },
+    {
+      "text": "Magazine Font",
+      "href": "https://www.creativefabrica.com/tag/magazine-font/"
+    },
+    {
+      "text": "Modern Vintage",
+      "href": "https://www.creativefabrica.com/tag/modern-vintage/"
+    },
+    {
+      "text": "Otf Font",
+      "href": "https://www.creativefabrica.com/tag/otf-font/"
+    },
+    {
+      "text": "Packaging Font",
+      "href": "https://www.creativefabrica.com/tag/packaging-font/"
+    },
+    {
+      "text": "Perfume Branding",
+      "href": "https://www.creativefabrica.com/tag/perfume-branding/"
+    },
+    {
+      "text": "Poster Font",
+      "href": "https://www.creativefabrica.com/tag/poster-font/"
+    },
+    {
+      "text": "Premium Font",
+      "href": "https://www.creativefabrica.com/tag/premium-font/"
+    },
+    {
+      "text": "Product Packaging",
+      "href": "https://www.creativefabrica.com/tag/product-packaging/"
+    },
+    {
+      "text": "Professional Font",
+      "href": "https://www.creativefabrica.com/tag/professional-font/"
+    },
+    {
+      "text": "Retro Serif",
+      "href": "https://www.creativefabrica.com/tag/retro-serif/"
+    },
+    {
+      "text": "Serif Font",
+      "href": "https://www.creativefabrica.com/tag/serif-font/"
+    },
+    {
+      "text": "Sophisticated Font",
+      "href": "https://www.creativefabrica.com/tag/sophisticated-font/"
+    },
+    {
+      "text": "Statement Font",
+      "href": "https://www.creativefabrica.com/tag/statement-font/"
+    },
+    {
+      "text": "Stationery Font",
+      "href": "https://www.creativefabrica.com/tag/stationery-font/"
+    },
+    {
+      "text": "Stylish Font",
+      "href": "https://www.creativefabrica.com/tag/stylish-font/"
+    },
+    {
+      "text": "Stylish Serif",
+      "href": "https://www.creativefabrica.com/tag/stylish-serif/"
+    },
+    {
+      "text": "Typography",
+      "href": "https://www.creativefabrica.com/tag/typography/"
+    },
+    {
+      "text": "Vintage Font",
+      "href": "https://www.creativefabrica.com/tag/vintage-font/"
+    },
+    {
+      "text": "Vintage Serif",
+      "href": "https://www.creativefabrica.com/tag/vintage-serif/"
+    },
+    {
+      "text": "Vintara Serif",
+      "href": "https://www.creativefabrica.com/tag/vintara-serif/"
+    },
+    {
+      "text": "Tags",
+      "href": "https://www.creativefabrica.com/tag/"
+    }
+  ],
+  "tags": [
+    "Beauty Font",
+    "Bold Serif",
+    "Boutique Branding",
+    "Boutique Font",
+    "Branding Font",
+    "Branding Typeface",
+    "Classic Serif",
+    "Classy Font",
+    "Cosmetic Font",
+    "Creative Serif",
+    "Decorative Serif",
+    "Display Serif",
+    "Editorial Font",
+    "Editorial Serif",
+    "Elegant Font",
+    "Elegant Serif",
+    "Fashion Branding",
+    "Fashion Font",
+    "Fashion Typography",
+    "Feminine Serif",
+    "Headline Font",
+    "High Contrast Serif",
+    "Invitation Font",
+    "Jewelry Branding",
+    "Label Font",
+    "Logo Font",
+    "Luxury Branding",
+    "Luxury Font",
+    "Luxury Logo",
+    "Luxury Typography",
+    "Magazine Font",
+    "Modern Vintage",
+    "Otf Font",
+    "Packaging Font",
+    "Perfume Branding",
+    "Poster Font",
+    "Premium Font",
+    "Product Packaging",
+    "Professional Font",
+    "Retro Serif",
+    "Serif Font",
+    "Sophisticated Font",
+    "Statement Font",
+    "Stationery Font",
+    "Stylish Font",
+    "Stylish Serif",
+    "Typography",
+    "Vintage Font",
+    "Vintage Serif",
+    "Vintara Serif",
+    "Tags"
+  ],
+  "isDraft": false,
+  "addedViaExtension": true,
+  "scrapedAt": "2026-10-24T06:25:44.561Z"
 }
