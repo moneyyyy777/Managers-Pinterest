@@ -98,6 +98,10 @@ export default function TabPipeline({
           segment: segName
         });
         const res = await fetch(`/api/niche/detail?${params.toString()}`);
+        if (!res.ok) {
+          console.error('Failed to fetch scoped segment detail:', res.status);
+          return;
+        }
         const data = await res.json();
         if (data.success && data.niche) {
           setScopedDetail(data);
@@ -121,6 +125,10 @@ export default function TabPipeline({
           segment: activeSegment
         });
         const res = await fetch(`/api/niche/detail?${params.toString()}`);
+        if (!res.ok) {
+          console.error('Failed to refresh segment detail:', res.status);
+          return;
+        }
         const data = await res.json();
         if (data.success && data.niche) {
           setScopedDetail(data);

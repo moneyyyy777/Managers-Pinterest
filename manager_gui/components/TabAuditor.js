@@ -48,9 +48,12 @@ export default function TabAuditor({ selectedNiche = null, onSelectNiche }) {
       }
 
       const res = await fetch(`/api/audit?${params.toString()}`);
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
       const data = await res.json();
 
-      if (!res.ok || !data.success) {
+      if (!data.success) {
         throw new Error(data.error || `HTTP ${res.status}`);
       }
 

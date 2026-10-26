@@ -33,6 +33,10 @@ export default function HomePage() {
     try {
       setLoadingNiches(true);
       const res = await fetch('/api/niches');
+      if (!res.ok) {
+        console.error('Failed to fetch niches:', res.status);
+        return [];
+      }
       const data = await res.json();
       if (data.success && Array.isArray(data.niches)) {
         setNiches(data.niches);
@@ -87,6 +91,11 @@ export default function HomePage() {
       setLoadingDetail(true);
       const params = new URLSearchParams({ category: cat, collection: coll });
       const res = await fetch(`/api/niche/detail?${params.toString()}`);
+      if (!res.ok) {
+        console.error('Failed to fetch niche detail:', res.status);
+        setNicheDetail(null);
+        return;
+      }
       const data = await res.json();
       if (data.success) {
         setNicheDetail(data);
