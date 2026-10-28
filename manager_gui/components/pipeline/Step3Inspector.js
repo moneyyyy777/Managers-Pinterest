@@ -288,10 +288,24 @@ export default function Step3Inspector({
     }
 
     setInputText(short.join('\n'));
-    let msg = `Очищено: оставлено ${short.length} тегов (<= ${maxWordsCount} слов), отсеяно ${long.length} длинных тегов.`;
 
     if (saveLongWordsToFile && long.length > 0 && category && collection) {
       try {
+        let existingLong = [];
+        try {
+          const checkRes = await fetch(
+            `/api/niche/files?category=${encodeURIComponent(category)}&collection=${encodeURIComponent(collection)}&file=More%204%20Words%20Tags.txt${activeSegment ? `&segment=${encodeURIComponent(activeSegment)}` : ''}`
+          );
+          if (checkRes.ok) {
+            const data = await checkRes.json();
+            if (data.file?.content) {
+              existingLong = data.file.content.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+            }
+          }
+        } catch {}
+
+        const mergedLong = Array.from(new Set([...existingLong, ...long]));
+
         await fetch('/api/niche/files', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -300,17 +314,92 @@ export default function Step3Inspector({
             collection,
             segment: activeSegment,
             relativePath: 'More 4 Words Tags.txt',
-            content: long.join('\n') + '\n'
+            content: mergedLong.join('\n') + '\n'
           })
         });
-        msg += ` Длинные теги сохранены в More 4 Words Tags.txt!`;
       } catch (err) {
         console.error('Failed to save More 4 Words Tags.txt:', err);
       }
     }
 
-    setSplitNotice(msg);
+    setSplitNotice(`Очищено: оставлено ${short.length} тегов, отсеяно ${long.length} длинных тегов. Длинные теги сохранены в More 4 Words Tags.txt!`);
     setTimeout(() => setSplitNotice(null), 4500);
+  };
+
+  // Action: Paste from clipboard directly for Search Volume (with auto-filter of > maxWords)
+  const handlePasteForSearchVolume = async () => {
+    try {
+      const clip = await navigator.clipboard.readText();
+      if (!clip) return;
+      const tokens = parseTokens(clip, inputDelimiter, customDelimiterStr);
+      const short = [];
+      const long = [];
+
+      for (const t of tokens) {
+        const kwPart = t.includes(';')
+          ? t.split(';')[0].trim()
+          : (t.includes(',') ? t.split(',')[0].trim() : t);
+        const wordCount = kwPart.split(/\s+/).filter(Boolean).length;
+        if (wordCount > maxWordsCount) {
+          long.push(t);
+        } else {
+          short.push(t);
+        }
+      }
+
+      setInputText(short.join('\n'));
+      setInputDelimiter('\n');
+
+      if (saveLongWordsToFile && long.length > 0 && category && collection) {
+        try {
+          let existingLong = [];
+          try {
+            const checkRes = await fetch(
+              `/api/niche/files?category=${encodeURIComponent(category)}&collection=${encodeURIComponent(collection)}&file=More%204%20Words%20Tags.txt${activeSegment ? `&segment=${encodeURIComponent(activeSegment)}` : ''}`
+            );
+            if (checkRes.ok) {
+              const data = await checkRes.json();
+              if (data.file?.content) {
+                existingLong = data.file.content.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+              }
+            }
+          } catch {}
+
+          const mergedLong = Array.from(new Set([...existingLong, ...long]));
+
+          await fetch('/api/niche/files', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              category,
+              collection,
+              segment: activeSegment,
+              relativePath: 'More 4 Words Tags.txt',
+              content: mergedLong.join('\n') + '\n'
+            })
+          });
+        } catch (err) {
+          console.error('Failed to save More 4 Words Tags.txt:', err);
+        }
+      }
+
+      setSplitNotice(`Очищено: оставлено ${short.length} тегов, отсеяно ${long.length} длинных тегов. Длинные теги сохранены в More 4 Words Tags.txt!`);
+      setTimeout(() => setSplitNotice(null), 4500);
+    } catch (err) {
+      console.error('Failed to paste for Search Volume:', err);
+    }
+  };
+
+  // Action: Copy clean short tags buffer
+  const handleCopyCleanBuffer = async () => {
+    if (!inputText.trim()) return;
+    try {
+      await navigator.clipboard.writeText(inputText);
+      setSplitNotice(`Скопировано в буфер обмена ${parsedItems.length} тегов для Search Volume!`);
+      setTimeout(() => setSplitNotice(null), 3000);
+    } catch (err) {
+      console.error('Failed to copy buffer:', err);
+    }
   };
 
   // Action: Split text by chosen delimiter into clean lines
@@ -768,11 +857,21 @@ export default function Step3Inspector({
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
-              onClick={handlePasteAndSplit}
+              onClick={handlePasteForSearchVolume}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#E60023] hover:bg-[#ad081b] text-white shadow-xs transition-colors cursor-pointer"
+              title="Вставить из буфера и автоматически отсечь теги длиннее 4 слов в More 4 Words Tags.txt"
             >
               <Clipboard className="w-3.5 h-3.5" />
-              <span>📋 Вставить и разделить</span>
+              <span>📋 Вставить для Search Volume (&le; {maxWordsCount} слов)</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handlePasteAndSplit}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white hover:bg-gray-100 text-slate-800 border border-gray-300 shadow-2xs transition-colors cursor-pointer"
+            >
+              <Scissors className="w-3.5 h-3.5 text-slate-500" />
+              <span>Вставить и разделить</span>
             </button>
 
             <input
@@ -931,6 +1030,37 @@ export default function Step3Inspector({
           rows={9}
           className="w-full p-4 bg-white border border-gray-200 rounded-xl text-xs font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#E60023] leading-relaxed resize-y shadow-2xs"
         />
+
+        {/* Quick buffer action bar for Search Volume */}
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={handleFilterMaxWords}
+              disabled={!inputText.trim()}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 transition-colors cursor-pointer shadow-2xs"
+              title="Отсечь теги длиннее N слов и сохранить их в More 4 Words Tags.txt"
+            >
+              <Filter className="w-3.5 h-3.5 text-amber-700" />
+              <span>🧹 Очистить буфер Search Volume (отсечь &gt; {maxWordsCount} слов)</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleCopyCleanBuffer}
+              disabled={!inputText.trim()}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 hover:bg-gray-200 text-slate-800 border border-gray-300 transition-colors cursor-pointer shadow-2xs"
+              title="Скопировать чистые короткие теги в буфер обмена для SearchVolume.io"
+            >
+              <Copy className="w-3.5 h-3.5 text-slate-600" />
+              <span>📋 Скопировать очищенный буфер для Search Volume</span>
+            </button>
+          </div>
+
+          <span className="text-[11px] text-slate-500 font-mono">
+            В буфере: <strong className="text-slate-900">{parsedItems.length}</strong> тегов
+          </span>
+        </div>
 
         {/* Live Merge Preview & Formula */}
         {uniqueKeywords.length > 0 && (
