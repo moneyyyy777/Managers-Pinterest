@@ -234,14 +234,32 @@ async function handleCaptchaWithBuster(page) {
 async function main() {
     console.log(`\n🚀 Запуск автоматического пакетного сбора объемов с SearchVolume.io`);
 
-    const rootDir = process.cwd();
-    console.log(`🔍 Сканирование папок в поисках файлов '${INPUT_FILENAME}'...`);
+    const targetArg = process.argv[2];
+    let targetFiles = [];
 
-    const targetFiles = await findTargetFiles(rootDir);
-    console.log(`✅ Найдено папок с ключами: ${targetFiles.length}\n`);
+    if (targetArg) {
+        const resolvedPath = path.resolve(targetArg);
+        try {
+            const stat = await fs.stat(resolvedPath);
+            if (!stat.isDirectory()) {
+                targetFiles = [resolvedPath];
+            } else {
+                console.log(`🔍 Сканирование папки: ${resolvedPath}...`);
+                targetFiles = await findTargetFiles(resolvedPath);
+            }
+        } catch {
+            targetFiles = [];
+        }
+    } else {
+        const rootDir = process.cwd();
+        console.log(`🔍 Сканирование папок в поисках файлов '${INPUT_FILENAME}'...`);
+        targetFiles = await findTargetFiles(rootDir);
+    }
+
+    console.log(`✅ Найдено файлов с ключами: ${targetFiles.length}\n`);
 
     if (targetFiles.length === 0) {
-        console.log(`⚠️ Файлы '${INPUT_FILENAME}' не найдены ни в одной папке.`);
+        console.log(`⚠️ Файлы '${INPUT_FILENAME}' не найдены.`);
         process.exit(0);
     }
 

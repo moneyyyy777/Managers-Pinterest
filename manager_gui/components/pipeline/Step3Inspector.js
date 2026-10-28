@@ -23,7 +23,12 @@ import {
   TrendingUp,
   BarChart2,
   Scissors,
-  FolderOpen
+  FolderOpen,
+  Filter,
+  Play,
+  Terminal,
+  Zap,
+  Globe
 } from 'lucide-react';
 import TagManagerModal from '../tags/TagManagerModal';
 
@@ -118,18 +123,48 @@ export default function Step3Inspector({
   const [saveAsAllCsv, setSaveAsAllCsv] = useState(true);
   const [allCsvNaming, setAllCsvNaming] = useState(defaultCsvFileName);
   const [defaultVolume, setDefaultVolume] = useState('100');
+  const [maxWordsCount, setMaxWordsCount] = useState(4);
+  const [saveLongWordsToFile, setSaveLongWordsToFile] = useState(true);
+
+  // Async States
   const [isSaving, setIsSaving] = useState(false);
+  const [isMerging, setIsMerging] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);
   const [splitNotice, setSplitNotice] = useState(null);
   const [copiedSeeds, setCopiedSeeds] = useState(false);
   const [isTagModalOpen, setIsTagModalOpen] = useState(false);
   const [isLoadingExistingFile, setIsLoadingExistingFile] = useState(false);
+
+  // SearchVolume Runner state
+  const [isSearchVolumeRunning, setIsSearchVolumeRunning] = useState(false);
+  const [searchVolumeLogs, setSearchVolumeLogs] = useState('');
+  const [showSearchVolumeLogs, setShowSearchVolumeLogs] = useState(false);
+  const [chromeRunning, setChromeRunning] = useState(false);
+
   const fileInputRef = useRef(null);
 
   // Auto-sync CSV name if active segment or collection changes
   useEffect(() => {
     setAllCsvNaming(defaultCsvFileName);
   }, [defaultCsvFileName]);
+
+  // Check Chrome status periodically or on mount
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const res = await fetch('/api/services/run-searchvolume');
+        if (res.ok) {
+          const data = await res.json();
+          setChromeRunning(Boolean(data.chromeRunning));
+          setIsSearchVolumeRunning(Boolean(data.isRunning));
+          if (data.recentLogs) setSearchVolumeLogs(data.recentLogs);
+        }
+      } catch {}
+    };
+    checkStatus();
+    const interval = setInterval(checkStatus, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Parse items live
   const parsedItems = useMemo(() => {
@@ -191,6 +226,92 @@ export default function Step3Inspector({
       mergedTotal: totalMerged
     };
   }, [uniqueKeywords, seedTagsList]);
+
+  // Action: 1-Click direct merge of Pininspector.txt + Seed Tags.txt on disk
+  const handleDirectMerge = async () => {
+    if (!category || !collection) return;
+    try {
+      setIsMerging(true);
+      setSaveStatus(null);
+      const res = await fetch('/api/niche/tags/pininspector/merge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          category,
+          collection,
+          segment: activeSegment
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Ошибка слияния тегов');
+      }
+
+      setSaveStatus({
+        type: 'success',
+        message: data.message,
+        stats: data.stats
+      });
+
+      if (onRefreshDetail) {
+        await onRefreshDetail();
+      }
+    } catch (err) {
+      console.error('Error merging Pininspector + Seeds:', err);
+      setSaveStatus({
+        type: 'error',
+        message: err.message || 'Не удалось объединить файлы'
+      });
+    } finally {
+      setIsMerging(false);
+    }
+  };
+
+  // Action: Filter out tags with word count > maxWordsCount
+  const handleFilterMaxWords = async () => {
+    if (!inputText.trim()) return;
+    const lines = inputText.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+    const short = [];
+    const long = [];
+
+    for (const line of lines) {
+      const kwPart = line.includes(';')
+        ? line.split(';')[0].trim()
+        : (line.includes(',') ? line.split(',')[0].trim() : line);
+      const wordCount = kwPart.split(/\s+/).filter(Boolean).length;
+      if (wordCount > maxWordsCount) {
+        long.push(line);
+      } else {
+        short.push(line);
+      }
+    }
+
+    setInputText(short.join('\n'));
+    let msg = `Очищено: оставлено ${short.length} тегов (<= ${maxWordsCount} слов), отсеяно ${long.length} длинных тегов.`;
+
+    if (saveLongWordsToFile && long.length > 0 && category && collection) {
+      try {
+        await fetch('/api/niche/files', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            category,
+            collection,
+            segment: activeSegment,
+            relativePath: 'More 4 Words Tags.txt',
+            content: long.join('\n') + '\n'
+          })
+        });
+        msg += ` Длинные теги сохранены в More 4 Words Tags.txt!`;
+      } catch (err) {
+        console.error('Failed to save More 4 Words Tags.txt:', err);
+      }
+    }
+
+    setSplitNotice(msg);
+    setTimeout(() => setSplitNotice(null), 4500);
+  };
 
   // Action: Split text by chosen delimiter into clean lines
   const handleSplitByDelimiter = () => {
@@ -289,6 +410,43 @@ export default function Step3Inspector({
     };
     reader.readAsText(file);
     if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  // Action: Launch Batch SearchVolume script
+  const handleStartSearchVolume = async () => {
+    try {
+      setIsSearchVolumeRunning(true);
+      setShowSearchVolumeLogs(true);
+      setSaveStatus(null);
+
+      const res = await fetch('/api/services/run-searchvolume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          category,
+          collection,
+          segment: activeSegment,
+          mode: 'niche'
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Ошибка запуска SearchVolume');
+      }
+
+      setSaveStatus({
+        type: 'success',
+        message: `Batch SearchVolume запущен! ${data.chromeRunning ? 'Chrome 9222 активен.' : 'Запускается профиль браузера...'}`
+      });
+    } catch (err) {
+      console.error('Error starting SearchVolume batch:', err);
+      setSaveStatus({
+        type: 'error',
+        message: err.message || 'Ошибка запуска Batch SearchVolume'
+      });
+      setIsSearchVolumeRunning(false);
+    }
   };
 
   // Action: Save files
@@ -415,7 +573,7 @@ export default function Step3Inspector({
               Инструкция менеджера для Шага 3:
             </div>
             <p className="text-slate-700 leading-relaxed">
-              1. Скопируйте семена тегов кнопкой ниже $\to$ 2. Вставьте в программу <strong className="text-slate-900">Pin Inspector</strong> $\to$ 3. После сбора нажмите <strong className="text-slate-900">«Copy all keywords»</strong> или экспортируйте CSV $\to$ 4. Вставьте сюда или загрузите файл, выберите разделитель и нажмите сохранить.
+              1. Скопируйте семена тегов кнопкой ниже $\to$ 2. Вставьте в программу <strong className="text-slate-900">Pin Inspector</strong> $\to$ 3. После сбора нажмите <strong className="text-slate-900">«Copy all keywords»</strong> или экспортируйте CSV $\to$ 4. Нажмите «Слить с семенами» или вставьте данные для сохранения.
             </p>
           </div>
         </div>
@@ -447,7 +605,7 @@ export default function Step3Inspector({
         )}
       </div>
 
-      {/* Target Files Indicators (Exact Check Fix) */}
+      {/* Target Files Indicators & 1-Click Merge Button */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         {/* File 1: Pininspector.txt */}
         <div
@@ -490,45 +648,66 @@ export default function Step3Inspector({
           </div>
         </div>
 
-        {/* File 2: Pininspector + Seeds.txt */}
+        {/* File 2: Pininspector + Seeds.txt (WITH 1-CLICK MERGE BUTTON) */}
         <div
-          className={`flex items-start justify-between p-3.5 rounded-xl border transition-all ${
+          className={`flex flex-col justify-between p-3.5 rounded-xl border transition-all ${
             hasMergedSeeds
               ? 'bg-emerald-50/60 border-emerald-200'
               : 'bg-gray-50 border-gray-200'
           }`}
         >
-          <div className="flex items-start gap-2.5 min-w-0">
-            <div
-              className={`p-2 rounded-xl shrink-0 ${
-                hasMergedSeeds ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-slate-500'
-              }`}
-            >
-              <Layers className="w-4 h-4" />
-            </div>
-            <div className="space-y-0.5 truncate">
-              <div className="text-xs font-bold text-slate-900 font-mono truncate">
-                Pininspector + Seeds.txt
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex items-start gap-2.5 min-w-0">
+              <div
+                className={`p-2 rounded-xl shrink-0 ${
+                  hasMergedSeeds ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-slate-500'
+                }`}
+              >
+                <Layers className="w-4 h-4" />
               </div>
-              <p className="text-[10px] text-slate-500 truncate">
-                Объединенные теги + семена
-              </p>
+              <div className="space-y-0.5 truncate">
+                <div className="text-xs font-bold text-slate-900 font-mono truncate">
+                  Pininspector + Seeds.txt
+                </div>
+                <p className="text-[10px] text-slate-500 truncate">
+                  Объединенные теги + семена
+                </p>
+              </div>
+            </div>
+
+            <div className="shrink-0">
+              {hasMergedSeeds ? (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200">
+                  <CheckCircle2 className="w-3 h-3" />
+                  <span>Готов</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-medium bg-gray-100 text-slate-600 border border-gray-300">
+                  <AlertCircle className="w-3 h-3 text-amber-500" />
+                  <span>Нет</span>
+                </span>
+              )}
             </div>
           </div>
 
-          <div className="shrink-0 ml-2">
-            {hasMergedSeeds ? (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200">
-                <CheckCircle2 className="w-3 h-3" />
-                <span>Готов</span>
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-medium bg-gray-100 text-slate-600 border border-gray-300">
-                <AlertCircle className="w-3 h-3 text-amber-500" />
-                <span>Нет</span>
-              </span>
-            )}
-          </div>
+          {/* Quick 1-click merge action button */}
+          {hasPininspector && !hasMergedSeeds && (
+            <div className="pt-2 mt-2 border-t border-gray-200/60">
+              <button
+                type="button"
+                onClick={handleDirectMerge}
+                disabled={isMerging}
+                className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[#E60023] hover:bg-[#ad081b] disabled:opacity-50 text-white rounded-lg text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-98"
+              >
+                {isMerging ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Zap className="w-3.5 h-3.5" />
+                )}
+                <span>⚡ Слить Pininspector + Seeds</span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* File 3: [Segment or Collection] (All).csv */}
@@ -578,7 +757,7 @@ export default function Step3Inspector({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-100">
           <div>
             <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <span>📥 Ввод тегов и сбор частотностей</span>
+              <span>📥 Ввод тегов и подготовка к Search Volume</span>
             </h4>
             <p className="text-xs text-slate-500 mt-0.5">
               Вставьте текст от себя, скопируйте из Pin Inspector или возьмите из существующего файла в папке.
@@ -653,43 +832,71 @@ export default function Step3Inspector({
           )}
         </div>
 
-        {/* Arbitrary Delimiter & Split Controls */}
+        {/* Word Length Filter & Delimiter Controls Toolbar */}
         <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-xl border border-gray-200">
-          <div className="flex flex-wrap items-center gap-2.5">
-            <span className="text-xs font-bold text-slate-700">Знак разделителя:</span>
-            <select
-              value={inputDelimiter}
-              onChange={(e) => setInputDelimiter(e.target.value)}
-              className="text-xs bg-gray-50 border border-gray-300 rounded-lg px-2.5 py-1.5 text-slate-800 font-semibold focus:outline-none focus:border-[#E60023]"
-            >
-              <option value="auto">⚡ Авто (строки / запятые / точки с запятой)</option>
-              <option value="\n">Построчно (новая строка \n)</option>
-              <option value=",">Запятая с пробелом ( , )</option>
-              <option value=";">Точка с запятой ( ; )</option>
-              <option value="\t">Табуляция ( \t )</option>
-              <option value="|">Вертикальная черта ( | )</option>
-              <option value="custom">✍️ Свой произвольный знак...</option>
-            </select>
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Delimiter */}
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-bold text-slate-700">Разделитель:</span>
+              <select
+                value={inputDelimiter}
+                onChange={(e) => setInputDelimiter(e.target.value)}
+                className="text-xs bg-gray-50 border border-gray-300 rounded-lg px-2.5 py-1.5 text-slate-800 font-semibold focus:outline-none focus:border-[#E60023]"
+              >
+                <option value="auto">⚡ Авто (строки / запятые)</option>
+                <option value="\n">Построчно (новая строка \n)</option>
+                <option value=",">Запятая с пробелом ( , )</option>
+                <option value=";">Точка с запятой ( ; )</option>
+                <option value="\t">Табуляция ( \t )</option>
+                <option value="|">Вертикальная черта ( | )</option>
+                <option value="custom">✍️ Свой знак...</option>
+              </select>
 
-            {inputDelimiter === 'custom' && (
+              {inputDelimiter === 'custom' && (
+                <input
+                  type="text"
+                  placeholder="Символ"
+                  value={customDelimiterStr}
+                  onChange={(e) => setCustomDelimiterStr(e.target.value)}
+                  className="w-20 px-2 py-1 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-[#E60023]"
+                />
+              )}
+
+              <button
+                type="button"
+                onClick={handleSplitByDelimiter}
+                disabled={!inputText.trim()}
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 hover:bg-gray-200 disabled:opacity-50 text-slate-800 border border-gray-300 transition-colors cursor-pointer"
+                title="Разбить строку по выбранному разделителю"
+              >
+                <Scissors className="w-3 h-3 text-slate-600" />
+                <span>Разделить</span>
+              </button>
+            </div>
+
+            {/* Word Count Filter */}
+            <div className="flex items-center gap-2 pl-2 border-l border-gray-200">
+              <span className="text-xs font-bold text-slate-700">Слов в строке:</span>
               <input
-                type="text"
-                placeholder="Например: / или - "
-                value={customDelimiterStr}
-                onChange={(e) => setCustomDelimiterStr(e.target.value)}
-                className="w-28 px-2 py-1 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-[#E60023]"
+                type="number"
+                min={1}
+                max={10}
+                value={maxWordsCount}
+                onChange={(e) => setMaxWordsCount(parseInt(e.target.value, 10) || 4)}
+                className="w-12 px-2 py-1 bg-gray-50 border border-gray-300 rounded-lg text-xs font-mono text-center font-bold text-slate-800 focus:outline-none focus:border-[#E60023]"
               />
-            )}
 
-            <button
-              type="button"
-              onClick={handleSplitByDelimiter}
-              disabled={!inputText.trim()}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 hover:bg-gray-200 disabled:opacity-50 text-slate-800 border border-gray-300 transition-colors cursor-pointer"
-            >
-              <Scissors className="w-3.5 h-3.5 text-slate-600" />
-              <span>Разделить по разделителю</span>
-            </button>
+              <button
+                type="button"
+                onClick={handleFilterMaxWords}
+                disabled={!inputText.trim()}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 transition-colors cursor-pointer shadow-2xs"
+                title="Отфильтровать теги длиннее N слов и сохранить их в More 4 Words Tags.txt"
+              >
+                <Filter className="w-3.5 h-3.5 text-amber-700" />
+                <span>Очистить теги &gt; {maxWordsCount} слов</span>
+              </button>
+            </div>
           </div>
 
           {/* Volume Status Badge */}
@@ -697,7 +904,7 @@ export default function Step3Inspector({
             {hasVolumeData ? (
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
                 <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Search Volume обнаружен ({detectedVolumeCount} шт.)</span>
+                <span>Частотность найдена ({detectedVolumeCount} шт.)</span>
               </span>
             ) : (
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-800 border border-blue-200">
@@ -711,7 +918,7 @@ export default function Step3Inspector({
         {/* Split Notice Toast */}
         {splitNotice && (
           <div className="p-2.5 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>{splitNotice}</span>
           </div>
         )}
@@ -834,6 +1041,80 @@ export default function Step3Inspector({
               <span className="font-semibold text-slate-900">{allCsvNaming} (Search Volume)</span>
             </label>
           </div>
+        </div>
+
+        {/* Batch SearchVolume.io Runner Card */}
+        <div className="bg-slate-900 text-white p-4 rounded-xl space-y-3 shadow-md">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-base">🚀</span>
+                <h4 className="text-sm font-bold text-white">
+                  Batch SearchVolume (SearchVolume.io через удаленный Chrome 9222)
+                </h4>
+              </div>
+              <p className="text-xs text-slate-300 mt-0.5">
+                Автоматический сбор реальных объемов поиска из Pininspector + Seeds.txt через CDP и VPN ротацию.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              {chromeRunning ? (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-950 text-emerald-400 border border-emerald-700">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>Chrome 9222 подключен</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-amber-950 text-amber-400 border border-amber-700">
+                  <span>Chrome не запущен (запустится авто)</span>
+                </span>
+              )}
+
+              <button
+                type="button"
+                onClick={handleStartSearchVolume}
+                disabled={isSearchVolumeRunning}
+                className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#E60023] hover:bg-[#ad081b] disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-98"
+              >
+                {isSearchVolumeRunning ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Сбор объемов...</span>
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <span>Запустить Batch SearchVolume</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Expandable Logs View */}
+          {(showSearchVolumeLogs || searchVolumeLogs) && (
+            <div className="pt-2 border-t border-slate-800 space-y-1.5">
+              <div className="flex items-center justify-between text-[11px] text-slate-400">
+                <span className="flex items-center gap-1 font-mono">
+                  <Terminal className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Лог SearchVolume:</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowSearchVolumeLogs(!showSearchVolumeLogs)}
+                  className="text-xs text-red-400 hover:text-red-300 font-semibold cursor-pointer"
+                >
+                  {showSearchVolumeLogs ? 'Скрыть лог' : 'Показать лог'}
+                </button>
+              </div>
+
+              {showSearchVolumeLogs && (
+                <pre className="p-3 bg-black/60 border border-slate-800 rounded-xl text-[11px] font-mono text-emerald-400 max-h-40 overflow-y-auto leading-relaxed">
+                  {searchVolumeLogs || 'Запуск фонового скрипта...'}
+                </pre>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Save Status Notification */}
