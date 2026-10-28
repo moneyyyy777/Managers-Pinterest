@@ -208,7 +208,8 @@ async function loadExistingResults(csvPath) {
             const parts = line.split(";");
             if (parts.length >= 2) {
                 const kw = parts[0].trim();
-                const vol = parseInt(parts[1], 10) || 0;
+                const cleanVol = (parts[1] || "0").trim().replace(/[,.\s']/g, '');
+                const vol = parseInt(cleanVol, 10) || 0;
                 if (kw) map.set(kw.toLowerCase(), { kw, vol });
             }
         }
@@ -422,8 +423,11 @@ async function main() {
                         return rows.map(row => {
                             const lines = row.innerText.split('\n').map(t => t.trim()).filter(Boolean);
                             const kw = lines[0] || "";
-                            const volText = (lines[1] || "0").replace(/,/g, '');
-                            const vol = parseInt(volText, 10) || 0;
+                            // Разделители тысяч в SearchVolume.io: точка 8.100 (европейский IP/локаль), запятая 8,100, пробел 8 100
+                            // Очищаем любые символы-разделители разрядов тысяч:
+                            const rawVol = lines[1] || "0";
+                            const cleanVol = rawVol.replace(/[,.\s']/g, '');
+                            const vol = parseInt(cleanVol, 10) || 0;
                             return { kw, vol };
                         }).filter(item => item.kw && item.kw.toLowerCase() !== "keywords");
                     });

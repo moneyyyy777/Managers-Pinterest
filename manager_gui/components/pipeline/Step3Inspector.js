@@ -185,10 +185,11 @@ export default function Step3Inspector({
       if (item.includes(';')) {
         const parts = item.split(';');
         kw = parts[0];
-        if (parts[1] && /^\d+$/.test(parts[1].trim())) hasVol = true;
+        const v = parts[1]?.trim().replace(/[,.\s']/g, '');
+        if (v && /^\d+$/.test(v)) hasVol = true;
       } else if (item.includes(',')) {
         const lastIdx = item.lastIndexOf(',');
-        const possible = item.slice(lastIdx + 1).trim();
+        const possible = item.slice(lastIdx + 1).trim().replace(/[,.\s']/g, '');
         if (/^\d+$/.test(possible)) {
           kw = item.slice(0, lastIdx);
           hasVol = true;

@@ -50,6 +50,16 @@ function parseRawTags(rawText, delimiter = 'auto', customDelim = '') {
   return items;
 }
 
+function extractVolume(str) {
+  if (!str) return null;
+  // Clean thousand separators: 8.100 -> 8100, 8,100 -> 8100, 8 100 -> 8100, 8'100 -> 8100
+  const clean = String(str).trim().replace(/[,.\s']/g, '');
+  if (/^\d+$/.test(clean)) {
+    return parseInt(clean, 10);
+  }
+  return null;
+}
+
 /**
  * Parses lines into structured objects { keyword, volume }
  */
@@ -68,23 +78,18 @@ function parseKeywordsAndVolume(items) {
     if (item.includes(';')) {
       const parts = item.split(';');
       kw = parts[0];
-      const possibleVol = parts[1]?.trim();
-      if (possibleVol && /^\d+$/.test(possibleVol)) {
-        vol = parseInt(possibleVol, 10);
-      }
+      vol = extractVolume(parts[1]);
     } else if (item.includes('\t')) {
       const parts = item.split('\t');
       kw = parts[0];
-      const possibleVol = parts[parts.length - 1]?.trim();
-      if (possibleVol && /^\d+$/.test(possibleVol)) {
-        vol = parseInt(possibleVol, 10);
-      }
+      vol = extractVolume(parts[parts.length - 1]);
     } else if (item.includes(',')) {
       const lastCommaIdx = item.lastIndexOf(',');
-      const candidateVol = item.slice(lastCommaIdx + 1).trim();
-      if (/^\d+$/.test(candidateVol)) {
+      const candidate = item.slice(lastCommaIdx + 1).trim();
+      const candidateVol = extractVolume(candidate);
+      if (candidateVol !== null) {
         kw = item.slice(0, lastCommaIdx);
-        vol = parseInt(candidateVol, 10);
+        vol = candidateVol;
       }
     }
 
