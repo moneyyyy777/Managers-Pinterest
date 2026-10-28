@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   FileText,
   FileSpreadsheet,
@@ -21,28 +21,30 @@ import {
   Layers,
   ArrowRight,
   TrendingUp,
-  BarChart2
+  BarChart2,
+  Scissors,
+  FolderOpen
 } from 'lucide-react';
 import TagManagerModal from '../tags/TagManagerModal';
 
 /**
- * Normalizes keyword tokens and trims whitespace cleanly around custom delimiters
+ * Splits and trims tokens by any custom or preset delimiter
  */
-function parseRawInput(rawText, delimiter) {
+function parseTokens(rawText, delimiter, customDelim = '') {
   if (!rawText || typeof rawText !== 'string') return [];
 
+  const delimToUse = customDelim && delimiter === 'custom' ? customDelim : delimiter;
   let tokens = [];
-  if (delimiter === ',' || delimiter === ', ') {
-    tokens = rawText.split(',');
-  } else if (delimiter === ';' || delimiter === '; ') {
-    tokens = rawText.split(';');
-  } else if (delimiter === '\t') {
-    tokens = rawText.split('\t');
+
+  if (delimToUse && delimToUse !== 'auto' && delimToUse !== '\n') {
+    tokens = rawText.split(delimToUse);
   } else {
     // Auto or newline
-    const lines = rawText.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+    const lines = rawText.split(/\r?\n/);
     if (lines.length === 1 && lines[0].includes(',') && !lines[0].includes(';')) {
       tokens = lines[0].split(',');
+    } else if (lines.length === 1 && lines[0].includes(';')) {
+      tokens = lines[0].split(';');
     } else {
       tokens = lines;
     }
@@ -79,9 +81,12 @@ export default function Step3Inspector({
     nicheDetail?.hasAllCsv
   );
 
+  // Exact check for Pininspector + Seeds.txt
   const hasMergedSeeds = Boolean(
     filesInfo.hasPininspectorSeeds ??
-    nicheDetail?.niche?.filesInfo?.hasPininspectorSeeds
+    selectedNiche?.hasPininspectorSeeds ??
+    nicheDetail?.niche?.filesInfo?.hasPininspectorSeeds ??
+    nicheDetail?.hasPininspectorSeeds
   );
 
   // Seed tags content from Step 2
@@ -98,24 +103,38 @@ export default function Step3Inspector({
       .filter(Boolean);
   }, [seedContent]);
 
-  // Form State for Ingestion
+  // Standard (All).csv naming convention: "[Segment or Collection] (All).csv"
+  const defaultCsvFileName = useMemo(() => {
+    const baseName = activeSegment || collection || selectedNiche?.collection || 'Keywords';
+    return `${baseName} (All).csv`;
+  }, [activeSegment, collection, selectedNiche]);
+
+  // Form State
   const [inputText, setInputText] = useState('');
-  const [inputDelimiter, setInputDelimiter] = useState('auto'); // 'auto', '\n', ',', ';', '\t'
+  const [inputDelimiter, setInputDelimiter] = useState('auto'); // 'auto', '\n', ',', ';', '\t', '|', 'custom'
+  const [customDelimiterStr, setCustomDelimiterStr] = useState('');
+  const [savePininspectorTxt, setSavePininspectorTxt] = useState(true);
+  const [saveMergedSeeds, setSaveMergedSeeds] = useState(true);
   const [saveAsAllCsv, setSaveAsAllCsv] = useState(true);
-  const [allCsvNaming, setAllCsvNaming] = useState(
-    collection ? `${collection} (All).csv` : '(All).csv'
-  );
+  const [allCsvNaming, setAllCsvNaming] = useState(defaultCsvFileName);
   const [defaultVolume, setDefaultVolume] = useState('100');
   const [isSaving, setIsSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState(null); // { type: 'success' | 'error', message: string, stats?: any }
+  const [saveStatus, setSaveStatus] = useState(null);
+  const [splitNotice, setSplitNotice] = useState(null);
   const [copiedSeeds, setCopiedSeeds] = useState(false);
   const [isTagModalOpen, setIsTagModalOpen] = useState(false);
+  const [isLoadingExistingFile, setIsLoadingExistingFile] = useState(false);
   const fileInputRef = useRef(null);
 
-  // Parse ingested tags live
+  // Auto-sync CSV name if active segment or collection changes
+  useEffect(() => {
+    setAllCsvNaming(defaultCsvFileName);
+  }, [defaultCsvFileName]);
+
+  // Parse items live
   const parsedItems = useMemo(() => {
-    return parseRawInput(inputText, inputDelimiter);
-  }, [inputText, inputDelimiter]);
+    return parseTokens(inputText, inputDelimiter, customDelimiterStr);
+  }, [inputText, inputDelimiter, customDelimiterStr]);
 
   // Live detection of volume and uniqueness
   const { uniqueKeywords, detectedVolumeCount, hasVolumeData } = useMemo(() => {
@@ -173,7 +192,78 @@ export default function Step3Inspector({
     };
   }, [uniqueKeywords, seedTagsList]);
 
-  // 1-Click Copy Seeds for Pin Inspector
+  // Action: Split text by chosen delimiter into clean lines
+  const handleSplitByDelimiter = () => {
+    if (!inputText.trim()) return;
+    const tokens = parseTokens(inputText, inputDelimiter, customDelimiterStr);
+    const seen = new Set();
+    const unique = [];
+    for (const t of tokens) {
+      const lower = t.toLowerCase();
+      if (!seen.has(lower)) {
+        seen.add(lower);
+        unique.push(t);
+      }
+    }
+    setInputText(unique.join('\n'));
+    setInputDelimiter('\n');
+    setSplitNotice(`Успешно разделено: ${unique.length} чистых строк`);
+    setTimeout(() => setSplitNotice(null), 3000);
+  };
+
+  // Action: Paste from clipboard and immediately split
+  const handlePasteAndSplit = async () => {
+    try {
+      const clip = await navigator.clipboard.readText();
+      if (!clip) return;
+      const tokens = parseTokens(clip, inputDelimiter, customDelimiterStr);
+      const seen = new Set();
+      const unique = [];
+      for (const t of tokens) {
+        const lower = t.toLowerCase();
+        if (!seen.has(lower)) {
+          seen.add(lower);
+          unique.push(t);
+        }
+      }
+      setInputText(unique.join('\n'));
+      setInputDelimiter('\n');
+      setSplitNotice(`Вставлено и разделено: ${unique.length} тегов`);
+      setTimeout(() => setSplitNotice(null), 3000);
+    } catch (err) {
+      console.error('Failed to paste:', err);
+    }
+  };
+
+  // Action: Load from existing file in current niche folder
+  const handleLoadExistingFile = async (fileName) => {
+    if (!category || !collection) return;
+    try {
+      setIsLoadingExistingFile(true);
+      const params = new URLSearchParams({
+        category,
+        collection,
+        file: fileName,
+        ...(activeSegment ? { segment: activeSegment } : {})
+      });
+      const res = await fetch(`/api/niche/files?${params.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.file?.content) {
+          setInputText(data.file.content);
+          setInputDelimiter('\n');
+          setSplitNotice(`Загружено из ${fileName}: ${data.file.lineCount} строк`);
+          setTimeout(() => setSplitNotice(null), 3500);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load file:', err);
+    } finally {
+      setIsLoadingExistingFile(false);
+    }
+  };
+
+  // Action: 1-Click Copy Seeds
   const handleCopySeeds = async () => {
     if (!seedContent) return;
     try {
@@ -185,19 +275,7 @@ export default function Step3Inspector({
     }
   };
 
-  // 1-Click Paste from Clipboard (handles "Copy all keywords" from Pin Inspector)
-  const handlePasteClipboard = async () => {
-    try {
-      const clip = await navigator.clipboard.readText();
-      if (clip) {
-        setInputText((prev) => (prev ? `${prev}\n${clip}` : clip));
-      }
-    } catch (err) {
-      console.error('Failed to read clipboard:', err);
-    }
-  };
-
-  // Upload file (.txt or .csv) from Pin Inspector export
+  // Action: File upload (.txt or .csv)
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -213,30 +291,7 @@ export default function Step3Inspector({
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  // Text cleanup helpers
-  const handleToLowercase = () => {
-    setInputText((prev) =>
-      prev
-        .split(/\r?\n/)
-        .map((l) => l.toLowerCase())
-        .join('\n')
-    );
-  };
-
-  const handleRemoveDupes = () => {
-    const seen = new Set();
-    const result = [];
-    for (const line of inputText.split(/\r?\n/)) {
-      const clean = line.trim().toLowerCase();
-      if (clean && !seen.has(clean)) {
-        seen.add(clean);
-        result.push(line.trim());
-      }
-    }
-    setInputText(result.join('\n'));
-  };
-
-  // Save PinInspector tags & generate files
+  // Action: Save files
   const handleSavePininspector = async () => {
     if (!category || !collection) {
       setSaveStatus({
@@ -249,7 +304,7 @@ export default function Step3Inspector({
     if (!inputText.trim()) {
       setSaveStatus({
         type: 'error',
-        message: 'Вставьте теги из Pin Inspector перед сохранением'
+        message: 'Вставьте теги перед сохранением'
       });
       return;
     }
@@ -267,6 +322,9 @@ export default function Step3Inspector({
           segment: activeSegment,
           rawText: inputText,
           delimiter: inputDelimiter,
+          customDelimiter: customDelimiterStr,
+          savePininspectorTxt,
+          saveMergedSeeds,
           saveAsAllCsv,
           allCsvFileName: allCsvNaming,
           defaultVolume: parseInt(defaultVolume, 10) || 100
@@ -275,7 +333,7 @@ export default function Step3Inspector({
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Ошибка при сохранении тегов Pin Inspector');
+        throw new Error(data.error || 'Ошибка при сохранении файлов');
       }
 
       setSaveStatus({
@@ -298,11 +356,11 @@ export default function Step3Inspector({
     }
   };
 
-  const isStepComplete = hasPininspector && hasAllCsv;
+  const isStepComplete = (hasPininspector || hasMergedSeeds) && hasAllCsv;
 
   return (
     <div className="w-full bg-white border border-gray-200 rounded-2xl p-6 shadow-xs space-y-6 text-slate-800">
-      {/* Step Header */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100">
         <div>
           <div className="flex items-center gap-2.5 flex-wrap">
@@ -319,7 +377,7 @@ export default function Step3Inspector({
             )}
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Сбор ключевых слов из Pin Inspector, автоматическое слияние с Seed Tags и подготовка файла (All).csv для AI-фильтрации.
+            Сбор ключевых слов из Pin Inspector, автоматическое слияние с Seed Tags и создание файла частотностей (All).csv.
           </p>
         </div>
 
@@ -333,7 +391,7 @@ export default function Step3Inspector({
           ) : (
             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
               <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
-              <span>Ожидается сохранение тегов</span>
+              <span>Ожидается сохранение файлов</span>
             </div>
           )}
 
@@ -357,7 +415,7 @@ export default function Step3Inspector({
               Инструкция менеджера для Шага 3:
             </div>
             <p className="text-slate-700 leading-relaxed">
-              1. Скопируйте семена тегов кнопкой ниже $\to$ 2. Вставьте в программу <strong className="text-slate-900">Pin Inspector</strong> $\to$ 3. После завершения поиска нажмите в Pin Inspector <strong className="text-slate-900">«Copy all keywords»</strong> или экспортируйте CSV $\to$ 4. Нажмите здесь кнопку <strong className="text-slate-900">«📋 Вставить из буфера»</strong> и сохраните.
+              1. Скопируйте семена тегов кнопкой ниже $\to$ 2. Вставьте в программу <strong className="text-slate-900">Pin Inspector</strong> $\to$ 3. После сбора нажмите <strong className="text-slate-900">«Copy all keywords»</strong> или экспортируйте CSV $\to$ 4. Вставьте сюда или загрузите файл, выберите разделитель и нажмите сохранить.
             </p>
           </div>
         </div>
@@ -366,7 +424,7 @@ export default function Step3Inspector({
         {seedContent && (
           <div className="pt-2.5 border-t border-red-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <span className="text-[11px] text-slate-600 font-medium">
-              Доступно семян для поиска в Pin Inspector: <strong className="text-slate-900">{seedTagsList.length} шт.</strong>
+              Доступно семян для поиска: <strong className="text-slate-900">{seedTagsList.length} шт.</strong>
             </span>
             <button
               type="button"
@@ -389,7 +447,7 @@ export default function Step3Inspector({
         )}
       </div>
 
-      {/* Target Files Indicators */}
+      {/* Target Files Indicators (Exact Check Fix) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         {/* File 1: Pininspector.txt */}
         <div
@@ -435,7 +493,7 @@ export default function Step3Inspector({
         {/* File 2: Pininspector + Seeds.txt */}
         <div
           className={`flex items-start justify-between p-3.5 rounded-xl border transition-all ${
-            hasPininspector
+            hasMergedSeeds
               ? 'bg-emerald-50/60 border-emerald-200'
               : 'bg-gray-50 border-gray-200'
           }`}
@@ -443,7 +501,7 @@ export default function Step3Inspector({
           <div className="flex items-start gap-2.5 min-w-0">
             <div
               className={`p-2 rounded-xl shrink-0 ${
-                hasPininspector ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-slate-500'
+                hasMergedSeeds ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-slate-500'
               }`}
             >
               <Layers className="w-4 h-4" />
@@ -459,7 +517,7 @@ export default function Step3Inspector({
           </div>
 
           <div className="shrink-0 ml-2">
-            {hasPininspector ? (
+            {hasMergedSeeds ? (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200">
                 <CheckCircle2 className="w-3 h-3" />
                 <span>Готов</span>
@@ -473,7 +531,7 @@ export default function Step3Inspector({
           </div>
         </div>
 
-        {/* File 3: (All).csv */}
+        {/* File 3: [Segment or Collection] (All).csv */}
         <div
           className={`flex items-start justify-between p-3.5 rounded-xl border transition-all ${
             hasAllCsv
@@ -491,7 +549,7 @@ export default function Step3Inspector({
             </div>
             <div className="space-y-0.5 truncate">
               <div className="text-xs font-bold text-slate-900 font-mono truncate">
-                (All).csv
+                {defaultCsvFileName}
               </div>
               <p className="text-[10px] text-slate-500 truncate">
                 Ключи и Search Volume
@@ -515,27 +573,27 @@ export default function Step3Inspector({
         </div>
       </div>
 
-      {/* Main Ingestion Box */}
+      {/* Main Ingestion & Delimiter Box */}
       <div className="border border-gray-200 rounded-2xl p-5 space-y-4 bg-gray-50/30">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-100">
           <div>
             <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <span>📥 Вставка результатов Pin Inspector</span>
+              <span>📥 Ввод тегов и сбор частотностей</span>
             </h4>
             <p className="text-xs text-slate-500 mt-0.5">
-              Вставьте скопированный текст ("Copy all keywords") или перетащите файл с частотностью.
+              Вставьте текст от себя, скопируйте из Pin Inspector или возьмите из существующего файла в папке.
             </p>
           </div>
 
-          {/* Quick Actions Bar */}
+          {/* Quick source actions */}
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
-              onClick={handlePasteClipboard}
+              onClick={handlePasteAndSplit}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#E60023] hover:bg-[#ad081b] text-white shadow-xs transition-colors cursor-pointer"
             >
               <Clipboard className="w-3.5 h-3.5" />
-              <span>📋 Вставить из буфера</span>
+              <span>📋 Вставить и разделить</span>
             </button>
 
             <input
@@ -553,67 +611,116 @@ export default function Step3Inspector({
               <Upload className="w-3.5 h-3.5 text-slate-500" />
               <span>Загрузить файл</span>
             </label>
-
-            <button
-              type="button"
-              onClick={handleRemoveDupes}
-              disabled={!inputText}
-              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-white hover:bg-gray-100 disabled:opacity-50 text-slate-700 border border-gray-300 transition-colors cursor-pointer shadow-2xs"
-            >
-              <Trash2 className="w-3.5 h-3.5 text-slate-500" />
-              <span>Дубли</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleToLowercase}
-              disabled={!inputText}
-              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-white hover:bg-gray-100 disabled:opacity-50 text-slate-700 border border-gray-300 transition-colors cursor-pointer shadow-2xs"
-            >
-              <Type className="w-3.5 h-3.5 text-slate-500" />
-              <span>Lowercase</span>
-            </button>
           </div>
         </div>
 
-        {/* Delimiter & Volume pre-check bar */}
+        {/* Load From Folder Files Toolbar */}
+        <div className="flex flex-wrap items-center gap-2 p-2.5 bg-blue-50/60 border border-blue-200/80 rounded-xl text-xs">
+          <span className="font-bold text-blue-900 flex items-center gap-1">
+            <FolderOpen className="w-3.5 h-3.5 text-blue-700" />
+            <span>Взять из файла в папке:</span>
+          </span>
+
+          <button
+            type="button"
+            onClick={() => handleLoadExistingFile('Pininspector.txt')}
+            disabled={isLoadingExistingFile}
+            className="px-2.5 py-1 bg-white hover:bg-blue-100 text-blue-900 rounded-lg border border-blue-200 font-mono text-[11px] font-semibold transition-colors cursor-pointer shadow-2xs"
+          >
+            Pininspector.txt
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleLoadExistingFile('Pininspector + Seeds.txt')}
+            disabled={isLoadingExistingFile}
+            className="px-2.5 py-1 bg-white hover:bg-blue-100 text-blue-900 rounded-lg border border-blue-200 font-mono text-[11px] font-semibold transition-colors cursor-pointer shadow-2xs"
+          >
+            Pininspector + Seeds.txt
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleLoadExistingFile('Seed Tags.txt')}
+            disabled={isLoadingExistingFile}
+            className="px-2.5 py-1 bg-white hover:bg-blue-100 text-blue-900 rounded-lg border border-blue-200 font-mono text-[11px] font-semibold transition-colors cursor-pointer shadow-2xs"
+          >
+            Seed Tags.txt
+          </button>
+
+          {isLoadingExistingFile && (
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-700 ml-1" />
+          )}
+        </div>
+
+        {/* Arbitrary Delimiter & Split Controls */}
         <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-xl border border-gray-200">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-700">Разделитель:</span>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <span className="text-xs font-bold text-slate-700">Знак разделителя:</span>
             <select
               value={inputDelimiter}
               onChange={(e) => setInputDelimiter(e.target.value)}
-              className="text-xs bg-gray-50 border border-gray-300 rounded-lg px-2.5 py-1 text-slate-800 font-semibold focus:outline-none focus:border-[#E60023]"
+              className="text-xs bg-gray-50 border border-gray-300 rounded-lg px-2.5 py-1.5 text-slate-800 font-semibold focus:outline-none focus:border-[#E60023]"
             >
-              <option value="auto">⚡ Авто (строки / запятые)</option>
+              <option value="auto">⚡ Авто (строки / запятые / точки с запятой)</option>
               <option value="\n">Построчно (новая строка \n)</option>
-              <option value=",">Запятая с пробелом (, пробел учитывается)</option>
-              <option value=";">Точка с запятой (;)</option>
-              <option value="\t">Табуляция (\t)</option>
+              <option value=",">Запятая с пробелом ( , )</option>
+              <option value=";">Точка с запятой ( ; )</option>
+              <option value="\t">Табуляция ( \t )</option>
+              <option value="|">Вертикальная черта ( | )</option>
+              <option value="custom">✍️ Свой произвольный знак...</option>
             </select>
+
+            {inputDelimiter === 'custom' && (
+              <input
+                type="text"
+                placeholder="Например: / или - "
+                value={customDelimiterStr}
+                onChange={(e) => setCustomDelimiterStr(e.target.value)}
+                className="w-28 px-2 py-1 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-[#E60023]"
+              />
+            )}
+
+            <button
+              type="button"
+              onClick={handleSplitByDelimiter}
+              disabled={!inputText.trim()}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 hover:bg-gray-200 disabled:opacity-50 text-slate-800 border border-gray-300 transition-colors cursor-pointer"
+            >
+              <Scissors className="w-3.5 h-3.5 text-slate-600" />
+              <span>Разделить по разделителю</span>
+            </button>
           </div>
 
-          {/* Volume Indicator Badge */}
+          {/* Volume Status Badge */}
           <div>
             {hasVolumeData ? (
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
                 <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Search Volume обнаружен ({detectedVolumeCount} значений)</span>
+                <span>Search Volume обнаружен ({detectedVolumeCount} шт.)</span>
               </span>
             ) : (
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-800 border border-blue-200">
                 <FileText className="w-3.5 h-3.5 text-blue-600" />
-                <span>Плоский список слов ("Copy all keywords")</span>
+                <span>Плоский список тегов</span>
               </span>
             )}
           </div>
         </div>
 
+        {/* Split Notice Toast */}
+        {splitNotice && (
+          <div className="p-2.5 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <span>{splitNotice}</span>
+          </div>
+        )}
+
         {/* Textarea */}
         <textarea
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          placeholder="Вставьте сюда результаты из Pin Inspector...&#10;Пример 1 (Copy all keywords):&#10;christmas bundle gift ideas&#10;christmas bundles design&#10;&#10;Пример 2 (с частотностью):&#10;christmas letter ideas;880&#10;christmas quilt set;880"
+          placeholder={`Вставьте теги сюда...&#10;Поддерживаются любые разделители: построчно, через запятую (japanese font , anime streetwear , manga lettering) или точку с запятой.&#10;Также можно вставить данные с частотностью (например: japanese font;880).`}
           rows={9}
           className="w-full p-4 bg-white border border-gray-200 rounded-xl text-xs font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#E60023] leading-relaxed resize-y shadow-2xs"
         />
@@ -624,16 +731,16 @@ export default function Step3Inspector({
             <div className="flex items-center justify-between text-xs font-bold text-slate-900">
               <span className="flex items-center gap-1.5">
                 <BarChart2 className="w-4 h-4 text-[#E60023]" />
-                <span>Предпросмотр объединения тегов:</span>
+                <span>Формула слияния с семенами Шага 2:</span>
               </span>
               <span className="font-mono text-slate-500">
-                Готово к генерации
+                Готово к формированию файлов
               </span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
               <div className="p-2.5 rounded-xl bg-gray-50 border border-gray-200">
-                <span className="text-[10px] text-slate-500 uppercase font-semibold block">Pin Inspector</span>
+                <span className="text-[10px] text-slate-500 uppercase font-semibold block">Текущие теги</span>
                 <span className="text-base font-bold text-slate-900 font-mono">{mergeStats.pinTagsCount}</span>
               </div>
               <div className="p-2.5 rounded-xl bg-gray-50 border border-gray-200">
@@ -645,64 +752,88 @@ export default function Step3Inspector({
                 <span className="text-base font-bold text-amber-800 font-mono">-{mergeStats.duplicatesCount}</span>
               </div>
               <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200">
-                <span className="text-[10px] text-emerald-700 uppercase font-semibold block">Итого в файле</span>
+                <span className="text-[10px] text-emerald-700 uppercase font-semibold block">В Pininspector + Seeds</span>
                 <span className="text-base font-bold text-emerald-800 font-mono">{mergeStats.mergedTotal}</span>
               </div>
             </div>
           </div>
         )}
 
-        {/* Search Volume Configuration & Options before Step 4 */}
+        {/* Search Volume Configuration & File Naming (Baby Cliparts Standard) */}
         <div className="bg-white p-4 rounded-xl border border-gray-200 space-y-3">
-          <div className="flex items-center justify-between">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={saveAsAllCsv}
-                onChange={(e) => setSaveAsAllCsv(e.target.checked)}
-                className="w-4 h-4 text-[#E60023] rounded border-gray-300 focus:ring-[#E60023]"
-              />
-              <span className="text-xs font-bold text-slate-800">
-                Сгенерировать файл (All).csv для Шага 4 (AI Фильтр)
-              </span>
-            </label>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+              <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+              <span>Стандарт сохранения частотностей: <code className="text-[#E60023] font-mono font-bold bg-red-50 px-1.5 py-0.5 rounded">{defaultCsvFileName}</code></span>
+            </span>
 
-            {!hasVolumeData && saveAsAllCsv && (
+            {!hasVolumeData && (
               <span className="text-[11px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200 font-medium">
-                Частотность будет заполнена стандартным значением ({defaultVolume})
+                Частотность будет заполнена стандартным объемом ({defaultVolume})
               </span>
             )}
           </div>
 
-          {saveAsAllCsv && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <div>
+              <span className="text-[11px] text-slate-500 font-semibold block mb-1">
+                Имя CSV файла (по стандарту Baby Cliparts):
+              </span>
+              <input
+                type="text"
+                value={allCsvNaming}
+                onChange={(e) => setAllCsvNaming(e.target.value)}
+                className="w-full px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs font-mono text-slate-800 focus:outline-none focus:border-[#E60023]"
+              />
+            </div>
+
+            {!hasVolumeData && (
               <div>
                 <span className="text-[11px] text-slate-500 font-semibold block mb-1">
-                  Имя CSV-файла:
+                  Дефолтная частотность:
                 </span>
                 <input
-                  type="text"
-                  value={allCsvNaming}
-                  onChange={(e) => setAllCsvNaming(e.target.value)}
+                  type="number"
+                  value={defaultVolume}
+                  onChange={(e) => setDefaultVolume(e.target.value)}
                   className="w-full px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs font-mono text-slate-800 focus:outline-none focus:border-[#E60023]"
                 />
               </div>
+            )}
+          </div>
 
-              {!hasVolumeData && (
-                <div>
-                  <span className="text-[11px] text-slate-500 font-semibold block mb-1">
-                    Дефолтная частотность (Search Volume):
-                  </span>
-                  <input
-                    type="number"
-                    value={defaultVolume}
-                    onChange={(e) => setDefaultVolume(e.target.value)}
-                    className="w-full px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs font-mono text-slate-800 focus:outline-none focus:border-[#E60023]"
-                  />
-                </div>
-              )}
-            </div>
-          )}
+          {/* Target checkboxes */}
+          <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-gray-100 text-xs text-slate-700">
+            <label className="flex items-center gap-1.5 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={savePininspectorTxt}
+                onChange={(e) => setSavePininspectorTxt(e.target.checked)}
+                className="rounded text-[#E60023] focus:ring-[#E60023]"
+              />
+              <span>Pininspector.txt</span>
+            </label>
+
+            <label className="flex items-center gap-1.5 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={saveMergedSeeds}
+                onChange={(e) => setSaveMergedSeeds(e.target.checked)}
+                className="rounded text-[#E60023] focus:ring-[#E60023]"
+              />
+              <span className="font-semibold text-slate-900">Pininspector + Seeds.txt (объединить)</span>
+            </label>
+
+            <label className="flex items-center gap-1.5 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={saveAsAllCsv}
+                onChange={(e) => setSaveAsAllCsv(e.target.checked)}
+                className="rounded text-[#E60023] focus:ring-[#E60023]"
+              />
+              <span className="font-semibold text-slate-900">{allCsvNaming} (Search Volume)</span>
+            </label>
+          </div>
         </div>
 
         {/* Save Status Notification */}
@@ -725,7 +856,7 @@ export default function Step3Inspector({
 
             {saveStatus.stats && (
               <span className="font-mono text-[11px] font-bold shrink-0">
-                +{saveStatus.stats.mergedCount} тегов объединено
+                +{saveStatus.stats.mergedCount} тегов в слиянии
               </span>
             )}
           </div>
@@ -734,7 +865,7 @@ export default function Step3Inspector({
         {/* Bottom Action: Save and Generate Files */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
           <span className="text-xs text-slate-500">
-            После сохранения будут сформированы: <code className="font-mono text-slate-800 font-bold">Pininspector.txt</code>, <code className="font-mono text-slate-800 font-bold">Pininspector + Seeds.txt</code> и <code className="font-mono text-slate-800 font-bold">(All).csv</code>.
+            Файлы сохраняются в папку ниши: <code className="font-mono text-slate-800 font-bold">{activeSegment || collection}</code>
           </span>
 
           <button
@@ -751,7 +882,7 @@ export default function Step3Inspector({
             ) : (
               <>
                 <Save className="w-4 h-4 text-white" />
-                <span>💾 Сохранить и объединить с Seed Tags</span>
+                <span>💾 Сохранить {allCsvNaming} и объединить с Seed Tags</span>
               </>
             )}
           </button>
@@ -767,7 +898,7 @@ export default function Step3Inspector({
           collection={collection}
           activeSegment={activeSegment}
           currentTags={uniqueKeywords}
-          title={`Менеджер тегов ниши: ${collection || 'Теги'}`}
+          title={`Менеджер тегов ниши: ${activeSegment || collection || 'Теги'}`}
           onApply={(newTags) => {
             setInputText(newTags.join('\n'));
             setIsTagModalOpen(false);

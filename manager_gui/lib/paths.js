@@ -76,28 +76,55 @@ export function findKeywordFolder(category, collection) {
   const keywordsDir = getKeywordsDir();
   if (!fs.existsSync(keywordsDir)) return null;
 
-  const catDirs = fs.readdirSync(keywordsDir).filter(d => !d.startsWith('.') && fs.statSync(path.join(keywordsDir, d)).isDirectory());
+  const catDirs = fs.readdirSync(keywordsDir).filter(
+    (d) => !d.startsWith('.') && fs.statSync(path.join(keywordsDir, d)).isDirectory()
+  );
   const normCat = normalize(category);
-  const matchedCat = catDirs.find(d => normalize(d) === normCat);
+  const matchedCat = catDirs.find((d) => normalize(d) === normCat);
   if (!matchedCat) return null;
 
   const catPath = path.join(keywordsDir, matchedCat);
-  const collDirs = fs.readdirSync(catPath).filter(d => !d.startsWith('.') && fs.statSync(path.join(catPath, d)).isDirectory());
+  const collDirs = fs.readdirSync(catPath).filter(
+    (d) =>
+      !d.startsWith('.') &&
+      !d.includes('— копия') &&
+      !d.includes('- copy') &&
+      fs.statSync(path.join(catPath, d)).isDirectory()
+  );
   const normColl = normalize(collection);
 
   // 1. Exact normalized match
-  let matchedColl = collDirs.find(d => normalize(d) === normColl);
+  let matchedColl = collDirs.find((d) => normalize(d) === normColl);
 
-  // 2. Token overlap score
+  // 2. Direct containment match (e.g. "japanesefonts" contains "japanese" or vice versa)
   if (!matchedColl) {
+    const subMatches = collDirs.filter((d) => {
+      const nd = normalize(d);
+      return nd && (normColl.includes(nd) || nd.includes(normColl));
+    });
+    if (subMatches.length > 0) {
+      subMatches.sort((a, b) => normalize(b).length - normalize(a).length);
+      matchedColl = subMatches[0];
+    }
+  }
+
+  // 3. Token match filtering out generic category tokens (e.g. "fonts")
+  if (!matchedColl) {
+    const catTokens = new Set(getTokens(category));
+    const tokensA = getTokens(collection).filter(
+      (t) => !catTokens.has(t) && t !== normCat
+    );
+
     let bestScore = 0;
     let bestDir = null;
-    const tokensA = getTokens(collection);
 
     for (const d of collDirs) {
-      const tokensB = getTokens(d);
-      const common = tokensA.filter(w => tokensB.includes(w));
-      const score = common.length / Math.max(tokensA.length, tokensB.length);
+      const tokensB = getTokens(d).filter(
+        (t) => !catTokens.has(t) && t !== normCat
+      );
+      const common = tokensA.filter((w) => tokensB.includes(w));
+      const score =
+        common.length / Math.max(tokensA.length || 1, tokensB.length || 1);
       if (score > bestScore && score >= 0.5) {
         bestScore = score;
         bestDir = d;
@@ -106,14 +133,6 @@ export function findKeywordFolder(category, collection) {
     if (bestDir) {
       matchedColl = bestDir;
     }
-  }
-
-  // 3. Substring match fallback
-  if (!matchedColl) {
-    matchedColl = collDirs.find(d => {
-      const nd = normalize(d);
-      return nd.includes(normColl) || normColl.includes(nd);
-    });
   }
 
   if (matchedColl) {

@@ -16,20 +16,17 @@ function cleanKeyword(kw) {
 }
 
 /**
- * Splits raw input text according to delimiter, stripping whitespace cleanly
+ * Splits raw input text according to delimiter, cleanly stripping whitespace around delimiters
  */
-function parseRawTags(rawText, delimiter = 'auto') {
+function parseRawTags(rawText, delimiter = 'auto', customDelim = '') {
   if (!rawText || typeof rawText !== 'string') return [];
 
   let items = [];
+  const delimToUse = customDelim && delimiter === 'custom' ? customDelim : delimiter;
 
-  if (delimiter === ',' || delimiter === ', ') {
-    // Split on commas, clean surrounding spaces
-    items = rawText.split(',').map((s) => s.trim()).filter(Boolean);
-  } else if (delimiter === ';' || delimiter === '; ') {
-    items = rawText.split(';').map((s) => s.trim()).filter(Boolean);
-  } else if (delimiter === '\t') {
-    items = rawText.split('\t').map((s) => s.trim()).filter(Boolean);
+  if (delimToUse && delimToUse !== 'auto' && delimToUse !== '\n') {
+    // Custom or specific delimiter (comma, semicolon, tab, pipe, custom string)
+    items = rawText.split(delimToUse).map((s) => s.trim()).filter(Boolean);
   } else {
     // Auto or newline
     const lines = rawText.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
@@ -37,7 +34,12 @@ function parseRawTags(rawText, delimiter = 'auto') {
     // If only one line was passed but it has many commas or semicolons
     if (lines.length === 1 && lines[0].includes(',') && !lines[0].includes(';')) {
       const parts = lines[0].split(',').map((s) => s.trim()).filter(Boolean);
-      if (parts.length > 2) {
+      if (parts.length > 1) {
+        return parts;
+      }
+    } else if (lines.length === 1 && lines[0].includes(';')) {
+      const parts = lines[0].split(';').map((s) => s.trim()).filter(Boolean);
+      if (parts.length > 1) {
         return parts;
       }
     }
@@ -78,7 +80,6 @@ function parseKeywordsAndVolume(items) {
         vol = parseInt(possibleVol, 10);
       }
     } else if (item.includes(',')) {
-      // Be careful: could be "keyword, 880" or just comma-separated tags
       const lastCommaIdx = item.lastIndexOf(',');
       const candidateVol = item.slice(lastCommaIdx + 1).trim();
       if (/^\d+$/.test(candidateVol)) {
@@ -118,6 +119,9 @@ export async function POST(request) {
       segmentName,
       rawText,
       delimiter = 'auto',
+      customDelimiter = '',
+      savePininspectorTxt = true,
+      saveMergedSeeds = true,
       saveAsAllCsv = true,
       allCsvFileName,
       defaultVolume = 100,
@@ -154,7 +158,7 @@ export async function POST(request) {
         : kwPath;
 
     // 1. Parse raw text into keywords and volumes
-    const rawItems = parseRawTags(rawText, delimiter);
+    const rawItems = parseRawTags(rawText, delimiter, customDelimiter);
     const { items: parsedKeywords, hasVolume, volumeCount } = parseKeywordsAndVolume(rawItems);
 
     if (parsedKeywords.length === 0) {
@@ -164,10 +168,13 @@ export async function POST(request) {
       );
     }
 
-    // 2. Write Pininspector.txt
-    const pininspectorPath = path.join(targetDir, 'Pininspector.txt');
     const pininspectorLines = parsedKeywords.map((i) => i.keyword);
-    fs.writeFileSync(pininspectorPath, pininspectorLines.join('\n') + '\n', 'utf-8');
+
+    // 2. Write Pininspector.txt if requested
+    if (savePininspectorTxt) {
+      const pininspectorPath = path.join(targetDir, 'Pininspector.txt');
+      fs.writeFileSync(pininspectorPath, pininspectorLines.join('\n') + '\n', 'utf-8');
+    }
 
     // 3. Read Seed Tags.txt from targetDir or kwPath fallback
     let seedTags = [];
@@ -220,10 +227,12 @@ export async function POST(request) {
       }
     }
 
-    const mergedSeedsPath = path.join(targetDir, 'Pininspector + Seeds.txt');
-    fs.writeFileSync(mergedSeedsPath, mergedList.join('\n') + '\n', 'utf-8');
+    if (saveMergedSeeds) {
+      const mergedSeedsPath = path.join(targetDir, 'Pininspector + Seeds.txt');
+      fs.writeFileSync(mergedSeedsPath, mergedList.join('\n') + '\n', 'utf-8');
+    }
 
-    // 5. Save [Collection] (All).csv if requested
+    // 5. Save [Название подниши или ниши] (All).csv if requested (matching Baby Cliparts standard)
     let allCsvSaved = false;
     let finalCsvName = null;
     let highVolCount = 0;
@@ -231,8 +240,8 @@ export async function POST(request) {
     let lowVolCount = 0;
 
     if (saveAsAllCsv) {
-      // Determine file name: e.g. "Bundles Christmas (All).csv" or "(All).csv"
-      const defaultName = `${collection} (All).csv`;
+      // Standard: "[Segment or Collection] (All).csv" e.g. "Baby Cliparts Shower (All).csv" or "Japanese Fonts and Brush (All).csv"
+      const defaultName = `${seg || collection} (All).csv`;
       finalCsvName = allCsvFileName && allCsvFileName.trim() ? allCsvFileName.trim() : defaultName;
       if (!finalCsvName.toLowerCase().endsWith('.csv')) {
         finalCsvName += '.csv';
@@ -260,7 +269,7 @@ export async function POST(request) {
 
     return NextResponse.json({
       success: true,
-      message: `Файлы Pininspector.txt и Pininspector + Seeds.txt успешно созданы!${allCsvSaved ? ` Также сохранен ${finalCsvName}.` : ''}`,
+      message: `Файлы успешно сохранены в папку ниши!${allCsvSaved ? ` Создан ${finalCsvName}.` : ''}`,
       stats: {
         pininspectorCount: pininspectorLines.length,
         seedTagsCount: seedTags.length,

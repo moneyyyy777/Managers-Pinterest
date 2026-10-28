@@ -101,8 +101,8 @@ export function computeStepStatuses(filesInfo, isInitialized) {
   const step1 = Boolean(isInitialized && (filesInfo.hasLinksite || filesInfo.hasAllProducts));
   // Step 2: Seed Tags (Seed Tags.txt non-empty)
   const step2 = Boolean(filesInfo.hasSeedTags && filesInfo.seedTagsCount > 0);
-  // Step 3: Parsing & Volume (Pininspector + All.csv)
-  const step3 = Boolean(filesInfo.hasPininspector && filesInfo.hasAllCsv);
+  // Step 3: Parsing & Volume (Pininspector or Pininspector + Seeds, plus All.csv)
+  const step3 = Boolean((filesInfo.hasPininspector || filesInfo.hasPininspectorSeeds) && filesInfo.hasAllCsv);
   // Step 4: AI Filtering (Filter by OpenAI.csv non-empty)
   const step4 = Boolean(filesInfo.hasFilterOpenAi && filesInfo.filterOpenAiCount > 0);
   // Step 5: Intents (Intent files or numbered folders)
@@ -222,9 +222,10 @@ export function scanKeywordFiles(dirPath) {
             } catch (e) {}
           }
           if (lowerName.includes('pininspector') && lowerName.endsWith('.txt')) {
-            result.hasPininspector = true;
             if (lowerName.includes('seed')) {
               result.hasPininspectorSeeds = true;
+            } else {
+              result.hasPininspector = true;
             }
           }
           if (lowerName.includes('(all).csv') || lowerName.endsWith(' all.csv')) {
