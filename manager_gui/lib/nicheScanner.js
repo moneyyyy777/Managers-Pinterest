@@ -149,6 +149,7 @@ export function scanKeywordFiles(dirPath) {
       hasSeedTags: false,
       seedTagsCount: 0,
       hasPininspector: false,
+      hasPininspectorSeeds: false,
       hasAllCsv: false,
       hasFilterOpenAi: false,
       filterOpenAiCount: 0,
@@ -169,6 +170,7 @@ export function scanKeywordFiles(dirPath) {
     hasSeedTags: false,
     seedTagsCount: 0,
     hasPininspector: false,
+    hasPininspectorSeeds: false,
     hasAllCsv: false,
     hasFilterOpenAi: false,
     filterOpenAiCount: 0,
@@ -221,6 +223,9 @@ export function scanKeywordFiles(dirPath) {
           }
           if (lowerName.includes('pininspector') && lowerName.endsWith('.txt')) {
             result.hasPininspector = true;
+            if (lowerName.includes('seed')) {
+              result.hasPininspectorSeeds = true;
+            }
           }
           if (lowerName.includes('(all).csv') || lowerName.endsWith(' all.csv')) {
             result.hasAllCsv = true;
@@ -331,6 +336,7 @@ export function getAllNiches() {
               hasSeedTags: segFiles.hasSeedTags,
               seedTagsCount: segFiles.seedTagsCount,
               hasPininspector: segFiles.hasPininspector,
+              hasPininspectorSeeds: segFiles.hasPininspectorSeeds,
               hasAllCsv: segFiles.hasAllCsv,
               hasFilterOpenAi: segFiles.hasFilterOpenAi,
               filterOpenAiCount: segFiles.filterOpenAiCount,
@@ -370,6 +376,7 @@ export function getAllNiches() {
           hasSeedTags: filesInfo.hasSeedTags,
           seedTagsCount: filesInfo.seedTagsCount,
           hasPininspector: filesInfo.hasPininspector,
+          hasPininspectorSeeds: filesInfo.hasPininspectorSeeds,
           hasAllCsv: filesInfo.hasAllCsv,
           hasFilterOpenAi: filesInfo.hasFilterOpenAi,
           filterOpenAiCount: filesInfo.filterOpenAiCount,
@@ -603,6 +610,7 @@ export function getNicheDetail(category, collection, segmentName = null) {
       hasSeedTags: scopedFiles.hasSeedTags,
       seedTagsCount: scopedFiles.seedTagsCount,
       hasPininspector: scopedFiles.hasPininspector,
+      hasPininspectorSeeds: scopedFiles.hasPininspectorSeeds,
       hasAllCsv: scopedFiles.hasAllCsv,
       hasFilterOpenAi: scopedFiles.hasFilterOpenAi,
       filterOpenAiCount: scopedFiles.filterOpenAiCount,

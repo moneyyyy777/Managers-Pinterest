@@ -426,6 +426,7 @@ export default function TabPipeline({
           <Step3Inspector
             selectedNiche={selectedNiche}
             nicheDetail={effectiveNicheDetail}
+            onRefreshDetail={handleRefresh}
             activeSegment={activeSegment}
           />
         )}
@@ -434,6 +435,7 @@ export default function TabPipeline({
           <Step4FilterTags
             selectedNiche={selectedNiche}
             nicheDetail={effectiveNicheDetail}
+            onRefreshDetail={handleRefresh}
             activeSegment={activeSegment}
           />
         )}

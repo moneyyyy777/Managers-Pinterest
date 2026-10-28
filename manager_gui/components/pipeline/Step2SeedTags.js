@@ -300,10 +300,16 @@ export default function Step2SeedTags({
         <TagManagerModal
           isOpen={isTagModalOpen}
           onClose={() => setIsTagModalOpen(false)}
+          category={category}
+          collection={collection}
+          activeSegment={activeSegment}
           currentTags={tagsList}
           nicheFiles={nicheFiles}
           title={`Менеджер тегов (Семена): ${collection || category}`}
           onApply={handleApplyFromModal}
+          onFileSaved={() => {
+            if (onRefreshDetail) onRefreshDetail();
+          }}
         />
       )}
     </div>

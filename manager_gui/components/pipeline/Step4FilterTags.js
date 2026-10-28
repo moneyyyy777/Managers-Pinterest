@@ -20,6 +20,7 @@ const OLD_YEAR_REGEX = /\b(202[1-5])\b/;
 export default function Step4FilterTags({
   selectedNiche,
   nicheDetail,
+  onRefreshDetail,
   activeSegment = null
 }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -285,11 +286,16 @@ export default function Step4FilterTags({
         <TagManagerModal
           isOpen={isTagModalOpen}
           onClose={() => setIsTagModalOpen(false)}
+          category={selectedNiche?.category || nicheDetail?.niche?.category}
+          collection={selectedNiche?.collection || nicheDetail?.niche?.collection}
+          activeSegment={activeSegment}
           currentTags={rawItems.map((i) => i.keyword)}
           title={`Менеджер тегов (AI Фильтр): ${selectedNiche?.collection || selectedNiche?.category || 'Теги'}`}
           onApply={(newTags) => {
-            // Can update local items or export
             setIsTagModalOpen(false);
+          }}
+          onFileSaved={() => {
+            if (onRefreshDetail) onRefreshDetail();
           }}
         />
       )}
