@@ -15,10 +15,49 @@ export function buildArchitectureAdvisorPrompt({
     : '[Название Ниши]';
   const effectiveCategory = category || '[Категория]';
   const effectiveCollection = collection || '[Подборка]';
-  const finalUrl = siteUrl || `https://artify-studio.pages.dev/${effectiveCategory.toLowerCase()}/${effectiveCollection.toLowerCase()}`;
+  const cleanCollection = effectiveCollection.toLowerCase().replace(/\s+/g, '-');
+  const cleanCategory = effectiveCategory.toLowerCase().replace(/\s+/g, '-');
+  const finalUrl = siteUrl || `https://artify-studio.pages.dev/${cleanCategory}/${cleanCollection}`;
   const effectiveLocalPath = localPath || `Keywords/Artify Studio/${effectiveCategory}/${effectiveCollection}`;
+  const siteCatalogPath = `Websites/CloudFlare/artify-studio/content/${cleanCategory}/${cleanCollection}/all_products.json`;
 
-  let productsSnippet = '(Товары коллекции не переданы в явном виде. Ориентируйся на тематику витрины, категорию и подборку.)';
+  const inputTargetStr = pathMode === 'local'
+    ? `- Локальная папка проекта (Antigravity): ${effectiveLocalPath}
+- Актуальный каталог товаров витрины: ${siteCatalogPath} (всегда актуальная эталонная версия хранится в папке сайта, а не в папке с тегами)`
+    : `- URL витрины (Cloudflare): ${finalUrl}`;
+
+  const localDirectives = pathMode === 'local'
+    ? `
+══════════════════════════════════════════════════════════════════
+ИНСТРУКЦИИ ДЛЯ ИИ-АГЕНТА (ANTIGRAVITY / CLAUDE / CURSOR):
+══════════════════════════════════════════════════════════════════
+1. СТРОГАЯ ИЗОЛЯЦИЯ И ЭКОНОМИЯ ТОКЕНОВ (НЕ СМОТРЕТЬ НА ДРУГИЕ НИШИ):
+   - Работай СТРОГО в рамках текущей ниши "${nicheName}".
+   - КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО сканировать соседние папки проекта, открывать чужие отчёты (*_Final_Report.md) или читать старые файлы анализа (например, NICHES_ANALYSIS_V3.md).
+   - Причина: это впустую сжигает токены контекста и заражает устаревшими шаблонами сбора из прошлых этапов проекта, где применялась совершенно другая философия.
+   - Анализируй нишу автономно, опираясь исключительно на этот промпт, каталог витрины и современные правила Pinterest SEO.
+
+2. ЭТАЛОННЫЙ КАТАЛОГ ТОВАРОВ:
+   Фактический ассортимент витрины читай напрямую из папки сайта:
+   \`${siteCatalogPath}\`
+   (Внимание: верная и актуальная версия товаров всегда лежит именно в папке сайта, а не в папке с семантикой. Опирайся на неё).
+
+3. PINTEREST SEO ЭКСПЕРТИЗА И СКИЛЛЫ:
+   Обязательно обратись к установленным скиллам в проекте, чтобы учитывать всю поисковую специфику и правила ранжирования Pinterest:
+   - \`.agents/skills/pinterest-seo/SKILL.md\` — поисковый движок, автокомплит, формулы запросов и long-tail ранжирование
+   - \`.agents/skills/pinterest-growth/SKILL.md\` — стратегия устойчивого органического трафика и кластеры досок
+   - \`.agents/skills/pinterest-pin-design/SKILL.md\` — оверлеи, кликабельность и визуальные триггеры
+
+4. УСТАНОВКА И ПОИСК СКИЛЛОВ:
+   Если эти скиллы не установлены в твоем окружении или требуется найти дополнительные инструменты, выполни:
+   \`npx skills add https://github.com/vercel-labs/skills --skill find-skills\`
+`
+    : '';
+
+  let productsSnippet = pathMode === 'local'
+    ? `(Каталог доступен локально: прочитай файл ${siteCatalogPath}. Если товары переданы ниже — учитывай их.)`
+    : '(Товары коллекции не переданы в явном виде. Ориентируйся на тематику витрины, категорию и подборку.)';
+
   if (productsJson) {
     if (typeof productsJson === 'string') {
       productsSnippet = productsJson.trim();
@@ -30,10 +69,6 @@ export function buildArchitectureAdvisorPrompt({
       }
     }
   }
-
-  const inputTargetStr = pathMode === 'local'
-    ? `- Локальная папка проекта (Antigravity): ${effectiveLocalPath}\n- Каталог товаров: all_products.json (в папке ниши)`
-    : `- URL витрины (Cloudflare): ${finalUrl}`;
 
   const promptText =
 `Ты — Senior Pinterest Search Strategist, Product Taxonomist и Архитектор Коммерческой Семантики.
@@ -60,7 +95,7 @@ export function buildArchitectureAdvisorPrompt({
 - Анализируемая ниша: ${nicheName}
 - Базовая категория: ${effectiveCategory} / Коллекция: ${effectiveCollection}
 ${inputTargetStr}
-
+${localDirectives}
 Каталог / Товары витрины:
 ${productsSnippet}
 
@@ -72,6 +107,7 @@ ${productsSnippet}
 2. Каналы применения и сценарии (Use Cases / End-Applications): Существуют ли изолированные коммерческие индустрии, коммерческие проекты или сферы жизни, где применяется этот продукт?
 3. Визуально-стилистическая совместимость: Могут ли пины по всем направлениям темы органично смотреться на одной Pinterest-доске без визуального и смыслового диссонанса?
 4. Семантическая независимость поисковых потоков: Имеют ли направления собственный обособленный поисковый спрос в поисковой строке Pinterest, не смешивающийся с соседними ветками?
+5. Полная автономия от других ниш проекта: Оценивай нишу "${nicheName}" как самостоятельный коммерческий продукт с чистого листа. Не сравнивай её с другими папками в проекте и не оглядывайся на старые методы структурирования прошлых ниш.
 
 ══════════════════════════════════════════════════════════════════
 ТВОЁ ЗАДАНИЕ
@@ -117,14 +153,46 @@ export function buildSeedTagsPrompt({
     : '[Название Ниши]';
   const effectiveCategory = category || '[Категория]';
   const effectiveCollection = collection || '[Подборка]';
-  const finalUrl = siteUrl || `https://artify-studio.pages.dev/${effectiveCategory.toLowerCase()}/${effectiveCollection.toLowerCase()}`;
+  const cleanCollection = effectiveCollection.toLowerCase().replace(/\s+/g, '-');
+  const cleanCategory = effectiveCategory.toLowerCase().replace(/\s+/g, '-');
+  const finalUrl = siteUrl || `https://artify-studio.pages.dev/${cleanCategory}/${cleanCollection}`;
   const effectiveLocalPath = localPath || `Keywords/Artify Studio/${effectiveCategory}/${effectiveCollection}`;
+  const siteCatalogPath = `Websites/CloudFlare/artify-studio/content/${cleanCategory}/${cleanCollection}/all_products.json`;
 
   const isMulti = architecture === 'multi_segment' || (Array.isArray(segments) && segments.length > 0);
 
   const inputTargetStr = pathMode === 'local'
-    ? `- Локальная папка проекта (Antigravity): ${effectiveLocalPath}\n- Каталог товаров: all_products.json (в папке ниши)`
+    ? `- Локальная папка проекта (Antigravity): ${effectiveLocalPath}
+- Актуальный каталог товаров витрины: ${siteCatalogPath} (всегда актуальная эталонная версия хранится в папке сайта, а не в папке с тегами)`
     : `- URL витрины (Cloudflare): ${finalUrl}`;
+
+  const localDirectives = pathMode === 'local'
+    ? `
+══════════════════════════════════════════════════════════════════
+ИНСТРУКЦИИ ДЛЯ ИИ-АГЕНТА (ANTIGRAVITY / CLAUDE / CURSOR):
+══════════════════════════════════════════════════════════════════
+1. СТРОГАЯ ИЗОЛЯЦИЯ И ЭКОНОМИЯ ТОКЕНОВ (НЕ СМОТРЕТЬ НА ДРУГИЕ НИШИ):
+   - Работай СТРОГО в рамках текущей ниши "${nicheName}".
+   - КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО сканировать соседние папки проекта, открывать чужие отчёты (*_Final_Report.md) или читать старые файлы анализа (например, NICHES_ANALYSIS_V3.md).
+   - Причина: это впустую сжигает токены контекста и заражает устаревшими шаблонами сбора из прошлых этапов проекта, где применялась совершенно другая философия.
+   - Анализируй нишу автономно, опираясь исключительно на этот промпт, каталог витрины и современные правила Pinterest SEO.
+
+2. ЭТАЛОННЫЙ КАТАЛОГ ТОВАРОВ:
+   Фактический ассортимент витрины читай напрямую из папки сайта:
+   \`${siteCatalogPath}\`
+   (Внимание: верная и актуальная версия товаров всегда лежит именно в папке сайта, а не в папке с семантикой. Опирайся на неё).
+
+3. PINTEREST SEO ЭКСПЕРТИЗА И СКИЛЛЫ:
+   Обязательно обратись к установленным скиллам в проекте, чтобы учитывать всю поисковую специфику и правила ранжирования Pinterest:
+   - \`.agents/skills/pinterest-seo/SKILL.md\` — поисковый движок, автокомплит, формулы запросов и long-tail ранжирование
+   - \`.agents/skills/pinterest-growth/SKILL.md\` — стратегия устойчивого органического трафика и кластеры досок
+   - \`.agents/skills/pinterest-pin-design/SKILL.md\` — оверлеи, кликабельность и визуальные триггеры
+
+4. УСТАНОВКА И ПОИСК СКИЛЛОВ:
+   Если эти скиллы не установлены в твоем окружении или требуется найти дополнительные инструменты, выполни:
+   \`npx skills add https://github.com/vercel-labs/skills --skill find-skills\`
+`
+    : '';
 
   let promptText = '';
 
@@ -152,7 +220,7 @@ export function buildSeedTagsPrompt({
 - Ниша: ${nicheName}
 ${inputTargetStr}
 - Архитектурная модель: Мульти-сегмент (Multi-Segment)
-
+${localDirectives}
 СЕГМЕНТЫ ДЛЯ ОБРАБОТКИ:
 ${segmentsListStr}
 
@@ -187,6 +255,7 @@ ${segmentsListStr}
    - Никаких спецсимволов (#, @, кавычки, слэши), никакой нумерации, точек и запятых.
    - СТРОГО БЕЗ мусорных слов 'free', 'download' и БЕЗ сторонних маркетплейсов/брендов (Etsy, Amazon, Creative Fabrica, Canva, Cricut и т.д.).
 5. КОММЕРЧЕСКАЯ ЦЕННОСТЬ: Каждый тег обязан выражать намерение реального покупателя/мейкера/дизайнера найти продукт для реализации своей задачи.
+6. АВТОНОМИЯ И ЭКОНОМИЯ ТОКЕНОВ: Работай строго по текущему каталогу темы. Не сканируй другие ниши проекта и не перенимай устаревшие методы сбора.
 
 ФОРМАТ ВЫВОДА:
 Для каждого сегмента:
@@ -203,7 +272,7 @@ ${segmentsListStr}
 - Ниша: ${nicheName}
 ${inputTargetStr}
 - Архитектурная модель: Моно-ядро (Single Core)
-
+${localDirectives}
 ══════════════════════════════════════════════════════════════════
 МЕХАНИКА ПОИСКА PINTEREST И РОЛЬ SEED TAGS
 ══════════════════════════════════════════════════════════════════
@@ -245,6 +314,7 @@ ${inputTargetStr}
    - Никаких спецсимволов (#, @, кавычки, тире, слэши), никакой нумерации строк, точек и запятых.
    - СТРОГО БЕЗ стоп-слов ('free', 'download') и БЕЗ названий сторонних торговых площадок/брендов (Etsy, Amazon, Creative Fabrica, Canva, Cricut и др.).
 4. РЕЛЕВАНТНОСТЬ И ИНТЕНТ: Каждый тег должен соответствовать реальному запросу в поисковой строке Pinterest от человека, готового применить данный продукт в своем деле.
+5. АВТОНОМИЯ И ЭКОНОМИЯ ТОКЕНОВ: Не заглядывай в другие папки проекта и не копируй устаревшие способы сбора прошлых ревизий. Фокусируйся строго на текущем ассортименте.
 
 ФОРМАТ ВЫВОДА:
 1. Краткая схема смысловой матрицы ниши (выделенные слои).
