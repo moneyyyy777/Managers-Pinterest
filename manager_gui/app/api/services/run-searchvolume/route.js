@@ -114,12 +114,23 @@ export async function POST(request) {
       nodeArgs.push(targetArg);
     }
 
+    const nodeModulesCandidates = [
+      path.join(root, 'Keywords', 'Artify Studio', 'node_modules'),
+      path.join(root, 'manager_gui', 'node_modules'),
+      path.join(root, 'Websites', 'CloudFlare', 'artify-studio', 'node_modules'),
+      path.join(root, 'node_modules')
+    ].filter(fs.existsSync);
+
+    const existingNodePath = process.env.NODE_PATH || '';
+    const combinedNodePath = [existingNodePath, ...nodeModulesCandidates].filter(Boolean).join(path.delimiter);
+
     const child = spawn(process.execPath || 'node', nodeArgs, {
       cwd: path.dirname(scriptPath),
       detached: true,
       stdio: ['ignore', outLog, errLog],
       env: {
         ...process.env,
+        NODE_PATH: combinedNodePath,
         PATH: process.env.PATH
       }
     });

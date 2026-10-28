@@ -1,10 +1,45 @@
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-import { chromium } from "playwright-core";
+import { createRequire } from "module";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Robust resolution for playwright-core across macOS and Windows environments
+function resolveChromium() {
+    const localRequire = createRequire(import.meta.url);
+    try {
+        const pw = localRequire("playwright-core");
+        if (pw && pw.chromium) return pw.chromium;
+    } catch (e) {}
+
+    const candidateDirs = [
+        path.resolve(__dirname, "../Artify Studio"),
+        path.resolve(__dirname, ".."),
+        path.resolve(__dirname, "../.."),
+        path.resolve(__dirname, "../../Keywords/Artify Studio"),
+        path.resolve(__dirname, "../../manager_gui"),
+        path.resolve(__dirname, "../../Websites/CloudFlare/artify-studio"),
+        path.resolve(process.cwd()),
+        path.resolve(process.cwd(), "Keywords/Artify Studio")
+    ];
+
+    for (const dir of candidateDirs) {
+        try {
+            const probePath = path.join(dir, "package.json");
+            const req = createRequire(probePath);
+            const pw = req("playwright-core") || req("playwright");
+            if (pw && pw.chromium) return pw.chromium;
+        } catch (e) {}
+    }
+
+    throw new Error(
+        "❌ Cannot find package 'playwright-core' or 'playwright'. Please ensure dependencies are installed in 'Keywords/Artify Studio' or project root."
+    );
+}
+
+const chromium = resolveChromium();
 
 const INPUT_FILENAME = "Pininspector + Seeds.txt";
 const CHUNK_SIZE = 600;
