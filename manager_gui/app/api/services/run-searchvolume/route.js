@@ -45,7 +45,7 @@ export async function GET() {
 export async function POST(request) {
   try {
     const body = await request.json().catch(() => ({}));
-    const { category, collection, segment, segmentName, mode = 'niche' } = body;
+    const { category, collection, segment, segmentName, mode = 'niche', useSystemVpn = true } = body;
     const seg = segment || segmentName;
     const root = getProjectRoot();
     const isWin = process.platform === 'win32';
@@ -113,6 +113,9 @@ export async function POST(request) {
     if (targetArg) {
       nodeArgs.push(targetArg);
     }
+    if (useSystemVpn) {
+      nodeArgs.push('--system-vpn');
+    }
 
     const nodeModulesCandidates = [
       path.join(root, 'Keywords', 'Artify Studio', 'node_modules'),
@@ -130,6 +133,7 @@ export async function POST(request) {
       stdio: ['ignore', outLog, errLog],
       env: {
         ...process.env,
+        SYSTEM_VPN: useSystemVpn ? '1' : '0',
         NODE_PATH: combinedNodePath,
         PATH: process.env.PATH
       }
@@ -142,6 +146,7 @@ export async function POST(request) {
       success: true,
       message: 'Batch SearchVolume запущен в фоновом режиме',
       chromeRunning: isChromeRunning,
+      useSystemVpn: Boolean(useSystemVpn),
       target: targetArg || 'ALL'
     });
   } catch (error) {

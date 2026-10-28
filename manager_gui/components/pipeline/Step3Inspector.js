@@ -140,6 +140,7 @@ export default function Step3Inspector({
   const [searchVolumeLogs, setSearchVolumeLogs] = useState('');
   const [showSearchVolumeLogs, setShowSearchVolumeLogs] = useState(false);
   const [chromeRunning, setChromeRunning] = useState(false);
+  const [useSystemVpn, setUseSystemVpn] = useState(true);
 
   const fileInputRef = useRef(null);
 
@@ -515,7 +516,8 @@ export default function Step3Inspector({
           category,
           collection,
           segment: activeSegment,
-          mode: 'niche'
+          mode: 'niche',
+          useSystemVpn
         })
       });
 
@@ -1184,11 +1186,26 @@ export default function Step3Inspector({
                 </h4>
               </div>
               <p className="text-xs text-slate-300 mt-0.5">
-                Автоматический сбор реальных объемов поиска из Pininspector + Seeds.txt через CDP и VPN ротацию.
+                Автоматический сбор реальных объемов поиска из Pininspector + Seeds.txt ({useSystemVpn ? 'режим системного VPN без расширения' : 'через CDP и ротацию Qu VPN'}).
               </p>
             </div>
 
-            <div className="flex items-center gap-2.5">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <label
+                title="Если включено, скрипт использует активный VPN вашей системы (Outline, WireGuard и др.) и не требует расширения Qu VPN в браузере"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs bg-slate-800/90 hover:bg-slate-800 border border-slate-700 text-slate-200 cursor-pointer select-none transition-colors"
+              >
+                <input
+                  type="checkbox"
+                  checked={useSystemVpn}
+                  onChange={(e) => setUseSystemVpn(e.target.checked)}
+                  className="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-900 border-slate-600 accent-red-600 cursor-pointer"
+                />
+                <span className="font-semibold text-[11px]">
+                  {useSystemVpn ? '🛡️ Системный VPN (вкл)' : '🔄 Qu VPN (расширение)'}
+                </span>
+              </label>
+
               {chromeRunning ? (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-950 text-emerald-400 border border-emerald-700">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />

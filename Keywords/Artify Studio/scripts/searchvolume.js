@@ -15,12 +15,12 @@ function resolveChromium() {
     } catch (e) {}
 
     const candidateDirs = [
-        path.resolve(__dirname, "../.."),
+        path.resolve(__dirname, "../Artify Studio"),
         path.resolve(__dirname, ".."),
-        path.resolve(__dirname, "../../Artify Studio"),
-        path.resolve(__dirname, "../../../Keywords/Artify Studio"),
-        path.resolve(__dirname, "../../../manager_gui"),
-        path.resolve(__dirname, "../../../Websites/CloudFlare/artify-studio"),
+        path.resolve(__dirname, "../.."),
+        path.resolve(__dirname, "../../Keywords/Artify Studio"),
+        path.resolve(__dirname, "../../manager_gui"),
+        path.resolve(__dirname, "../../Websites/CloudFlare/artify-studio"),
         path.resolve(process.cwd()),
         path.resolve(process.cwd(), "Keywords/Artify Studio")
     ];
@@ -47,6 +47,7 @@ const CHUNK_SIZE = 600;
 const VPN_EXTENSION_ID = "pdmchlannmelcagdkakcefmbmpogcgfo";
 let currentVpnCountry = null; // Поочередно: Германия <-> Нидерланды
 let totalRequestsCounter = 0; // Общий счетчик запросов
+let useSystemVpn = false; // Режим системного VPN (без Qu VPN)
 
 async function getBrowser() {
     try {
@@ -79,6 +80,11 @@ async function findTargetFiles(dir) {
 
 // 🛡️ Переключение Qu VPN с точной проверкой статусов 'on' и 'off'
 async function switchQuVpn(context) {
+    if (useSystemVpn) {
+        console.log(`\n🛡️ [VPN] Пропуск ротации Qu VPN (активен системный VPN пользователя).`);
+        return;
+    }
+
     currentVpnCountry = (currentVpnCountry === "Германия") ? "Нидерланды" : "Германия";
     console.log(`\n🛡️ [VPN] Переключаем Qu VPN на страну: ${currentVpnCountry}...`);
 
@@ -161,9 +167,9 @@ async function switchQuVpn(context) {
     }
 
     if (!connected) {
-        console.error("\n⛔ КРИТИЧЕСКАЯ ОШИБКА: Не удалось включить VPN!");
-        console.error("🛑 Скрипт остановлен для безопасности.\n");
-        process.exit(1);
+        console.warn("\n⚠️ [VPN] Предупреждение: Не удалось подключиться к расширению Qu VPN.");
+        console.warn("🌐 Автоматически продолжаем в режиме системного/прямого VPN без остановки работы скрипта.\n");
+        useSystemVpn = true;
     }
 }
 
@@ -269,22 +275,51 @@ async function handleCaptchaWithBuster(page) {
 async function main() {
     console.log(`\n🚀 Запуск автоматического пакетного сбора объемов с SearchVolume.io`);
 
-    const rootDir = __dirname;
-    console.log(`🔍 Сканирование папок в поисках файлов '${INPUT_FILENAME}'...`);
+    const rawArgs = process.argv.slice(2);
+    const flags = new Set(rawArgs.filter(a => a.startsWith('-')));
+    const nonFlagArgs = rawArgs.filter(a => !a.startsWith('-'));
 
-    const targetFiles = await findTargetFiles(rootDir);
-    console.log(`✅ Найдено папок с ключами: ${targetFiles.length}\n`);
+    if (flags.has('--system-vpn') || flags.has('--no-vpn') || process.env.SYSTEM_VPN === '1') {
+        useSystemVpn = true;
+    }
+
+    const targetArg = nonFlagArgs[0];
+    let targetFiles = [];
+
+    if (targetArg) {
+        const resolvedPath = path.resolve(targetArg);
+        try {
+            const stat = await fs.stat(resolvedPath);
+            if (!stat.isDirectory()) {
+                targetFiles = [resolvedPath];
+            } else {
+                console.log(`🔍 Сканирование папки: ${resolvedPath}...`);
+                targetFiles = await findTargetFiles(resolvedPath);
+            }
+        } catch {
+            targetFiles = [];
+        }
+    } else {
+        const rootDir = process.cwd();
+        console.log(`🔍 Сканирование папок в поисках файлов '${INPUT_FILENAME}'...`);
+        targetFiles = await findTargetFiles(rootDir);
+    }
+
+    console.log(`✅ Найдено файлов с ключами: ${targetFiles.length}\n`);
 
     if (targetFiles.length === 0) {
-        console.log(`⚠️ Файлы '${INPUT_FILENAME}' не найдены ни в одной папке.`);
+        console.log(`⚠️ Файлы '${INPUT_FILENAME}' не найдены.`);
         process.exit(0);
     }
 
     const browser = await getBrowser();
     const context = browser.contexts()[0] || await browser.newContext();
 
-    // Включаем VPN при старте
-    await switchQuVpn(context);
+    if (useSystemVpn) {
+        console.log(`🛡️ [VPN] Включен режим СИСТЕМНОГО VPN (ротация Qu VPN отключена, трафик идет через ваш внешний VPN/сеть).\n`);
+    } else {
+        await switchQuVpn(context);
+    }
 
     for (let fIndex = 0; fIndex < targetFiles.length; fIndex++) {
         const inputFilePath = targetFiles[fIndex];
@@ -341,8 +376,8 @@ async function main() {
 
                 console.log(`   🔄 Попытка ${attempts} из 3 (Всего запросов: ${totalRequestsCounter})...`);
 
-                // Ротация VPN каждые 5 запросов
-                if (totalRequestsCounter > 1 && (totalRequestsCounter - 1) % 5 === 0) {
+                // Ротация VPN каждые 5 запросов (только для Qu VPN)
+                if (!useSystemVpn && totalRequestsCounter > 1 && (totalRequestsCounter - 1) % 5 === 0) {
                     console.log(`\n🔄 [Авто-ротация] Выполнено ${totalRequestsCounter - 1} запросов. Профилактическое переключение VPN...`);
                     await switchQuVpn(context);
                 }
@@ -365,9 +400,14 @@ async function main() {
                     });
 
                     if (isRateLimited) {
-                        console.log(`   ⛔ Обнаружен лимит "Too many requests"! Переключаем VPN...`);
+                        console.log(`   ⛔ Обнаружен лимит "Too many requests"!`);
                         await page.close().catch(() => {});
-                        await switchQuVpn(context);
+                        if (useSystemVpn) {
+                            console.log(`   ⏳ Системный VPN: ждем 40 сек перед повторной отправкой...`);
+                            await new Promise(r => setTimeout(r, 40000));
+                        } else {
+                            await switchQuVpn(context);
+                        }
                         continue;
                     }
 
@@ -404,8 +444,13 @@ async function main() {
                     }).catch(() => false);
 
                     if (isRateLimited) {
-                        console.log(`   ⛔ Обнаружен лимит IP! Переключаем VPN...`);
-                        await switchQuVpn(context);
+                        console.log(`   ⛔ Обнаружен лимит IP!`);
+                        if (useSystemVpn) {
+                            console.log(`   ⏳ Системный VPN: ждем 40 сек перед повторной попыткой...`);
+                            await new Promise(r => setTimeout(r, 40000));
+                        } else {
+                            await switchQuVpn(context);
+                        }
                     }
                 } finally {
                     await page.close().catch(() => {});
