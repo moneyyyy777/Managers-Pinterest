@@ -58,11 +58,33 @@ export default function HomePage() {
       if (!isMounted || loadedNiches.length === 0) return;
       setSelectedKey((prev) => {
         if (prev) return prev;
+        if (typeof window !== 'undefined') {
+          const params = new URLSearchParams(window.location.search);
+          const urlNiche =
+            params.get('niche') ||
+            (params.get('category') && params.get('collection')
+              ? `${params.get('category')}/${params.get('collection')}`
+              : '');
+          if (urlNiche) {
+            const found = loadedNiches.find(
+              (n) =>
+                n.id === urlNiche ||
+                `${n.category}/${n.collection}` === urlNiche ||
+                n.collection?.toLowerCase() === urlNiche.toLowerCase() ||
+                n.id?.toLowerCase().includes(urlNiche.toLowerCase())
+            );
+            if (found) return found.id || `${found.category}/${found.collection}`;
+          }
+        }
         const defaultNiche =
           loadedNiches.find(
-            (n) => n.id === 'christmas/vintage_retro' || `${n.category}/${n.collection}` === 'christmas/vintage_retro'
+            (n) =>
+              n.id === 'christmas/vintage_retro' ||
+              `${n.category}/${n.collection}` === 'christmas/vintage_retro'
           ) || loadedNiches[0];
-        return defaultNiche ? defaultNiche.id || `${defaultNiche.category}/${defaultNiche.collection}` : '';
+        return defaultNiche
+          ? defaultNiche.id || `${defaultNiche.category}/${defaultNiche.collection}`
+          : '';
       });
     });
 

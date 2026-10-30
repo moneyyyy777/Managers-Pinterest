@@ -242,6 +242,7 @@ export default function TagManagerModal({
   const [uploadedFileName, setUploadedFileName] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const fileInputRef = useRef(null);
+  const activeFileReqIdRef = useRef(0);
 
   // Niche Files Browser state
   const [filesList, setFilesList] = useState([]);
@@ -283,6 +284,60 @@ export default function TagManagerModal({
     }
   }, [isOpen, currentTags]);
 
+  // Action: Select and read a niche file (.txt / .csv / .xlsx) with race condition cancellation
+  const handleSelectNicheFile = async (relPath) => {
+    const reqId = ++activeFileReqIdRef.current;
+    setSelectedFileRelPath(relPath);
+    setFileSaveStatus(null);
+    setSortConfig(null);
+    setTableSearchQuery('');
+    setPage(1);
+
+    try {
+      setIsLoadingFileContent(true);
+      const params = new URLSearchParams({
+        category,
+        collection,
+        file: relPath,
+        ...(activeSegment ? { segment: activeSegment } : {})
+      });
+      const res = await fetch(`/api/niche/files?${params.toString()}`);
+      if (reqId !== activeFileReqIdRef.current) return;
+      if (res.ok) {
+        const data = await res.json();
+        if (reqId !== activeFileReqIdRef.current) return;
+        if (data.success && data.file) {
+          setSelectedFileMeta(data.file);
+
+          if (data.file.type === 'xlsx') {
+            setViewMode('table');
+            const sheets = data.file.sheetNames || [];
+            if (sheets.length > 0) {
+              setSelectedSheet(sheets[0]);
+            }
+            setText(data.file.content || '');
+          } else if (data.file.type === 'csv') {
+            setViewMode('table');
+            setText(data.file.content || '');
+            setInputDelimiter('\n');
+          } else {
+            // Text file
+            setText(data.file.content || '');
+            setInputDelimiter('\n');
+          }
+        }
+      }
+    } catch (err) {
+      if (reqId === activeFileReqIdRef.current) {
+        console.error('[TagManager] Failed to load file content:', err);
+      }
+    } finally {
+      if (reqId === activeFileReqIdRef.current) {
+        setIsLoadingFileContent(false);
+      }
+    }
+  };
+
   // Fetch all .txt, .csv and .xlsx files for current niche/segment
   const loadNicheFiles = async () => {
     if (!category || !collection) return;
@@ -298,10 +353,18 @@ export default function TagManagerModal({
         const data = await res.json();
         if (data.success && Array.isArray(data.files)) {
           setFilesList(data.files);
-          // If no file currently selected, pick first priority file (e.g. All.csv, seeds, etc.)
-          if (data.files.length > 0 && !selectedFileRelPath) {
-            handleSelectNicheFile(data.files[0].relativePath);
-          }
+          setSelectedFileRelPath((prev) => {
+            if (!prev && data.files.length > 0) {
+              const priority =
+                data.files.find((f) => f.role === 'all_csv') ||
+                data.files.find((f) => f.role === 'merged_seeds') ||
+                data.files.find((f) => f.type === 'csv') ||
+                data.files[0];
+              handleSelectNicheFile(priority.relativePath);
+              return priority.relativePath;
+            }
+            return prev;
+          });
         }
       }
     } catch (err) {
@@ -363,54 +426,6 @@ export default function TagManagerModal({
       return true;
     });
   }, [filesList, fileTypeFilter, fileSearchQuery]);
-
-  // Action: Select and read a niche file (.txt / .csv / .xlsx)
-  const handleSelectNicheFile = async (relPath) => {
-    setSelectedFileRelPath(relPath);
-    setFileSaveStatus(null);
-    setSortConfig(null);
-    setTableSearchQuery('');
-    setPage(1);
-
-    try {
-      setIsLoadingFileContent(true);
-      const params = new URLSearchParams({
-        category,
-        collection,
-        file: relPath,
-        ...(activeSegment ? { segment: activeSegment } : {})
-      });
-      const res = await fetch(`/api/niche/files?${params.toString()}`);
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success && data.file) {
-          setSelectedFileMeta(data.file);
-
-          if (data.file.type === 'xlsx') {
-            setViewMode('table');
-            const sheets = data.file.sheetNames || [];
-            if (sheets.length > 0) {
-              setSelectedSheet(sheets[0]);
-            }
-            setText(data.file.content || '');
-          } else if (data.file.type === 'csv') {
-            setViewMode('table');
-            setText(data.file.content || '');
-            setInputDelimiter('\n');
-          } else {
-            // Text file
-            setViewMode('raw');
-            setText(data.file.content || '');
-            setInputDelimiter('\n');
-          }
-        }
-      }
-    } catch (err) {
-      console.error('Failed to load file content:', err);
-    } finally {
-      setIsLoadingFileContent(false);
-    }
-  };
 
   // Structured table data for currently selected file
   const activeTableData = useMemo(() => {
