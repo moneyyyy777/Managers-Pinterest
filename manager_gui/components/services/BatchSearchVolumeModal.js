@@ -88,6 +88,7 @@ export default function BatchSearchVolumeModal({
   const [selectedNicheKeys, setSelectedNicheKeys] = useState(new Set());
   const [expandedNicheKeys, setExpandedNicheKeys] = useState(new Set());
   const [useSystemVpn, setUseSystemVpn] = useState(true);
+  const [maxWords, setMaxWords] = useState(4); // 4 words is Pinterest SEO sweet spot, 5 or 0 for no limit
 
   // Runner state & logs
   const [isRunning, setIsRunning] = useState(false);
@@ -307,7 +308,8 @@ export default function BatchSearchVolumeModal({
         body: JSON.stringify({
           targets: targetsToRun,
           mode: 'batch',
-          useSystemVpn
+          useSystemVpn,
+          maxWords
         })
       });
 
@@ -535,6 +537,47 @@ export default function BatchSearchVolumeModal({
                   Снять выделение ({selectedNicheKeys.size})
                 </button>
               )}
+            </div>
+
+            {/* Tag Length Filter (maxWords) */}
+            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-xl text-xs">
+              <span className="text-[11px] font-semibold text-slate-500 mr-0.5">Макс. слов:</span>
+              <button
+                type="button"
+                onClick={() => setMaxWords(4)}
+                className={`px-2 py-0.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  maxWords === 4
+                    ? 'bg-[#E60023] text-white shadow-2xs font-bold'
+                    : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
+                }`}
+                title="Отсечь теги длиннее 4 слов и сохранить в More 4 Words Tags.txt (Стандарт Pinterest SEO)"
+              >
+                ≤ 4 слов (Реком.)
+              </button>
+              <button
+                type="button"
+                onClick={() => setMaxWords(5)}
+                className={`px-2 py-0.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  maxWords === 5
+                    ? 'bg-[#E60023] text-white shadow-2xs font-bold'
+                    : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
+                }`}
+                title="Отсечь теги длиннее 5 слов и сохранить в More 5 Words Tags.txt"
+              >
+                ≤ 5 слов
+              </button>
+              <button
+                type="button"
+                onClick={() => setMaxWords(0)}
+                className={`px-2 py-0.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  maxWords === 0
+                    ? 'bg-slate-900 text-white shadow-2xs font-bold'
+                    : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
+                }`}
+                title="Без ограничений по длине тегов"
+              >
+                Все
+              </button>
             </div>
 
             {/* VPN mode + Launch Button */}

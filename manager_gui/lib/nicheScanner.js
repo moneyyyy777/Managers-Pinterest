@@ -414,12 +414,20 @@ export function getAllNiches() {
         }
       }
 
-      const { stepStatuses, currentStep, completedCount } = computeStepStatuses(filesInfo, isInitialized);
+      let { stepStatuses, currentStep, completedCount } = computeStepStatuses(filesInfo, isInitialized);
 
       const isMulti = isMultiSegment || segments.length > 0;
       const readySegmentsCount = segments.filter(s => s.searchVolumeStatus?.canBatch).length;
       const completedSegmentsCount = segments.filter(s => s.searchVolumeStatus?.canBatch && s.searchVolumeStatus?.hasAllCsv).length;
       const pendingSegmentsCount = segments.filter(s => s.searchVolumeStatus?.canBatch && !s.searchVolumeStatus?.hasAllCsv).length;
+
+      // Если в мульти-сегментной нише хотя бы один готовый сегмент еще не имеет All.csv, Шаг 3 не считается завершенным
+      if (isMulti && pendingSegmentsCount > 0) {
+        stepStatuses[2] = false; // Шаг 3: PinInspector + SearchVolume
+        stepStatuses[3] = false; // Шаг 4: AI Filter
+        completedCount = stepStatuses.filter(Boolean).length;
+        currentStep = 3;
+      }
 
       const mainTagFile = filesInfo.pininspectorSeedsFile;
       const canBatch = isMulti
@@ -729,6 +737,17 @@ export function getNicheDetail(category, collection, segmentName = null) {
   if (rootFilesInfo.hasLinksite || Boolean(linksiteContent)) scopedFiles.hasLinksite = true;
   if (rootFilesInfo.hasAllProducts || products.length > 0) scopedFiles.hasAllProducts = true;
   const scopedSteps = computeStepStatuses(scopedFiles, isInitialized);
+
+  // Для всей ниши (без конкретного сегмента): если не все сегменты имеют All.csv, Шаг 3 не завершен
+  if (!activeSegmentName && isMultiSegment) {
+    const anyPending = segments.some(s => s.searchVolumeStatus?.canBatch && !s.searchVolumeStatus?.hasAllCsv);
+    if (anyPending) {
+      scopedSteps.stepStatuses[2] = false;
+      scopedSteps.stepStatuses[3] = false;
+      scopedSteps.completedCount = scopedSteps.stepStatuses.filter(Boolean).length;
+      scopedSteps.currentStep = 3;
+    }
+  }
 
   return {
     category,

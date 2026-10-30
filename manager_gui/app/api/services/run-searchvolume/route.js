@@ -149,7 +149,7 @@ export async function POST(request) {
     if (body.action === 'stop') {
       return DELETE();
     }
-    const { category, collection, segment, segmentName, mode = 'niche', useSystemVpn = true } = body;
+    const { category, collection, segment, segmentName, mode = 'niche', useSystemVpn = true, maxWords = 4 } = body;
     const seg = segment || segmentName;
     const root = getProjectRoot();
     const isWin = process.platform === 'win32';
@@ -238,6 +238,9 @@ export async function POST(request) {
     if (useSystemVpn) {
       nodeArgs.push('--system-vpn');
     }
+    if (maxWords && Number(maxWords) > 0) {
+      nodeArgs.push(`--max-words=${maxWords}`);
+    }
 
     const nodeModulesCandidates = [
       path.join(root, 'Keywords', 'Artify Studio', 'node_modules'),
@@ -256,6 +259,7 @@ export async function POST(request) {
       env: {
         ...process.env,
         SYSTEM_VPN: useSystemVpn ? '1' : '0',
+        MAX_WORDS: String(maxWords || 0),
         NODE_PATH: combinedNodePath,
         PATH: process.env.PATH
       }

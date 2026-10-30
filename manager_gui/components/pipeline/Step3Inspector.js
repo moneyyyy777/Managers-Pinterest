@@ -518,7 +518,8 @@ export default function Step3Inspector({
           collection,
           segment: activeSegment,
           mode: 'niche',
-          useSystemVpn
+          useSystemVpn,
+          maxWords: maxWordsCount
         })
       });
 

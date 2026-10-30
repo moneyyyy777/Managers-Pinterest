@@ -420,6 +420,17 @@ async function main() {
         useSystemVpn = true;
     }
 
+    let maxWords = 0; // 0 = без ограничений
+    const maxWordsFlag = rawArgs.find(a => a.startsWith('--max-words=') || a.startsWith('-w='));
+    if (maxWordsFlag) {
+        maxWords = parseInt(maxWordsFlag.split('=')[1], 10) || 0;
+    } else if (process.env.MAX_WORDS) {
+        maxWords = parseInt(process.env.MAX_WORDS, 10) || 0;
+    }
+    if (maxWords > 0) {
+        console.log(`✂️ [Фильтр длины] Активен лимит: не более ${maxWords} слов в теге (рекомендация Pinterest SEO)`);
+    }
+
     let targetFiles = [];
 
     if (nonFlagArgs.length > 0) {
@@ -481,8 +492,52 @@ async function main() {
             continue;
         }
 
-        const allTags = rawText.split("\n").map(t => t.trim()).filter(Boolean);
-        console.log(`📋 Всего тегов в файле: ${allTags.length}`);
+        const rawTags = rawText.split("\n").map(t => t.trim().replace(/^["'`]+|["'`]+$/g, '')).filter(Boolean);
+        // Дедупликация без учета регистра
+        const seen = new Set();
+        const allTags = [];
+        for (const t of rawTags) {
+            const lower = t.toLowerCase();
+            if (!seen.has(lower)) {
+                seen.add(lower);
+                allTags.push(t);
+            }
+        }
+        console.log(`📋 Всего уникальных тегов в файле: ${allTags.length}`);
+
+        let tagsToProcess = allTags;
+        if (maxWords > 0) {
+            const shortTags = [];
+            const longTags = [];
+            for (const tag of allTags) {
+                const words = tag.split(/\s+/).filter(Boolean);
+                if (words.length > maxWords) {
+                    longTags.push(tag);
+                } else {
+                    shortTags.push(tag);
+                }
+            }
+            console.log(`✂️ [Фильтр длины] Максимум слов: ${maxWords}`);
+            console.log(`   🟢 Подходит для сбора (≤ ${maxWords} слов): ${shortTags.length}`);
+            console.log(`   🟡 Превышает лимит (> ${maxWords} слов): ${longTags.length}`);
+
+            if (longTags.length > 0) {
+                const longTagsPath = path.join(parentFolderDir, `More ${maxWords} Words Tags.txt`);
+                try {
+                    let existingLong = [];
+                    try {
+                        const existingContent = await fs.readFile(longTagsPath, "utf8");
+                        existingLong = existingContent.split("\n").map(t => t.trim()).filter(Boolean);
+                    } catch {}
+                    const combinedLong = Array.from(new Set([...existingLong, ...longTags]));
+                    await fs.writeFile(longTagsPath, combinedLong.join("\n") + "\n", "utf8");
+                    console.log(`   💾 Сохранено ${longTags.length} длинных тегов в: ${path.basename(longTagsPath)}`);
+                } catch (err) {
+                    console.log(`   ⚠️ Не удалось сохранить длинные теги: ${err.message}`);
+                }
+            }
+            tagsToProcess = shortTags;
+        }
 
         const resultsMap = await loadExistingResults(outputCsvPath);
         if (resultsMap.size > 0) {
@@ -492,7 +547,7 @@ async function main() {
         activeOutputCsvPath = outputCsvPath;
         activeResultsMap = resultsMap;
 
-        const remainingTags = allTags.filter(tag => !resultsMap.has(tag.toLowerCase()));
+        const remainingTags = tagsToProcess.filter(tag => !resultsMap.has(tag.toLowerCase()));
         console.log(`🎯 Осталось проверить новых тегов: ${remainingTags.length}`);
 
         if (remainingTags.length === 0) {

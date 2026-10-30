@@ -258,22 +258,37 @@ export default function TagManagerModal({
   // Interactive Table & File Viewer state
   const [viewMode, setViewMode] = useState('table'); // 'table' | 'raw'
   const [fileTypeFilter, setFileTypeFilter] = useState('all'); // 'all', 'csv', 'xlsx', 'txt'
+  const [selectedSegmentFilter, setSelectedSegmentFilter] = useState(activeSegment || 'all');
+  const [wordCountFilter, setWordCountFilter] = useState('all'); // 'all', 'le4', 'le5', 'gt4', 'gt5'
   const [fileSearchQuery, setFileSearchQuery] = useState('');
   const [selectedSheet, setSelectedSheet] = useState('');
   const [tableSearchQuery, setTableSearchQuery] = useState('');
   const [sortConfig, setSortConfig] = useState(null); // { colIndex: number, direction: 'asc' | 'desc' }
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
+  const lastNicheKeyRef = useRef('');
+
+  // Reset file selection when switching niches or opening fresh
+  useEffect(() => {
+    if (isOpen) {
+      const nicheKey = `${category}/${collection}${activeSegment ? `:${activeSegment}` : ''}`;
+      if (lastNicheKeyRef.current !== nicheKey) {
+        lastNicheKeyRef.current = nicheKey;
+        setSelectedFileRelPath('');
+        setSelectedFileMeta(null);
+        setSelectedSegmentFilter(activeSegment || 'all');
+        setWordCountFilter('all');
+      }
+    }
+  }, [isOpen, category, collection, activeSegment]);
 
   // Sync incoming currentTags to text when modal opens
   useEffect(() => {
     if (isOpen) {
-      if (Array.isArray(currentTags)) {
+      if (Array.isArray(currentTags) && currentTags.length > 0) {
         setText(currentTags.filter(Boolean).join('\n'));
-      } else if (typeof currentTags === 'string') {
+      } else if (typeof currentTags === 'string' && currentTags.trim().length > 0) {
         setText(currentTags);
-      } else {
-        setText('');
       }
       setCopied(false);
       setTableCopied(false);
@@ -356,14 +371,21 @@ export default function TagManagerModal({
         if (data.success && Array.isArray(data.files)) {
           setFilesList(data.files);
           setSelectedFileRelPath((prev) => {
-            if (!prev && data.files.length > 0) {
+            const fileStillExists = prev && data.files.some((f) => f.relativePath === prev);
+            if (!fileStillExists && data.files.length > 0) {
               const priority =
                 data.files.find((f) => f.role === 'all_csv') ||
                 data.files.find((f) => f.role === 'merged_seeds') ||
                 data.files.find((f) => f.type === 'csv') ||
                 data.files[0];
-              handleSelectNicheFile(priority.relativePath);
-              return priority.relativePath;
+              if (priority) {
+                handleSelectNicheFile(priority.relativePath);
+                return priority.relativePath;
+              }
+            } else if (fileStillExists) {
+              // Ensure existing file is loaded fresh
+              handleSelectNicheFile(prev);
+              return prev;
             }
             return prev;
           });
@@ -413,9 +435,41 @@ export default function TagManagerModal({
     return { all: filesList.length, csv, xlsx, txt };
   }, [filesList]);
 
+  // Available segments detected in files
+  const availableSegments = useMemo(() => {
+    const map = new Map();
+    filesList.forEach((f) => {
+      if (f.folderName && f.folderName !== '.' && !f.isRootNicheFile) {
+        map.set(f.folderName, (map.get(f.folderName) || 0) + 1);
+      }
+    });
+    return Array.from(map.entries()).map(([name, count]) => ({ name, count }));
+  }, [filesList]);
+
+  // Handle switching segment inside TagManager
+  const handleSegmentChange = (segName) => {
+    setSelectedSegmentFilter(segName);
+    const segFiles = segName === 'all'
+      ? filesList
+      : filesList.filter((f) => f.folderName === segName);
+    if (segFiles.length > 0) {
+      const priority =
+        segFiles.find((f) => f.role === 'all_csv') ||
+        segFiles.find((f) => f.role === 'merged_seeds') ||
+        segFiles.find((f) => f.type === 'csv') ||
+        segFiles[0];
+      if (priority) {
+        handleSelectNicheFile(priority.relativePath);
+      }
+    }
+  };
+
   // Filtered files list for file browser
   const filteredFilesList = useMemo(() => {
     return filesList.filter((f) => {
+      if (selectedSegmentFilter !== 'all' && f.folderName && f.folderName !== selectedSegmentFilter) {
+        return false;
+      }
       if (fileTypeFilter !== 'all' && f.type !== fileTypeFilter) return false;
       if (fileSearchQuery.trim()) {
         const q = fileSearchQuery.toLowerCase();
@@ -427,7 +481,7 @@ export default function TagManagerModal({
       }
       return true;
     });
-  }, [filesList, fileTypeFilter, fileSearchQuery]);
+  }, [filesList, selectedSegmentFilter, fileTypeFilter, fileSearchQuery]);
 
   // Structured table data for currently selected file
   const activeTableData = useMemo(() => {
@@ -482,6 +536,25 @@ export default function TagManagerModal({
     return { tagColIdx, volumeColIdx };
   }, [activeTableData.headers]);
 
+  // Word count statistics across table rows
+  const wordCountStats = useMemo(() => {
+    const rows = activeTableData.rows || [];
+    const tagCol = columnIndices.tagColIdx !== -1 ? columnIndices.tagColIdx : 0;
+    let le4 = 0;
+    let le5 = 0;
+    let gt4 = 0;
+    let gt5 = 0;
+    for (const r of rows) {
+      const textVal = String(r[tagCol] || '').trim();
+      const wc = textVal.split(/\s+/).filter(Boolean).length;
+      if (wc <= 4) le4++;
+      else gt4++;
+      if (wc <= 5) le5++;
+      else gt5++;
+    }
+    return { total: rows.length, le4, le5, gt4, gt5 };
+  }, [activeTableData.rows, columnIndices.tagColIdx]);
+
   // Live filter and sort rows
   const processedRows = useMemo(() => {
     let rows = activeTableData.rows || [];
@@ -492,6 +565,20 @@ export default function TagManagerModal({
       rows = rows.filter((r) =>
         r.some((cell) => cell != null && String(cell).toLowerCase().includes(q))
       );
+    }
+
+    // Filter by word count
+    const tagCol = columnIndices.tagColIdx !== -1 ? columnIndices.tagColIdx : 0;
+    if (wordCountFilter !== 'all' && activeTableData.headers.length > 0) {
+      rows = rows.filter((r) => {
+        const textVal = String(r[tagCol] || '').trim();
+        const wc = textVal.split(/\s+/).filter(Boolean).length;
+        if (wordCountFilter === 'le4') return wc <= 4;
+        if (wordCountFilter === 'le5') return wc <= 5;
+        if (wordCountFilter === 'gt4') return wc > 4;
+        if (wordCountFilter === 'gt5') return wc > 5;
+        return true;
+      });
     }
 
     // Sort by column if sortConfig is active
@@ -517,7 +604,7 @@ export default function TagManagerModal({
     }
 
     return rows;
-  }, [activeTableData.rows, tableSearchQuery, sortConfig, columnIndices]);
+  }, [activeTableData.rows, tableSearchQuery, wordCountFilter, sortConfig, columnIndices]);
 
   // Paginated rows
   const paginatedRows = useMemo(() => {
@@ -526,6 +613,77 @@ export default function TagManagerModal({
   }, [processedRows, page, pageSize]);
 
   const totalPages = Math.max(1, Math.ceil(processedRows.length / pageSize));
+  const [trimNotice, setTrimNotice] = useState(null);
+
+  // Quick Action: Trim long tags (> maxW) and save to More N Words Tags.txt
+  const handleTrimLongWords = async (maxW = 4) => {
+    const tagCol = columnIndices.tagColIdx !== -1 ? columnIndices.tagColIdx : 0;
+    const shortRows = [];
+    const longWords = [];
+
+    for (const r of activeTableData.rows) {
+      const textVal = String(r[tagCol] || '').trim();
+      const wc = textVal.split(/\s+/).filter(Boolean).length;
+      if (wc > maxW) {
+        longWords.push(textVal);
+      } else {
+        shortRows.push(r);
+      }
+    }
+
+    if (longWords.length > 0 && selectedFileRelPath && category && collection) {
+      try {
+        const targetDirName = selectedFileMeta?.folderName || activeSegment;
+        const moreFileName = `More ${maxW} Words Tags.txt`;
+        const moreFileRel = targetDirName ? `${targetDirName}/${moreFileName}` : moreFileName;
+
+        let existingLong = [];
+        try {
+          const checkRes = await fetch(
+            `/api/niche/files?category=${encodeURIComponent(category)}&collection=${encodeURIComponent(collection)}&file=${encodeURIComponent(moreFileRel)}`
+          );
+          if (checkRes.ok) {
+            const data = await checkRes.json();
+            if (data.file?.content) {
+              existingLong = data.file.content.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+            }
+          }
+        } catch {}
+
+        const mergedLong = Array.from(new Set([...existingLong, ...longWords]));
+
+        await fetch('/api/niche/files', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            category,
+            collection,
+            segment: targetDirName || activeSegment,
+            relativePath: moreFileName,
+            content: mergedLong.join('\n') + '\n'
+          })
+        });
+
+        // Also update current table text if CSV or TXT
+        if (selectedFileMeta?.type === 'csv') {
+          const delim = text.includes(';') ? ';' : ',';
+          const headerLine = activeTableData.headers.join(delim);
+          const dataLines = shortRows.map((r) => r.join(delim));
+          const newCsv = [headerLine, ...dataLines].join('\n');
+          setText(newCsv);
+        } else if (selectedFileMeta?.type === 'txt') {
+          const newTxt = shortRows.map((r) => r[0]).join('\n');
+          setText(newTxt);
+        }
+
+        setTrimNotice(`Оставлено ${shortRows.length} тегов (≤ ${maxW} слов). ${longWords.length} длинных тегов сохранены в ${moreFileName}!`);
+        setTimeout(() => setTrimNotice(null), 5000);
+        await loadNicheFiles();
+      } catch (err) {
+        console.error('Error trimming words:', err);
+      }
+    }
+  };
 
   // Handle column header click for sorting
   const handleSort = (colIndex) => {
@@ -909,6 +1067,42 @@ export default function TagManagerModal({
           {/* TAB 1: ALL NICHE FILES (CSV, XLSX, TXT Browser & Interactive Table) */}
           {activeTab === 'niche_files' && (
             <div className="space-y-4">
+              {/* Segment Switcher for Multi-Segment Niches */}
+              {availableSegments.length > 1 && (
+                <div className="flex items-center gap-1.5 p-2.5 bg-red-50/50 rounded-2xl border border-red-100 overflow-x-auto no-scrollbar shadow-2xs">
+                  <span className="text-xs font-bold text-slate-800 mr-1 flex items-center gap-1 shrink-0">
+                    <Layers className="w-3.5 h-3.5 text-[#E60023]" />
+                    <span>Сегменты ниши:</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleSegmentChange('all')}
+                    className={`px-3 py-1 text-xs rounded-xl font-semibold transition-all cursor-pointer shrink-0 ${
+                      selectedSegmentFilter === 'all'
+                        ? 'bg-[#E60023] text-white shadow-2xs font-bold'
+                        : 'bg-white border border-gray-200 text-slate-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    🌐 Все сегменты ({filesList.length})
+                  </button>
+                  {availableSegments.map(({ name, count }) => (
+                    <button
+                      key={name}
+                      type="button"
+                      onClick={() => handleSegmentChange(name)}
+                      className={`px-3 py-1 text-xs rounded-xl font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+                        selectedSegmentFilter === name
+                          ? 'bg-[#E60023] text-white shadow-2xs font-bold ring-1 ring-[#E60023]'
+                          : 'bg-white border border-gray-200 text-slate-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      <span>🏷️ {name}</span>
+                      <span className="text-[10px] opacity-75 font-mono">({count})</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+
               {/* Files Filter & Search Toolbar */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-gray-50/70 p-3 rounded-2xl border border-gray-200">
                 <div className="flex flex-wrap items-center gap-1.5">
@@ -1268,6 +1462,123 @@ export default function TagManagerModal({
                             </button>
                           )}
                         </div>
+                      </div>
+
+                      {/* Trim Notification Banner */}
+                      {trimNotice && (
+                        <div className="flex items-center justify-between gap-2 p-2.5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs font-medium animate-in fade-in">
+                          <span>✅ {trimNotice}</span>
+                          <button
+                            type="button"
+                            onClick={() => setTrimNotice(null)}
+                            className="text-emerald-700 hover:text-emerald-900 font-bold px-1"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Word Count Filter Bar & Quick Trim */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 pt-1 pb-1">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-[11px] font-bold text-slate-500 mr-1 flex items-center gap-1">
+                            <span>Длина тегов:</span>
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setWordCountFilter('all');
+                              setPage(1);
+                            }}
+                            className={`px-2 py-0.5 text-xs rounded-lg font-medium transition-colors cursor-pointer ${
+                              wordCountFilter === 'all'
+                                ? 'bg-slate-900 text-white font-bold shadow-2xs'
+                                : 'bg-gray-100 text-slate-600 hover:bg-gray-200'
+                            }`}
+                          >
+                            Все ({wordCountStats.total})
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setWordCountFilter('le4');
+                              setPage(1);
+                            }}
+                            className={`px-2 py-0.5 text-xs rounded-lg font-medium transition-colors cursor-pointer flex items-center gap-1 ${
+                              wordCountFilter === 'le4'
+                                ? 'bg-emerald-600 text-white font-bold shadow-2xs'
+                                : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
+                            }`}
+                            title="Теги длиной 1, 2, 3 или 4 слова (Рекомендация для Pinterest SEO)"
+                          >
+                            <span>≤ 4 слов</span>
+                            <span className="font-mono text-[10px]">({wordCountStats.le4})</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setWordCountFilter('le5');
+                              setPage(1);
+                            }}
+                            className={`px-2 py-0.5 text-xs rounded-lg font-medium transition-colors cursor-pointer flex items-center gap-1 ${
+                              wordCountFilter === 'le5'
+                                ? 'bg-blue-600 text-white font-bold shadow-2xs'
+                                : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
+                            }`}
+                          >
+                            <span>≤ 5 слов</span>
+                            <span className="font-mono text-[10px]">({wordCountStats.le5})</span>
+                          </button>
+                          {wordCountStats.gt4 > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setWordCountFilter('gt4');
+                                setPage(1);
+                              }}
+                              className={`px-2 py-0.5 text-xs rounded-lg font-medium transition-colors cursor-pointer flex items-center gap-1 ${
+                                wordCountFilter === 'gt4'
+                                  ? 'bg-amber-600 text-white font-bold shadow-2xs'
+                                  : 'bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200'
+                              }`}
+                              title="Длинные фразы (5+ слов) для отсечения или длинного хвоста"
+                            >
+                              <span>&gt; 4 слов</span>
+                              <span className="font-mono text-[10px]">({wordCountStats.gt4})</span>
+                            </button>
+                          )}
+                          {wordCountStats.gt5 > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setWordCountFilter('gt5');
+                                setPage(1);
+                              }}
+                              className={`px-2 py-0.5 text-xs rounded-lg font-medium transition-colors cursor-pointer flex items-center gap-1 ${
+                                wordCountFilter === 'gt5'
+                                  ? 'bg-amber-600 text-white font-bold shadow-2xs'
+                                  : 'bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200'
+                              }`}
+                              title="Длинные фразы (6+ слов)"
+                            >
+                              <span>&gt; 5 слов</span>
+                              <span className="font-mono text-[10px]">({wordCountStats.gt5})</span>
+                            </button>
+                          )}
+                        </div>
+
+                        {wordCountStats.gt4 > 0 && (
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleTrimLongWords(4)}
+                              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 transition-colors cursor-pointer"
+                              title="Отсечь теги > 4 слов из таблицы и сохранить их в More 4 Words Tags.txt"
+                            >
+                              <span>✂️ Отсечь &gt; 4 слов ({wordCountStats.gt4} шт. в файл)</span>
+                            </button>
+                          </div>
+                        )}
                       </div>
 
                       {/* Interactive Table Container */}
