@@ -254,15 +254,18 @@ export function scanKeywordFiles(dirPath) {
             } catch (e) {}
           }
           if (lowerName.includes('(all).csv') || lowerName.endsWith(' all.csv')) {
-            result.hasAllCsv = true;
             try {
               const stat = fs.statSync(fullPath);
-              result.allCsvFile = {
-                name: entry.name,
-                fullPath,
-                mtime: stat.mtime.toISOString(),
-                mtimeMs: stat.mtimeMs
-              };
+              // Файл должен содержать реальные данные, а не быть пустым (0-байтовым)
+              if (stat.size > 20) {
+                result.hasAllCsv = true;
+                result.allCsvFile = {
+                  name: entry.name,
+                  fullPath,
+                  mtime: stat.mtime.toISOString(),
+                  mtimeMs: stat.mtimeMs
+                };
+              }
             } catch (e) {}
           }
           if (lowerName.includes('filter by openai') && lowerName.endsWith('.csv')) {

@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
-import { spawn } from 'child_process';
+import { spawn, exec } from 'child_process';
 import path from 'path';
 import fs from 'fs';
+import util from 'util';
 import { findKeywordFolder, getProjectRoot } from '@/lib/paths';
+
+const execPromise = util.promisify(exec);
 
 let activeSearchVolumeProcess = null;
 
@@ -21,8 +24,34 @@ async function checkChromeAlive(port = 9222, timeoutMs = 1200) {
   }
 }
 
+async function isSearchVolumeAlive() {
+  if (activeSearchVolumeProcess && !activeSearchVolumeProcess.killed) {
+    try {
+      process.kill(activeSearchVolumeProcess.pid, 0);
+      return true;
+    } catch {
+      activeSearchVolumeProcess = null;
+    }
+  }
+
+  try {
+    const isWin = process.platform === 'win32';
+    if (isWin) {
+      const { stdout } = await execPromise('wmic process where "commandline like \'%searchvolume.js%\'" get processid');
+      const lines = stdout.split('\n').map((l) => l.trim()).filter((l) => /^\d+$/.test(l));
+      return lines.length > 0;
+    } else {
+      const { stdout } = await execPromise('pgrep -f "searchvolume.js"');
+      return Boolean(stdout && stdout.trim());
+    }
+  } catch {
+    return false;
+  }
+}
+
 export async function GET() {
   const isChromeRunning = await checkChromeAlive();
+  const isRunning = await isSearchVolumeAlive();
   const root = getProjectRoot();
   const logFile = path.join(root, 'manager_gui', '.logs', 'searchvolume.log');
 
@@ -31,20 +60,95 @@ export async function GET() {
     try {
       const allText = fs.readFileSync(logFile, 'utf-8');
       const lines = allText.split(/\r?\n/).filter(Boolean);
-      recentLogs = lines.slice(-25).join('\n');
+      recentLogs = lines.slice(-35).join('\n');
     } catch {}
   }
 
   return NextResponse.json({
     chromeRunning: isChromeRunning,
-    isRunning: Boolean(activeSearchVolumeProcess && !activeSearchVolumeProcess.killed),
+    isRunning,
     recentLogs
   });
+}
+
+export async function DELETE() {
+  try {
+    const root = getProjectRoot();
+    const logFile = path.join(root, 'manager_gui', '.logs', 'searchvolume.log');
+
+    // 1. Try to kill process reference with SIGTERM for graceful CSV saving
+    if (activeSearchVolumeProcess && !activeSearchVolumeProcess.killed) {
+      try {
+        process.kill(-activeSearchVolumeProcess.pid, 'SIGTERM');
+      } catch {
+        try {
+          activeSearchVolumeProcess.kill('SIGTERM');
+        } catch {}
+      }
+    }
+
+    const isWin = process.platform === 'win32';
+    try {
+      if (isWin) {
+        await execPromise('taskkill /F /FI "WINDOWTITLE eq *searchvolume*" /T').catch(() => {});
+      } else {
+        await execPromise('pkill -15 -f "searchvolume.js"').catch(() => {});
+      }
+    } catch {}
+
+    // Allow 1 second for graceful progress save
+    await new Promise((r) => setTimeout(r, 1000));
+
+    // 2. Force kill remaining processes
+    if (activeSearchVolumeProcess && !activeSearchVolumeProcess.killed) {
+      try {
+        process.kill(-activeSearchVolumeProcess.pid, 'SIGKILL');
+      } catch {
+        try {
+          activeSearchVolumeProcess.kill('SIGKILL');
+        } catch {}
+      }
+    }
+
+    try {
+      if (isWin) {
+        await execPromise('wmic process where "commandline like \'%searchvolume.js%\'" call terminate').catch(() => {});
+      } else {
+        await execPromise('pkill -9 -f "searchvolume.js"').catch(() => {});
+      }
+    } catch {}
+
+    activeSearchVolumeProcess = null;
+
+    if (fs.existsSync(logFile)) {
+      try {
+        fs.appendFileSync(
+          logFile,
+          `\n=== 🛑 Batch SearchVolume ОСТАНОВЛЕН ПОЛЬЗОВАТЕЛЕМ: ${new Date().toISOString()} ===\n`,
+          'utf-8'
+        );
+      } catch {}
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Сбор SearchVolume успешно остановлен',
+      isRunning: false
+    });
+  } catch (error) {
+    console.error('Error stopping SearchVolume:', error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
 }
 
 export async function POST(request) {
   try {
     const body = await request.json().catch(() => ({}));
+
+    // Handle explicit stop action via POST
+    if (body.action === 'stop') {
+      return DELETE();
+    }
     const { category, collection, segment, segmentName, mode = 'niche', useSystemVpn = true } = body;
     const seg = segment || segmentName;
     const root = getProjectRoot();

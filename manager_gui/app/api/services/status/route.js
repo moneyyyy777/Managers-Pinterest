@@ -1,4 +1,8 @@
 import { NextResponse } from 'next/server';
+import { exec } from 'child_process';
+import util from 'util';
+
+const execPromise = util.promisify(exec);
 
 export const dynamic = 'force-dynamic';
 
@@ -31,6 +35,19 @@ export async function GET() {
   const streamlitRunning = streamlitRunning8520 || streamlitRunning8501;
   const activeStreamlitPort = streamlitRunning8520 ? 8520 : 8501;
 
+  let searchvolumeRunning = false;
+  try {
+    const isWin = process.platform === 'win32';
+    if (isWin) {
+      const { stdout } = await execPromise('wmic process where "commandline like \'%searchvolume.js%\'" get processid');
+      const lines = stdout.split('\n').map((l) => l.trim()).filter((l) => /^\d+$/.test(l));
+      searchvolumeRunning = lines.length > 0;
+    } else {
+      const { stdout } = await execPromise('pgrep -f "searchvolume.js"');
+      searchvolumeRunning = Boolean(stdout && stdout.trim());
+    }
+  } catch {}
+
   return NextResponse.json({
     admin: {
       id: 'admin',
@@ -62,6 +79,9 @@ export async function GET() {
       running: streamlitRunning,
       port: activeStreamlitPort,
       url: `http://localhost:${activeStreamlitPort}`
+    },
+    searchvolume: {
+      running: searchvolumeRunning
     }
   });
 }

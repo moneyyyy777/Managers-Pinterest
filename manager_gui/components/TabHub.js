@@ -39,6 +39,27 @@ export default function TabHub({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Все');
   const [initializingKeys, setInitializingKeys] = useState({});
+  const [isSvRunning, setIsSvRunning] = useState(false);
+
+  // Monitor SearchVolume running status
+  useEffect(() => {
+    let mounted = true;
+    const checkSv = async () => {
+      try {
+        const res = await fetch('/api/services/run-searchvolume');
+        if (res.ok && mounted) {
+          const d = await res.json();
+          setIsSvRunning(Boolean(d.isRunning));
+        }
+      } catch {}
+    };
+    checkSv();
+    const iv = setInterval(checkSv, 4000);
+    return () => {
+      mounted = false;
+      clearInterval(iv);
+    };
+  }, []);
 
   // Batch ready niches count (needs collection or partial completion)
   const batchReadyCount = useMemo(() => {
@@ -179,14 +200,31 @@ export default function TabHub({
             <button
               type="button"
               onClick={onOpenBatchSearchVolume}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 transition-all active:scale-[0.98] shadow-xs shrink-0 cursor-pointer"
-              title="Открыть пакетный сбор SearchVolume для нескольких ниш"
+              className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white transition-all active:scale-[0.98] shadow-xs shrink-0 cursor-pointer ${
+                isSvRunning
+                  ? 'bg-rose-600 hover:bg-rose-700 animate-pulse'
+                  : 'bg-slate-900 hover:bg-slate-800'
+              }`}
+              title={
+                isSvRunning
+                  ? 'Сбор SearchVolume активен в фоне (кликните для просмотра или остановки)'
+                  : 'Открыть пакетный сбор SearchVolume для нескольких ниш'
+              }
             >
-              <span>🚀 Пакетный SearchVolume</span>
-              {batchReadyCount > 0 && (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#E60023] text-white">
-                  {batchReadyCount} готовы
-                </span>
+              {isSvRunning ? (
+                <>
+                  <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+                  <span>🛑 Сбор активен (фоновый)</span>
+                </>
+              ) : (
+                <>
+                  <span>🚀 Пакетный SearchVolume</span>
+                  {batchReadyCount > 0 && (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#E60023] text-white">
+                      {batchReadyCount} готовы
+                    </span>
+                  )}
+                </>
               )}
             </button>
           )}

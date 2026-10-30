@@ -319,7 +319,7 @@ export default function BatchSearchVolumeModal({
       setIsRunning(true);
       setStatusMessage({
         type: 'success',
-        text: `Пакетный SearchVolume запущен для ${targetsToRun.length} ниш! Chrome 9222 активен.`
+        text: `Пакетный SearchVolume запущен для ${targetsToRun.length} ниш! Фоновый режим активен (без перехвата окон).`
       });
       setTimeout(checkStatus, 1500);
     } catch (err) {
@@ -330,6 +330,34 @@ export default function BatchSearchVolumeModal({
       });
     } finally {
       setIsStarting(false);
+    }
+  };
+
+  // Stop SearchVolume Process
+  const handleStopBatch = async () => {
+    try {
+      setIsStarting(false);
+      const res = await fetch('/api/services/run-searchvolume', {
+        method: 'DELETE'
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setIsRunning(false);
+        setStatusMessage({
+          type: 'success',
+          text: 'Сбор SearchVolume успешно остановлен. Все собранные данные сохранены в CSV.'
+        });
+      } else {
+        throw new Error(data.error || 'Не удалось остановить процесс');
+      }
+      setTimeout(checkStatus, 800);
+      onRefreshNiches?.();
+    } catch (err) {
+      console.error('Error stopping batch:', err);
+      setStatusMessage({
+        type: 'error',
+        text: err.message || 'Ошибка при остановке'
+      });
     }
   };
 
@@ -358,9 +386,15 @@ export default function BatchSearchVolumeModal({
                     <span>Chrome подключен</span>
                   </span>
                 )}
+                {isRunning && (
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-0.5 rounded-full animate-pulse">
+                    <span className="w-2 h-2 rounded-full bg-rose-600 animate-ping" />
+                    <span>Сбор активен (фоновый режим)</span>
+                  </span>
+                )}
               </div>
               <p className="text-xs text-slate-500">
-                Автоматический сбор объемов поиска из <code className="font-mono text-slate-700">Pininspector + Seeds.txt</code> для выбранных ниш
+                Автоматический сбор объемов поиска из <code className="font-mono text-slate-700">Pininspector + Seeds.txt</code> для выбранных ниш • <span className="text-slate-600 font-medium">Работает в фоне без перехвата активного окна</span>
               </p>
             </div>
           </div>
@@ -529,24 +563,36 @@ export default function BatchSearchVolumeModal({
                 <span>Лог SearchVolume</span>
               </button>
 
-              <button
-                type="button"
-                onClick={() => handleRunBatch()}
-                disabled={selectedNicheKeys.size === 0 || isStarting || isRunning}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#E60023] hover:bg-[#ad081b] disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-all active:scale-[0.98] cursor-pointer"
-              >
-                {isStarting || isRunning ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Сбор в процессе...</span>
-                  </>
-                ) : (
-                  <>
-                    <Play className="w-4 h-4 fill-current" />
-                    <span>Запустить для {selectedNicheKeys.size} ниш</span>
-                  </>
-                )}
-              </button>
+              {isRunning ? (
+                <button
+                  type="button"
+                  onClick={handleStopBatch}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 shadow-sm transition-all cursor-pointer animate-pulse"
+                  title="Остановить сбор SearchVolume прямо сейчас (прогресс сохранится в CSV)"
+                >
+                  <Square className="w-3.5 h-3.5 fill-current" />
+                  <span>Остановить сбор</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => handleRunBatch()}
+                  disabled={selectedNicheKeys.size === 0 || isStarting}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#E60023] hover:bg-[#ad081b] disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-all active:scale-[0.98] cursor-pointer"
+                >
+                  {isStarting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Запуск...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-4 h-4 fill-current" />
+                      <span>Запустить для {selectedNicheKeys.size} ниш</span>
+                    </>
+                  )}
+                </button>
+              )}
             </div>
           </div>
 
@@ -584,16 +630,29 @@ export default function BatchSearchVolumeModal({
             <div className="flex items-center justify-between text-[11px] text-slate-400 pb-1 border-b border-slate-800 mb-2">
               <span className="flex items-center gap-2">
                 <span className={`w-2 h-2 rounded-full ${isRunning ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`} />
-                <span>Лог SearchVolume.io: {isRunning ? 'Выполняется сбор данных...' : 'Ожидание запуска'}</span>
+                <span>Лог SearchVolume.io: {isRunning ? 'Выполняется сбор (фоновый режим)...' : 'Ожидание запуска'}</span>
               </span>
-              <button
-                type="button"
-                onClick={() => checkStatus()}
-                className="hover:text-white transition-colors cursor-pointer"
-                title="Обновить лог"
-              >
-                <RefreshCw className="w-3 h-3" />
-              </button>
+              <div className="flex items-center gap-2">
+                {isRunning && (
+                  <button
+                    type="button"
+                    onClick={handleStopBatch}
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-rose-600 hover:bg-rose-700 text-white transition-colors cursor-pointer"
+                    title="Принудительно остановить процесс сбора"
+                  >
+                    <Square className="w-3 h-3 fill-current" />
+                    <span>Остановить</span>
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => checkStatus()}
+                  className="hover:text-white transition-colors cursor-pointer"
+                  title="Обновить лог"
+                >
+                  <RefreshCw className="w-3 h-3" />
+                </button>
+              </div>
             </div>
             <pre className="whitespace-pre-wrap leading-relaxed text-[11px] select-text">
               {logs || 'Логи пока пусты. Запустите сбор для выбранных ниш.'}
@@ -975,16 +1034,26 @@ export default function BatchSearchVolumeModal({
             >
               Закрыть
             </button>
-            <button
-              type="button"
-              onClick={() => handleRunBatch()}
-              disabled={selectedNicheKeys.size === 0 || isStarting || isRunning}
-              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#E60023] hover:bg-[#ad081b] disabled:opacity-50 disabled:cursor-not-allowed shadow-xs transition-all active:scale-[0.98] cursor-pointer"
-            >
-              {isStarting || isRunning
-                ? 'Выполняется...'
-                : `Запустить пакет (${selectedNicheKeys.size})`}
-            </button>
+            {isRunning ? (
+              <button
+                type="button"
+                onClick={handleStopBatch}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 shadow-sm transition-all active:scale-95 cursor-pointer animate-pulse"
+                title="Остановить сбор SearchVolume прямо сейчас"
+              >
+                <Square className="w-3.5 h-3.5 fill-current" />
+                <span>Остановить сбор</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => handleRunBatch()}
+                disabled={selectedNicheKeys.size === 0 || isStarting}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#E60023] hover:bg-[#ad081b] disabled:opacity-50 disabled:cursor-not-allowed shadow-xs transition-all active:scale-[0.98] cursor-pointer"
+              >
+                {isStarting ? 'Запуск...' : `Запустить пакет (${selectedNicheKeys.size})`}
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -22,7 +22,8 @@ export default function Header({
         const data = await res.json();
         setServicesStatus((prev) => ({
           admin: data.admin || prev.admin,
-          browser: data.browser || prev.browser
+          browser: data.browser || prev.browser,
+          searchvolume: data.searchvolume || prev.searchvolume
         }));
       }
     } catch (err) {
@@ -32,7 +33,7 @@ export default function Header({
 
   useEffect(() => {
     checkServicesStatus();
-    const interval = setInterval(checkServicesStatus, 10000);
+    const interval = setInterval(checkServicesStatus, 4000);
     return () => clearInterval(interval);
   }, [checkServicesStatus]);
 
@@ -160,14 +161,31 @@ export default function Header({
           <button
             type="button"
             onClick={onOpenBatchSearchVolume}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition-all active:scale-95 shadow-2xs cursor-pointer"
-            title="Открыть пакетный сбор SearchVolume.io для нескольких ниш"
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all active:scale-95 shadow-2xs cursor-pointer ${
+              servicesStatus.searchvolume?.running
+                ? 'bg-rose-600 hover:bg-rose-700 text-white animate-pulse'
+                : 'bg-slate-900 text-white hover:bg-slate-800'
+            }`}
+            title={
+              servicesStatus.searchvolume?.running
+                ? 'Сбор SearchVolume активен в фоне (кликните для просмотра или остановки)'
+                : 'Открыть пакетный сбор SearchVolume.io для нескольких ниш'
+            }
           >
-            <span>🚀 Batch SearchVolume</span>
-            {readyBatchCount > 0 && (
-              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold bg-[#E60023] text-white">
-                {readyBatchCount}
-              </span>
+            {servicesStatus.searchvolume?.running ? (
+              <>
+                <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+                <span>🛑 Сбор SearchVolume</span>
+              </>
+            ) : (
+              <>
+                <span>🚀 Batch SearchVolume</span>
+                {readyBatchCount > 0 && (
+                  <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold bg-[#E60023] text-white">
+                    {readyBatchCount}
+                  </span>
+                )}
+              </>
             )}
           </button>
         )}

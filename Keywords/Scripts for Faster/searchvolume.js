@@ -49,6 +49,53 @@ let currentVpnCountry = null; // Поочередно: Германия <-> Ни
 let totalRequestsCounter = 0; // Общий счетчик запросов
 let useSystemVpn = false; // Режим системного VPN (без Qu VPN)
 
+// 🛡️ Глобальные переменные для безопасного сохранения данных при экстренной остановке
+let activeOutputCsvPath = null;
+let activeResultsMap = null;
+let isShuttingDown = false;
+
+async function handleGracefulShutdown(signalName) {
+    if (isShuttingDown) return;
+    isShuttingDown = true;
+    console.log(`\n🛑 [ОСТАНОВКА] Получен сигнал ${signalName}: завершение процесса по запросу пользователя.`);
+    if (activeOutputCsvPath && activeResultsMap && activeResultsMap.size > 0) {
+        console.log(`💾 Сохраняем накопленный прогресс (${activeResultsMap.size} строк)...`);
+        try {
+            await saveProgress(activeOutputCsvPath, activeResultsMap);
+            console.log(`✅ Прогресс успешно сохранен в: ${path.basename(activeOutputCsvPath)}`);
+        } catch (e) {
+            console.error(`⚠️ Ошибка сохранения: ${e.message}`);
+        }
+    }
+    console.log(`👋 Сбор остановлен.`);
+    process.exit(0);
+}
+
+process.once('SIGTERM', () => handleGracefulShutdown('SIGTERM'));
+process.once('SIGINT', () => handleGracefulShutdown('SIGINT'));
+
+// 🛡️ Постоянная фоновая страница (worker tab), чтобы не создавать/закрывать вкладки и не дергать окно Chrome
+let workerPage = null;
+
+async function getOrCreateWorkerPage(context) {
+    if (workerPage && !workerPage.isClosed()) {
+        return workerPage;
+    }
+    const pages = context.pages();
+    const existingSv = pages.find(p => p.url().includes('searchvolume.io'));
+    if (existingSv) {
+        workerPage = existingSv;
+        return workerPage;
+    }
+    const existingBlank = pages.find(p => p.url() === 'about:blank');
+    if (existingBlank) {
+        workerPage = existingBlank;
+        return workerPage;
+    }
+    workerPage = await context.newPage();
+    return workerPage;
+}
+
 async function getBrowser() {
     try {
         return await chromium.connectOverCDP("http://127.0.0.1:9222");
@@ -98,7 +145,8 @@ async function switchQuVpn(context) {
             const session = await mainPage.context().newCDPSession(mainPage);
 
             await session.send('Target.createTarget', {
-                url: `chrome-extension://${VPN_EXTENSION_ID}/popup.html`
+                url: `chrome-extension://${VPN_EXTENSION_ID}/popup.html`,
+                background: true
             });
 
             await new Promise(res => setTimeout(res, 1500));
@@ -217,8 +265,9 @@ async function loadExistingResults(csvPath) {
     return map;
 }
 
-// Сохранение результатов
+// Сохранение результатов (не создаем пустые файлы при 0 результатов)
 async function saveProgress(csvPath, resultsMap) {
+    if (!resultsMap || resultsMap.size === 0) return;
     const list = Array.from(resultsMap.values());
     list.sort((a, b) => b.vol - a.vol);
     const csvContent = list.map(item => `${item.kw};${item.vol}`).join("\n");
@@ -440,6 +489,9 @@ async function main() {
             console.log(`📂 Уже собрано тегов в CSV: ${resultsMap.size}`);
         }
 
+        activeOutputCsvPath = outputCsvPath;
+        activeResultsMap = resultsMap;
+
         const remainingTags = allTags.filter(tag => !resultsMap.has(tag.toLowerCase()));
         console.log(`🎯 Осталось проверить новых тегов: ${remainingTags.length}`);
 
@@ -473,13 +525,29 @@ async function main() {
                     await switchQuVpn(context);
                 }
 
-                const page = await context.newPage();
+                // 🛡️ Используем единую постоянную фоновую вкладку, чтобы не переключать окна и не дергать фокус пользователя
+                const page = await getOrCreateWorkerPage(context);
 
                 try {
-                    await page.goto("https://searchvolume.io/", { waitUntil: "domcontentloaded", timeout: 60000 });
+                    // Перезагружаем или переходим на searchvolume.io внутри существующей вкладки
+                    if (!page.url().includes("searchvolume.io")) {
+                        await page.goto("https://searchvolume.io/", { waitUntil: "domcontentloaded", timeout: 60000 });
+                    } else {
+                        // Очищаем форму внутри вкладки без открытия новых окон
+                        await page.goto("https://searchvolume.io/", { waitUntil: "domcontentloaded", timeout: 60000 });
+                    }
 
                     await page.waitForSelector("textarea", { timeout: 10000 });
-                    await page.fill("textarea", chunkText);
+                    await page.fill("textarea", chunkText).catch(async () => {
+                        await page.evaluate((text) => {
+                            const ta = document.querySelector('textarea');
+                            if (ta) {
+                                ta.value = text;
+                                ta.dispatchEvent(new Event('input', { bubbles: true }));
+                                ta.dispatchEvent(new Event('change', { bubbles: true }));
+                            }
+                        }, chunkText);
+                    });
                     await page.waitForTimeout(500);
 
                     await clickSubmitUntilTriggered(page);
@@ -492,7 +560,6 @@ async function main() {
 
                     if (isRateLimited) {
                         console.log(`   ⛔ Обнаружен лимит "Too many requests"!`);
-                        await page.close().catch(() => {});
                         if (useSystemVpn) {
                             console.log(`   ⏳ Системный VPN: ждем 40 сек перед повторной отправкой...`);
                             await new Promise(r => setTimeout(r, 40000));
@@ -547,7 +614,7 @@ async function main() {
                         }
                     }
                 } finally {
-                    await page.close().catch(() => {});
+                    // 🛡️ НЕ закрываем workerPage! Оставляем вкладку открытой, чтобы Chrome не переключал активные окна на macOS/Windows.
                 }
             }
 
