@@ -522,6 +522,9 @@ export default function Step9TemplateAssembler({
           onClose={() => setIsTagModalOpen(false)}
           currentTags={boardsTags.split('\n').filter(Boolean)}
           nicheFiles={nicheFiles}
+          category={category}
+          collection={collection}
+          activeSegment={activeSegment}
           title={`Менеджер тегов досок: ${collection || category}`}
           onApply={(newTags) => {
             if (Array.isArray(newTags)) {

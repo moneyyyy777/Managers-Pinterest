@@ -498,6 +498,9 @@ export default function TabPipeline({
           onClose={() => setIsGlobalTagModalOpen(false)}
           currentTags={[]}
           nicheFiles={globalNicheFiles}
+          category={category}
+          collection={collection}
+          activeSegment={activeSegment}
           title={`Менеджер тегов ниши: ${nicheTitle || collection || category || 'Все теги'}`}
           onApply={(tags) => {
             setIsGlobalTagModalOpen(false);

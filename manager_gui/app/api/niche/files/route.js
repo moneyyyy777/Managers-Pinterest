@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import * as XLSX from 'xlsx';
 import { findKeywordFolder, getProjectRoot } from '@/lib/paths';
 
 /**
@@ -52,9 +53,74 @@ export async function GET(request) {
         );
       }
 
+      const lower = safePath.toLowerCase();
+      const stat = fs.statSync(safePath);
+
+      if (lower.endsWith('.xlsx')) {
+        try {
+          const fileBuf = fs.readFileSync(safePath);
+          const wb = XLSX.read(fileBuf, { type: 'buffer' });
+          const sheetNames = wb.SheetNames || [];
+          const sheets = {};
+          let totalRows = 0;
+
+          for (const sName of sheetNames) {
+            const ws = wb.Sheets[sName];
+            const rawData = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+            if (!rawData || rawData.length === 0) {
+              sheets[sName] = { headers: [], rows: [], rowCount: 0 };
+              continue;
+            }
+
+            // Find first non-empty header row
+            let headerIdx = 0;
+            while (
+              headerIdx < rawData.length &&
+              rawData[headerIdx].every((c) => c === '' || c == null)
+            ) {
+              headerIdx++;
+            }
+
+            const headerRow = rawData[headerIdx] || [];
+            const headers = headerRow.map((h, i) => (h ? String(h).trim() : `Колонка ${i + 1}`));
+            const dataRows = rawData.slice(headerIdx + 1).filter((r) => r.some((c) => c !== '' && c != null));
+
+            sheets[sName] = {
+              headers,
+              rows: dataRows,
+              rowCount: dataRows.length
+            };
+            totalRows += dataRows.length;
+          }
+
+          const firstSheet = sheetNames[0];
+          const csvText = firstSheet && wb.Sheets[firstSheet] ? XLSX.utils.sheet_to_csv(wb.Sheets[firstSheet]) : '';
+
+          return NextResponse.json({
+            success: true,
+            file: {
+              name: path.basename(safePath),
+              relativePath: path.relative(targetDir, safePath),
+              size: stat.size,
+              type: 'xlsx',
+              lineCount: totalRows,
+              sheetNames,
+              sheets,
+              content: csvText,
+              modifiedAt: stat.mtime
+            }
+          });
+        } catch (excelErr) {
+          console.error('Error reading xlsx file:', safePath, excelErr);
+          return NextResponse.json(
+            { success: false, error: `Ошибка чтения Excel: ${excelErr.message}` },
+            { status: 500 }
+          );
+        }
+      }
+
       const content = fs.readFileSync(safePath, 'utf-8');
       const lines = content.split(/\r?\n/).filter((l) => l.trim().length > 0);
-      const stat = fs.statSync(safePath);
 
       return NextResponse.json({
         success: true,
@@ -62,6 +128,7 @@ export async function GET(request) {
           name: path.basename(safePath),
           relativePath: path.relative(targetDir, safePath),
           size: stat.size,
+          type: lower.endsWith('.csv') ? 'csv' : 'txt',
           lineCount: lines.length,
           content,
           modifiedAt: stat.mtime
@@ -69,7 +136,7 @@ export async function GET(request) {
       });
     }
 
-    // Mode 2: List all .txt and .csv files in targetDir (including subdirectories like intent folders, For Main)
+    // Mode 2: List all .txt, .csv, and .xlsx files in targetDir (including subdirectories like intent folders, For Main)
     const filesList = [];
 
     function scanDir(currentDir, depth = 0) {
@@ -78,20 +145,45 @@ export async function GET(request) {
         const entries = fs.readdirSync(currentDir, { withFileTypes: true });
         for (const entry of entries) {
           if (entry.name.startsWith('.')) continue;
+          if (entry.name.startsWith('~$')) continue; // skip temp excel locks
           const fullPath = path.join(currentDir, entry.name);
 
           if (entry.isDirectory()) {
             scanDir(fullPath, depth + 1);
           } else {
             const lower = entry.name.toLowerCase();
-            if (lower.endsWith('.txt') || lower.endsWith('.csv')) {
+            if (lower.endsWith('.txt') || lower.endsWith('.csv') || lower.endsWith('.xlsx')) {
               try {
                 const stat = fs.statSync(fullPath);
-                const content = fs.readFileSync(fullPath, 'utf-8');
-                const lines = content
-                  .split(/\r?\n/)
-                  .map((l) => l.trim())
-                  .filter(Boolean);
+                let lineCount = 0;
+                let type = 'txt';
+                let sampleLines = [];
+
+                if (lower.endsWith('.xlsx')) {
+                  type = 'xlsx';
+                  try {
+                    const fileBuf = fs.readFileSync(fullPath);
+                    const wb = XLSX.read(fileBuf, { type: 'buffer', sheetRows: 5 });
+                    const firstSheet = wb.Sheets[wb.SheetNames[0]];
+                    if (firstSheet) {
+                      const raw = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                      sampleLines = raw.slice(0, 3).map((r) => r.filter(Boolean).join(' | '));
+                      if (firstSheet['!ref']) {
+                        const range = XLSX.utils.decode_range(firstSheet['!ref']);
+                        lineCount = range.e.r + 1;
+                      }
+                    }
+                  } catch {}
+                } else {
+                  type = lower.endsWith('.csv') ? 'csv' : 'txt';
+                  const content = fs.readFileSync(fullPath, 'utf-8');
+                  const lines = content
+                    .split(/\r?\n/)
+                    .map((l) => l.trim())
+                    .filter(Boolean);
+                  lineCount = lines.length;
+                  sampleLines = lines.slice(0, 5);
+                }
 
                 const relToTarget = path.relative(targetDir, fullPath);
                 const isRootNicheFile = !relToTarget.includes(path.sep);
@@ -102,22 +194,24 @@ export async function GET(request) {
                 else if (lower.includes('pininspector + seeds')) role = 'merged_seeds';
                 else if (lower.includes('pininspector')) role = 'pininspector';
                 else if (lower.includes('(all).csv') || lower.endsWith(' all.csv')) role = 'all_csv';
-                else if (lower.includes('filter by openai')) role = 'filtered_csv';
+                else if (lower.includes('filter by openai')) role = type === 'xlsx' ? 'filtered_excel' : 'filtered_csv';
                 else if (lower.includes('boards_tags')) role = 'boards_tags';
                 else if (lower.includes('boards_name')) role = 'boards_name';
-                else if (lower.includes('intent') || lower.includes('itent')) role = 'intent';
+                else if (lower.includes('template.xlsx') || lower.includes('template')) role = 'template_excel';
+                else if (lower.includes('intent') || lower.includes('itent')) role = type === 'xlsx' ? 'intent_excel' : 'intent';
+                else if (type === 'xlsx') role = 'excel';
 
                 filesList.push({
                   name: entry.name,
                   relativePath: relToTarget,
                   fullPath: path.relative(getProjectRoot(), fullPath),
                   size: stat.size,
-                  lineCount: lines.length,
-                  type: lower.endsWith('.csv') ? 'csv' : 'txt',
+                  lineCount,
+                  type,
                   role,
                   isRootNicheFile,
                   folderName: path.basename(path.dirname(fullPath)),
-                  sampleLines: lines.slice(0, 5),
+                  sampleLines,
                   modifiedAt: stat.mtime
                 });
               } catch (err) {
@@ -140,10 +234,14 @@ export async function GET(request) {
       merged_seeds: 3,
       all_csv: 4,
       filtered_csv: 5,
-      boards_tags: 6,
-      boards_name: 7,
-      intent: 8,
-      other: 9
+      filtered_excel: 6,
+      intent_excel: 7,
+      template_excel: 8,
+      intent: 9,
+      boards_tags: 10,
+      boards_name: 11,
+      excel: 12,
+      other: 13
     };
 
     filesList.sort((a, b) => {

@@ -844,6 +844,9 @@ export default function Step1Foundation({
           isOpen={isTagModalOpen}
           onClose={() => setIsTagModalOpen(false)}
           currentTags={currentSeedContent}
+          category={selectedNiche?.category || nicheDetail?.niche?.category}
+          collection={selectedNiche?.collection || nicheDetail?.niche?.collection}
+          activeSegment={activeSegment}
           title={`Менеджер семян тегов (Seed Tags): ${title}`}
           onApply={handleApplySeedTags}
         />

@@ -460,6 +460,9 @@ export default function Step5Intents({
           isOpen={isTagModalOpen}
           onClose={() => setIsTagModalOpen(false)}
           currentTags={currentFolderTags}
+          category={selectedNiche?.category || nicheDetail?.niche?.category}
+          collection={selectedNiche?.collection || nicheDetail?.niche?.collection}
+          activeSegment={activeSegment}
           title={`Менеджер тегов: ${inspectingFolder?.name || 'Интент'}`}
           onApply={(newTags) => {
             if (inspectingFolder) {
