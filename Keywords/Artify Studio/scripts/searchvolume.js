@@ -225,52 +225,139 @@ async function saveProgress(csvPath, resultsMap) {
     await fs.writeFile(csvPath, csvContent, "utf8");
 }
 
-// Клик по Buster
+// Клик по Buster и надежное авто-решение reCAPTCHA v2
 async function handleCaptchaWithBuster(page) {
     try {
-        await page.waitForTimeout(1000);
-
-        for (const frame of page.frames()) {
-            if (frame.url().includes('recaptcha')) {
-                const checkbox = frame.locator('#recaptcha-anchor');
-                if (await checkbox.isVisible()) {
-                    console.log("   🤖 Нажимаем галочку «Я не робот»...");
-                    await checkbox.click();
-                    break;
-                }
-            }
-        }
-
-        await page.waitForTimeout(2500);
-
-        const startTime = Date.now();
-        let clickedBuster = false;
-
-        while (Date.now() - startTime < 12000) {
-            for (const frame of page.frames()) {
-                if (!frame.url().includes('recaptcha') && !frame.url().includes('bframe')) continue;
-
-                try {
-                    const helpHolder = frame.locator('.help-button-holder');
-                    if (await helpHolder.isVisible()) {
-                        console.log("   ⚡ Нашли Buster (.help-button-holder)! Запускаем авто-решение...");
-                        await helpHolder.click();
-                        clickedBuster = true;
-                        break;
-                    }
-                } catch (e) {}
-            }
-
-            if (clickedBuster) break;
+        // 1. Ищем фрейм с чекбоксом reCAPTCHA (anchor)
+        let anchorFrame = null;
+        for (let i = 0; i < 15; i++) {
+            anchorFrame = page.frames().find(f => f.url().includes('recaptcha/api2/anchor') || f.url().includes('recaptcha/enterprise/anchor'));
+            if (anchorFrame) break;
+            const hasRows = await page.evaluate(() => document.querySelectorAll('.sv__row').length > 0).catch(() => false);
+            if (hasRows) return; // Результаты уже загрузились без капчи
             await page.waitForTimeout(500);
         }
 
-        if (clickedBuster) {
-            console.log("   ⏳ Buster решает капчу голосом, ждем...");
-            await page.waitForTimeout(8000);
+        if (!anchorFrame) {
+            return;
         }
 
-    } catch (e) {}
+        const checkbox = anchorFrame.locator('#recaptcha-anchor, .recaptcha-checkbox-border').first();
+        const isChecked = await checkbox.getAttribute('aria-checked').catch(() => 'false');
+
+        if (isChecked === 'true') {
+            console.log("   ✅ Галочка «Я не робот» уже проставлена!");
+            return;
+        }
+
+        console.log("   🤖 Нажимаем галочку «Я не робот»...");
+        await checkbox.click({ force: true }).catch(() => {});
+
+        // 2. Ждем реакции: либо галочка сразу станет зеленой (1-клик), либо выскочит challenge bframe
+        const checkResult = await Promise.race([
+            // Проверка: чекбокс сразу отметился (без картинок)
+            anchorFrame.waitForFunction(() => {
+                const el = document.querySelector('#recaptcha-anchor');
+                return el && el.getAttribute('aria-checked') === 'true';
+            }, { timeout: 4000 }).then(() => 'green').catch(() => null),
+
+            // Проверка: открылось окно с заданиями (bframe стал видимым в основном окне)
+            page.waitForFunction(() => {
+                const ifr = document.querySelector('iframe[src*="bframe"]') || document.querySelector('iframe[title*="challenge"]');
+                if (!ifr) return false;
+                const parent = ifr.parentElement;
+                const style = parent ? window.getComputedStyle(parent) : null;
+                const rect = ifr.getBoundingClientRect();
+                return style && style.visibility === 'visible' && rect.top > 0;
+            }, { timeout: 4000 }).then(() => 'challenge').catch(() => null)
+        ]);
+
+        if (checkResult === 'green') {
+            console.log("   ✅ Капча подтверждена в 1 клик (без картинок)!");
+            return;
+        }
+
+        // 3. Если появилось задание с картинками — ждем полной видимости bframe
+        console.log("   ⏳ Появилось окно проверки reCAPTCHA (challenge)...");
+        const challengeVisible = await page.waitForFunction(() => {
+            const ifr = document.querySelector('iframe[src*="bframe"]') || document.querySelector('iframe[title*="challenge"]');
+            if (!ifr) return false;
+            const parent = ifr.parentElement;
+            const style = parent ? window.getComputedStyle(parent) : null;
+            const rect = ifr.getBoundingClientRect();
+            return style && style.visibility === 'visible' && rect.top > 0;
+        }, { timeout: 8000 }).then(() => true).catch(() => false);
+
+        if (!challengeVisible) {
+            console.log("   ℹ️ Окно заданий не появилось или исчезло, проверяем галочку...");
+            return;
+        }
+
+        // 4. Находим фрейм bframe с заданиями
+        const bframe = page.frames().find(f => f.url().includes('bframe'));
+        if (!bframe) {
+            console.log("   ⚠️ Фрейм заданий bframe не найден.");
+            return;
+        }
+
+        // Даем Buster 1-1.5 сек на инициализацию кнопки в DOM
+        await page.waitForTimeout(1200);
+
+        const helpHolder = bframe.locator('.help-button-holder, #solver-button').first();
+        const hasBuster = await helpHolder.waitFor({ state: 'visible', timeout: 6000 }).then(() => true).catch(() => false);
+
+        if (hasBuster) {
+            console.log("   ⚡ Нашли кнопку Buster (.help-button-holder)! Запускаем авто-решение...");
+            await helpHolder.click({ force: true }).catch(async () => {
+                // Запасной клик через координаты, если клик по элементу блокируется
+                const box = await page.locator('iframe[src*="bframe"]').boundingBox().catch(() => null);
+                const innerRect = await bframe.evaluate(() => {
+                    const el = document.querySelector('.help-button-holder');
+                    return el ? el.getBoundingClientRect() : null;
+                }).catch(() => null);
+                if (box && innerRect) {
+                    await page.mouse.click(box.x + innerRect.x + innerRect.width / 2, box.y + innerRect.y + innerRect.height / 2);
+                }
+            });
+
+            console.log("   ⏳ Buster решает капчу голосом, ждем подтверждения...");
+
+            // Ждем решения: исчезновение окна bframe или появление результатов
+            const solved = await page.waitForFunction(() => {
+                const ifr = document.querySelector('iframe[src*="bframe"]');
+                const hasRows = document.querySelectorAll('.sv__row').length > 0;
+                if (hasRows) return true;
+                if (!ifr) return true;
+                const parent = ifr.parentElement;
+                const style = parent ? window.getComputedStyle(parent) : null;
+                return !style || style.visibility !== 'visible';
+            }, { timeout: 35000 }).then(() => true).catch(() => false);
+
+            if (solved) {
+                console.log("   ✅ Buster успешно решил капчу!");
+            } else {
+                // Проверяем, не выдал ли Google блокировку аудио
+                const errorNotice = await bframe.evaluate(() => {
+                    const text = document.body.innerText;
+                    if (text.includes('automated queries') || text.includes('Try again later')) {
+                        return 'Google заблокировал аудио-решение (лимит запросов IP)';
+                    }
+                    return null;
+                }).catch(() => null);
+
+                if (errorNotice) {
+                    console.log(`   ⚠️ [Buster] ${errorNotice}. Попробуйте сменить IP или решить вручную.`);
+                } else {
+                    console.log("   ⏳ Ожидание завершения проверки...");
+                }
+            }
+        } else {
+            console.log("   ⚠️ Кнопка Buster не обнаружена в challenge. Возможно, расширение еще не подгрузилось.");
+        }
+
+    } catch (e) {
+        console.log(`   ⚠️ Ошибка при обработке капчи: ${e.message}`);
+    }
 }
 
 async function main() {
