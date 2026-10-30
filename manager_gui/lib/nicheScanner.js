@@ -362,6 +362,10 @@ export function getAllNiches() {
           const segSteps = computeStepStatuses(segFiles, isInitialized);
           const segTagFile = segFiles.pininspectorSeedsFile || (segFiles.hasPininspector ? segFiles.pininspectorFile : null);
           const segCanBatch = Boolean(segFiles.hasPininspectorSeeds && (segFiles.pininspectorSeedsFile?.count || 0) > 0);
+          const segHasAllCsv = Boolean(segFiles.hasAllCsv);
+          const segNeedsCollection = Boolean(segCanBatch && !segHasAllCsv);
+          const segIsCompleted = Boolean(segCanBatch && segHasAllCsv);
+
           const segSearchVolumeStatus = {
             canBatch: segCanBatch,
             hasTxt: Boolean(segTagFile),
@@ -369,10 +373,14 @@ export function getAllNiches() {
             tagFilePath: segTagFile?.fullPath ? path.relative(rootDir, segTagFile.fullPath) : null,
             tagCount: segTagFile?.count || 0,
             mtime: segTagFile?.mtime || null,
-            hasAllCsv: Boolean(segFiles.hasAllCsv),
+            hasAllCsv: segHasAllCsv,
             allCsvName: segFiles.allCsvFile?.name || null,
             allCsvMtime: segFiles.allCsvFile?.mtime || null,
-            statusText: !segCanBatch ? 'Нет текстового файла' : (segFiles.hasAllCsv ? 'Собрано (All.csv)' : 'Готов к сбору')
+            needsCollection: segNeedsCollection,
+            isCompleted: segIsCompleted,
+            statusText: !segCanBatch
+              ? 'Нет текстового файла'
+              : (segHasAllCsv ? 'Собрано (All.csv)' : 'Готов к сбору')
           };
 
           segments.push({
@@ -407,10 +415,42 @@ export function getAllNiches() {
 
       const isMulti = isMultiSegment || segments.length > 0;
       const readySegmentsCount = segments.filter(s => s.searchVolumeStatus?.canBatch).length;
+      const completedSegmentsCount = segments.filter(s => s.searchVolumeStatus?.canBatch && s.searchVolumeStatus?.hasAllCsv).length;
+      const pendingSegmentsCount = segments.filter(s => s.searchVolumeStatus?.canBatch && !s.searchVolumeStatus?.hasAllCsv).length;
+
       const mainTagFile = filesInfo.pininspectorSeedsFile;
       const canBatch = isMulti
         ? readySegmentsCount > 0
         : Boolean(filesInfo.hasPininspectorSeeds && (filesInfo.pininspectorSeedsFile?.count || 0) > 0);
+
+      // Determine accurate completion status
+      const isFullyCompleted = isMulti
+        ? (readySegmentsCount > 0 && pendingSegmentsCount === 0)
+        : Boolean(canBatch && filesInfo.hasAllCsv);
+
+      const isPartiallyCompleted = isMulti && completedSegmentsCount > 0 && pendingSegmentsCount > 0;
+
+      const needsCollection = isMulti
+        ? pendingSegmentsCount > 0
+        : Boolean(canBatch && !filesInfo.hasAllCsv);
+
+      const pendingSegments = isMulti
+        ? segments.filter(s => s.searchVolumeStatus?.canBatch && !s.searchVolumeStatus?.hasAllCsv).map(s => s.name)
+        : (needsCollection ? [coll] : []);
+      const completedSegments = isMulti
+        ? segments.filter(s => s.searchVolumeStatus?.canBatch && s.searchVolumeStatus?.hasAllCsv).map(s => s.name)
+        : (isFullyCompleted ? [coll] : []);
+
+      let statusText = 'Нет текстового файла';
+      if (canBatch) {
+        if (isFullyCompleted) {
+          statusText = isMulti ? `Собрано (все ${completedSegmentsCount} сегм.)` : 'Собрано (All.csv)';
+        } else if (isPartiallyCompleted) {
+          statusText = `Собрано ${completedSegmentsCount} из ${readySegmentsCount} (${pendingSegmentsCount} нужно дособрать)`;
+        } else if (needsCollection) {
+          statusText = isMulti ? `Ожидает сбора (${readySegmentsCount} сегм.)` : 'Ожидает сбора';
+        }
+      }
 
       const searchVolumeStatus = {
         canBatch,
@@ -419,14 +459,21 @@ export function getAllNiches() {
         tagFilePath: mainTagFile?.fullPath ? path.relative(rootDir, mainTagFile.fullPath) : null,
         tagCount: mainTagFile?.count || segments.reduce((sum, s) => sum + (s.searchVolumeStatus?.tagCount || 0), 0),
         mtime: mainTagFile?.mtime || segments.find(s => s.searchVolumeStatus?.mtime)?.searchVolumeStatus?.mtime || null,
-        hasAllCsv: Boolean(filesInfo.hasAllCsv),
-        allCsvName: filesInfo.allCsvFile?.name || null,
+        hasAllCsv: isFullyCompleted,
+        allCsvName: isMulti
+          ? (completedSegmentsCount > 0 ? `${completedSegmentsCount}/${readySegmentsCount} сегментов` : null)
+          : (filesInfo.allCsvFile?.name || null),
         allCsvMtime: filesInfo.allCsvFile?.mtime || null,
         readySegmentsCount,
+        completedSegmentsCount,
+        pendingSegmentsCount,
         totalSegmentsCount: segments.length,
-        statusText: !canBatch
-          ? 'Нет текстового файла'
-          : (filesInfo.hasAllCsv ? 'Собрано (All.csv)' : 'Готов к сбору')
+        isPartiallyCompleted,
+        isFullyCompleted,
+        needsCollection,
+        pendingSegments,
+        completedSegments,
+        statusText
       };
 
       niches.push({
@@ -525,12 +572,31 @@ export function getNicheDetail(category, collection, segmentName = null) {
       if (rootFilesInfo.hasLinksite) segFiles.hasLinksite = true;
       if (rootFilesInfo.hasAllProducts) segFiles.hasAllProducts = true;
       const segSteps = computeStepStatuses(segFiles, isInitialized);
+      const segTagFile = segFiles.pininspectorSeedsFile || (segFiles.hasPininspector ? segFiles.pininspectorFile : null);
+      const segCanBatch = Boolean(segFiles.hasPininspectorSeeds && (segFiles.pininspectorSeedsFile?.count || 0) > 0);
+      const segHasAllCsv = Boolean(segFiles.hasAllCsv);
+      const segSearchVolumeStatus = {
+        canBatch: segCanBatch,
+        hasTxt: Boolean(segTagFile),
+        tagFileName: segTagFile?.name || null,
+        tagFilePath: segTagFile?.fullPath ? path.relative(root, segTagFile.fullPath) : null,
+        tagCount: segTagFile?.count || 0,
+        mtime: segTagFile?.mtime || null,
+        hasAllCsv: segHasAllCsv,
+        allCsvName: segFiles.allCsvFile?.name || null,
+        allCsvMtime: segFiles.allCsvFile?.mtime || null,
+        needsCollection: Boolean(segCanBatch && !segHasAllCsv),
+        statusText: !segCanBatch
+          ? 'Нет текстового файла'
+          : (segHasAllCsv ? 'Собрано (All.csv)' : 'Готов к сбору')
+      };
       segments.push({
         name: seg.name,
         path: path.relative(root, seg.fullPath),
         stepStatuses: segSteps.stepStatuses,
         currentStep: segSteps.currentStep,
         completedCount: segSteps.completedCount,
+        searchVolumeStatus: segSearchVolumeStatus,
         filesInfo: {
           hasLinksite: segFiles.hasLinksite,
           hasSeedTags: segFiles.hasSeedTags,

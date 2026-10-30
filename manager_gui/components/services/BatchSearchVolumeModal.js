@@ -127,24 +127,28 @@ export default function BatchSearchVolumeModal({
   }, [niches]);
 
   // Categorize niches for metrics and filters
-  const { readyList, completedList, noTxtList } = useMemo(() => {
-    const ready = [];
-    const completed = [];
+  const { needsCollectionList, fullyCompletedList, noTxtList } = useMemo(() => {
+    const needsCollection = [];
+    const fullyCompleted = [];
     const noTxt = [];
 
     niches.forEach((n) => {
       const sv = n.searchVolumeStatus;
       if (!sv?.canBatch) {
         noTxt.push(n);
-      } else if (sv.hasAllCsv) {
-        completed.push(n);
-      } else {
-        ready.push(n);
+      } else if (sv.isFullyCompleted) {
+        fullyCompleted.push(n);
+      } else if (sv.needsCollection) {
+        needsCollection.push(n);
       }
     });
 
-    return { readyList: ready, completedList: completed, noTxtList: noTxt };
+    return { needsCollectionList: needsCollection, fullyCompletedList: fullyCompleted, noTxtList: noTxt };
   }, [niches]);
+
+  // Backward compatibility alias
+  const readyList = needsCollectionList;
+  const completedList = fullyCompletedList;
 
   // Filtered niches based on category, search and active filter tab
   const filteredNiches = useMemo(() => {
@@ -152,8 +156,9 @@ export default function BatchSearchVolumeModal({
       const sv = n.searchVolumeStatus;
 
       // Filter Tab
-      if (activeFilterTab === 'ready' && (!sv?.canBatch || sv.hasAllCsv)) return false;
-      if (activeFilterTab === 'completed' && !sv?.hasAllCsv) return false;
+      if (activeFilterTab === 'needs_collection' && !sv?.needsCollection) return false;
+      if (activeFilterTab === 'ready' && !sv?.needsCollection) return false;
+      if (activeFilterTab === 'completed' && !sv?.isFullyCompleted) return false;
       if (activeFilterTab === 'no_txt' && sv?.canBatch) return false;
 
       // Category
@@ -211,11 +216,13 @@ export default function BatchSearchVolumeModal({
     });
   };
 
-  const selectAllReady = () => {
-    const readyKeys = readyList.map((n) => n.id || `${n.category}/${n.collection}`);
-    setSelectedNicheKeys(new Set(readyKeys));
-    setActiveFilterTab('ready');
+  const selectAllNeedsCollection = () => {
+    const targetKeys = needsCollectionList.map((n) => n.id || `${n.category}/${n.collection}`);
+    setSelectedNicheKeys(new Set(targetKeys));
+    setActiveFilterTab('needs_collection');
   };
+
+  const selectAllReady = selectAllNeedsCollection;
 
   const clearSelection = () => {
     setSelectedNicheKeys(new Set());
@@ -250,10 +257,39 @@ export default function BatchSearchVolumeModal({
           selectedNicheKeys.has(n.id || `${n.category}/${n.collection}`)
         );
 
-        targetsToRun = selectedNiches.map((n) => ({
-          category: n.category,
-          collection: n.collection
-        }));
+        for (const n of selectedNiches) {
+          const sv = n.searchVolumeStatus || {};
+          const isMulti = Array.isArray(n.segments) && n.segments.length > 0;
+          if (isMulti) {
+            // Find segments that actually need collection (canBatch and no All.csv)
+            const pendingSegs = n.segments.filter(
+              (s) => s.searchVolumeStatus?.canBatch && !s.searchVolumeStatus?.hasAllCsv
+            );
+            if (pendingSegs.length > 0) {
+              for (const s of pendingSegs) {
+                targetsToRun.push({
+                  category: n.category,
+                  collection: n.collection,
+                  segment: s.name
+                });
+              }
+            } else {
+              // If none pending, collect all ready segments
+              for (const s of n.segments.filter((s) => s.searchVolumeStatus?.canBatch)) {
+                targetsToRun.push({
+                  category: n.category,
+                  collection: n.collection,
+                  segment: s.name
+                });
+              }
+            }
+          } else {
+            targetsToRun.push({
+              category: n.category,
+              collection: n.collection
+            });
+          }
+        }
       }
 
       if (targetsToRun.length === 0) {
@@ -371,14 +407,14 @@ export default function BatchSearchVolumeModal({
               </button>
               <button
                 type="button"
-                onClick={() => setActiveFilterTab('ready')}
+                onClick={() => setActiveFilterTab('needs_collection')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                  activeFilterTab === 'ready'
+                  activeFilterTab === 'needs_collection' || activeFilterTab === 'ready'
                     ? 'bg-amber-500 text-white shadow-2xs'
                     : 'text-slate-600 hover:text-amber-700'
                 }`}
               >
-                🔥 Готовы к сбору ({readyList.length})
+                🔥 Нужно дособрать ({needsCollectionList.length})
               </button>
               <button
                 type="button"
@@ -389,7 +425,7 @@ export default function BatchSearchVolumeModal({
                     : 'text-slate-600 hover:text-emerald-700'
                 }`}
               >
-                ✅ Собраны ({completedList.length})
+                ✅ Полностью собраны ({fullyCompletedList.length})
               </button>
               <button
                 type="button"
@@ -448,10 +484,12 @@ export default function BatchSearchVolumeModal({
 
               <button
                 type="button"
-                onClick={selectAllReady}
-                className="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold border border-amber-200 cursor-pointer"
+                onClick={selectAllNeedsCollection}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold border border-amber-500 shadow-2xs transition-all active:scale-95 cursor-pointer"
+                title="Отфильтровать и выбрать все ниши, которым требуется сбор или добор ключей"
               >
-                ⚡ Выбрать готовые к сбору ({readyList.length})
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>⚡ Выбрать все, кому нужно дособрать ({needsCollectionList.length})</span>
               </button>
 
               {selectedNicheKeys.size > 0 && (
@@ -722,11 +760,21 @@ export default function BatchSearchVolumeModal({
 
                         {/* Search Volume CSV Status */}
                         <td className="px-4 py-3 border-r border-slate-100">
-                          {sv.hasAllCsv ? (
+                          {sv.isPartiallyCompleted ? (
+                            <div className="space-y-1">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-300">
+                                <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                                <span>Собрано {sv.completedSegmentsCount} из {sv.readySegmentsCount}</span>
+                              </span>
+                              <div className="text-[10px] text-amber-700 font-medium">
+                                🔥 {sv.pendingSegmentsCount} сегм. нужно дособрать
+                              </div>
+                            </div>
+                          ) : sv.isFullyCompleted ? (
                             <div className="space-y-1">
                               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                                <span>Собрано (All.csv)</span>
+                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                                <span>{hasSegments ? `Все ${sv.completedSegmentsCount} сегм. собраны` : 'Собрано (All.csv)'}</span>
                               </span>
                               {sv.allCsvMtime && (
                                 <div className="text-[10px] text-slate-400">
@@ -735,10 +783,12 @@ export default function BatchSearchVolumeModal({
                               )}
                             </div>
                           ) : canBatch ? (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200">
-                              <RefreshCw className="w-3 h-3 text-amber-600" />
-                              <span>Ожидает сбора</span>
-                            </span>
+                            <div className="space-y-1">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                                <RefreshCw className="w-3 h-3 text-amber-600 shrink-0" />
+                                <span>Ожидает сбора {hasSegments ? `(${sv.readySegmentsCount} сегм.)` : ''}</span>
+                              </span>
+                            </div>
                           ) : (
                             <span className="text-[11px] text-slate-400">—</span>
                           )}
@@ -750,17 +800,35 @@ export default function BatchSearchVolumeModal({
                             {canBatch && (
                               <button
                                 type="button"
-                                onClick={() =>
-                                  handleRunBatch([
-                                    { category: niche.category, collection: niche.collection }
-                                  ])
-                                }
+                                onClick={() => {
+                                  const isMulti = hasSegments;
+                                  const pendingSegs = isMulti
+                                    ? niche.segments.filter((s) => s.searchVolumeStatus?.canBatch && !s.searchVolumeStatus?.hasAllCsv)
+                                    : [];
+                                  if (pendingSegs.length > 0) {
+                                    handleRunBatch(
+                                      pendingSegs.map((s) => ({
+                                        category: niche.category,
+                                        collection: niche.collection,
+                                        segment: s.name
+                                      }))
+                                    );
+                                  } else {
+                                    handleRunBatch([
+                                      { category: niche.category, collection: niche.collection }
+                                    ]);
+                                  }
+                                }}
                                 disabled={isStarting || isRunning}
                                 className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-colors cursor-pointer"
-                                title="Запустить сбор только для этой ниши"
+                                title={
+                                  sv.isPartiallyCompleted
+                                    ? `Дособрать только ${sv.pendingSegmentsCount} недостающих сегментов`
+                                    : 'Запустить сбор для этой ниши'
+                                }
                               >
                                 <Play className="w-3 h-3 fill-current text-slate-600" />
-                                <span>Собрать</span>
+                                <span>{sv.isPartiallyCompleted ? 'Дособрать' : 'Собрать'}</span>
                               </button>
                             )}
 
@@ -792,18 +860,34 @@ export default function BatchSearchVolumeModal({
                                 {niche.segments.map((seg) => {
                                   const segSv = seg.searchVolumeStatus || {};
                                   const segCan = Boolean(segSv.canBatch);
+                                  const segIsDone = Boolean(segSv.hasAllCsv);
 
                                   return (
                                     <div
                                       key={seg.name}
                                       className={`p-2.5 rounded-xl border bg-white flex flex-col justify-between space-y-1.5 ${
-                                        segCan ? 'border-slate-200' : 'border-slate-200/60 opacity-75'
+                                        segIsDone
+                                          ? 'border-emerald-200 bg-emerald-50/20'
+                                          : segCan
+                                          ? 'border-amber-200 bg-amber-50/10'
+                                          : 'border-slate-200/60 opacity-75'
                                       }`}
                                     >
                                       <div className="flex items-center justify-between gap-1">
-                                        <span className="font-semibold text-slate-900 truncate text-[11px]">
-                                          {seg.name}
-                                        </span>
+                                        <div className="flex items-center gap-1.5 min-w-0">
+                                          <span
+                                            className={`w-2 h-2 rounded-full shrink-0 ${
+                                              segIsDone
+                                                ? 'bg-emerald-500'
+                                                : segCan
+                                                ? 'bg-amber-500'
+                                                : 'bg-slate-300'
+                                            }`}
+                                          />
+                                          <span className="font-semibold text-slate-900 truncate text-[11px]" title={seg.name}>
+                                            {seg.name}
+                                          </span>
+                                        </div>
                                         {segCan ? (
                                           <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-1.5 py-0.2 rounded border border-blue-200 shrink-0">
                                             {segSv.tagCount} тегов
@@ -822,7 +906,27 @@ export default function BatchSearchVolumeModal({
                                         {segSv.hasAllCsv ? (
                                           <span className="font-semibold text-emerald-600">All.csv ✅</span>
                                         ) : segCan ? (
-                                          <span className="font-semibold text-amber-600">Ожидает сбора</span>
+                                          <div className="flex items-center gap-1.5">
+                                            <span className="font-semibold text-amber-600">Ожидает сбора</span>
+                                            <button
+                                              type="button"
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleRunBatch([
+                                                  {
+                                                    category: niche.category,
+                                                    collection: niche.collection,
+                                                    segment: seg.name
+                                                  }
+                                                ]);
+                                              }}
+                                              disabled={isStarting || isRunning}
+                                              className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500 hover:bg-amber-600 text-white cursor-pointer"
+                                              title={`Собрать только сегмент: ${seg.name}`}
+                                            >
+                                              Собрать
+                                            </button>
+                                          </div>
                                         ) : (
                                           <span className="text-slate-400">—</span>
                                         )}
@@ -851,7 +955,11 @@ export default function BatchSearchVolumeModal({
             </span>
             <span>•</span>
             <span className="text-amber-700 font-semibold">
-              Готовы к сбору: {readyList.length}
+              Нужно дособрать: {needsCollectionList.length}
+            </span>
+            <span>•</span>
+            <span className="text-emerald-700 font-semibold">
+              Полностью собраны: {fullyCompletedList.length}
             </span>
             <span>•</span>
             <span className="text-slate-500">

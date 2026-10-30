@@ -40,9 +40,9 @@ export default function TabHub({
   const [selectedCategory, setSelectedCategory] = useState('Все');
   const [initializingKeys, setInitializingKeys] = useState({});
 
-  // Batch ready niches count
+  // Batch ready niches count (needs collection or partial completion)
   const batchReadyCount = useMemo(() => {
-    return niches.filter((n) => n.searchVolumeStatus?.canBatch).length;
+    return niches.filter((n) => n.searchVolumeStatus?.needsCollection).length;
   }, [niches]);
 
   // Summary Metrics calculations
@@ -331,7 +331,14 @@ export default function TabHub({
                       </div>
                     )}
 
-                    {niche.searchVolumeStatus?.hasAllCsv ? (
+                    {niche.searchVolumeStatus?.isPartiallyCompleted ? (
+                      <span
+                        className="text-[10px] font-bold text-amber-800 bg-amber-50 border border-amber-300 px-2 py-0.5 rounded-full shrink-0"
+                        title={`Собрано ${niche.searchVolumeStatus.completedSegmentsCount} из ${niche.searchVolumeStatus.readySegmentsCount} сегментов (${niche.searchVolumeStatus.pendingSegmentsCount} нужно дособрать)`}
+                      >
+                        Собрано {niche.searchVolumeStatus.completedSegmentsCount}/{niche.searchVolumeStatus.readySegmentsCount}
+                      </span>
+                    ) : niche.searchVolumeStatus?.isFullyCompleted ? (
                       <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full shrink-0">
                         All.csv ✅
                       </span>
@@ -351,17 +358,39 @@ export default function TabHub({
                       <span className="text-[10px] text-slate-400 font-mono">{niche.segments.length} шт.</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
-                      {niche.segments.slice(0, 4).map((seg) => (
-                        <span
-                          key={seg.name}
-                          onClick={() => onSelectNiche?.(nicheId, 'pipeline')}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-medium bg-slate-50 hover:bg-red-50 text-slate-700 hover:text-[#E60023] border border-slate-200 hover:border-red-200 transition-colors cursor-pointer"
-                          title={`Сегмент: ${seg.name} (${seg.completedCount}/10 шагов)`}
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#E60023]" />
-                          <span className="truncate max-w-[130px]">{seg.name}</span>
-                        </span>
-                      ))}
+                      {niche.segments.slice(0, 4).map((seg) => {
+                        const segSv = seg.searchVolumeStatus || {};
+                        const isDone = Boolean(segSv.hasAllCsv);
+                        const isReady = Boolean(segSv.canBatch && !isDone);
+                        return (
+                          <span
+                            key={seg.name}
+                            onClick={() => onSelectNiche?.(nicheId, 'pipeline')}
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-medium transition-colors cursor-pointer border ${
+                              isDone
+                                ? 'bg-emerald-50/70 hover:bg-emerald-100/80 text-emerald-800 border-emerald-200'
+                                : isReady
+                                ? 'bg-amber-50/60 hover:bg-amber-100 text-amber-900 border-amber-200'
+                                : 'bg-slate-50 hover:bg-red-50 text-slate-700 hover:text-[#E60023] border-slate-200'
+                            }`}
+                            title={`Сегмент: ${seg.name} (${seg.completedCount}/10 шагов) • ${
+                              isDone
+                                ? 'All.csv собран ✅'
+                                : isReady
+                                ? 'Ожидает сбора (Pininspector готов)'
+                                : 'Нет txt'
+                            }`}
+                          >
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full ${
+                                isDone ? 'bg-emerald-500' : isReady ? 'bg-amber-500' : 'bg-slate-400'
+                              }`}
+                            />
+                            <span className="truncate max-w-[130px]">{seg.name}</span>
+                            {isDone && <span className="text-[9px] font-bold text-emerald-600">✓</span>}
+                          </span>
+                        );
+                      })}
                       {niche.segments.length > 4 && (
                         <span className="text-[10px] text-slate-400 font-mono self-center px-1">
                           +{niche.segments.length - 4} ещё

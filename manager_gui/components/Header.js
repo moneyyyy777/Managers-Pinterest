@@ -60,7 +60,7 @@ export default function Header({
 
   const adminOnline = Boolean(servicesStatus.admin?.running);
   const browserOnline = Boolean(servicesStatus.browser?.running);
-  const readyBatchCount = niches.filter((n) => n.searchVolumeStatus?.canBatch).length;
+  const readyBatchCount = niches.filter((n) => n.searchVolumeStatus?.needsCollection).length;
 
   return (
     <header className="bg-white/95 backdrop-blur border-b border-slate-200 text-slate-900 px-6 py-3 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-40 shadow-xs">
