@@ -23,7 +23,8 @@ const STATIC_CATEGORIES = [
   'procreate',
   'stickers',
   'svg',
-  'wedding'
+  'wedding',
+  'patterns'
 ];
 
 export default function TabHub({
@@ -104,7 +105,7 @@ export default function TabHub({
     <div className="space-y-6">
       {/* 1. Верхняя панель со сводными метриками в чистом стиле Pinterest Light */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-        <div className="bg-white border border-gray-200 rounded-xl p-4 flex flex-col justify-between shadow-xs">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 flex flex-col justify-between shadow-xs hover:border-slate-300 transition-colors">
           <div className="flex items-center justify-between text-slate-500 mb-2">
             <span className="text-xs font-medium">Всего ниш</span>
             <Layers className="w-4 h-4 text-slate-400" />
@@ -115,7 +116,7 @@ export default function TabHub({
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-xl p-4 flex flex-col justify-between shadow-xs">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 flex flex-col justify-between shadow-xs hover:border-slate-300 transition-colors">
           <div className="flex items-center justify-between text-slate-500 mb-2">
             <span className="text-xs font-medium">Развернуто в Keywords</span>
             <FolderCheck className="w-4 h-4 text-emerald-600" />
@@ -126,7 +127,7 @@ export default function TabHub({
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-xl p-4 flex flex-col justify-between shadow-xs">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 flex flex-col justify-between shadow-xs hover:border-slate-300 transition-colors">
           <div className="flex items-center justify-between text-slate-500 mb-2">
             <span className="text-xs font-medium">Завершено на 100%</span>
             <CheckCircle2 className="w-4 h-4 text-[#E60023]" />
@@ -137,7 +138,7 @@ export default function TabHub({
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-xl p-4 flex flex-col justify-between shadow-xs">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 flex flex-col justify-between shadow-xs hover:border-slate-300 transition-colors">
           <div className="flex items-center justify-between text-slate-500 mb-2">
             <span className="text-xs font-medium">Товаров на сайте</span>
             <ShoppingBag className="w-4 h-4 text-blue-600" />
@@ -152,7 +153,7 @@ export default function TabHub({
       </div>
 
       {/* 2. Поиск и фильтрация по категориям (chips) */}
-      <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-3 shadow-xs">
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-xs">
         <div className="relative">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
@@ -160,7 +161,7 @@ export default function TabHub({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Поиск по названию ниши, категории или коллекции..."
-            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-gray-200 rounded-lg text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#E60023] focus:ring-1 focus:ring-[#E60023] transition-colors"
+            className="w-full pl-9.5 pr-4 py-2.5 bg-slate-50/70 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#E60023] focus:ring-2 focus:ring-red-100 transition-all shadow-2xs"
           />
         </div>
 
@@ -173,10 +174,10 @@ export default function TabHub({
                 key={cat}
                 type="button"
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
+                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
                   isActive
                     ? 'bg-[#E60023] text-white font-semibold shadow-xs'
-                    : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-gray-200'
+                    : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-slate-200'
                 }`}
               >
                 {cat}
@@ -189,7 +190,7 @@ export default function TabHub({
       {/* 3. Сетка карточек ниш (2-3 колонки) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredNiches.length === 0 ? (
-          <div className="col-span-full py-12 text-center text-slate-500 bg-white border border-gray-200 rounded-xl text-xs shadow-xs">
+          <div className="col-span-full py-12 text-center text-slate-500 bg-white border border-slate-200 rounded-2xl text-xs shadow-xs">
             Ниши не найдены. Попробуйте сбросить фильтры поиска.
           </div>
         ) : (
@@ -220,13 +221,13 @@ export default function TabHub({
             return (
               <div
                 key={nicheId}
-                className="bg-white border border-gray-200 hover:border-slate-300 rounded-xl p-4.5 flex flex-col justify-between transition-all duration-200 hover:shadow-md space-y-3.5 group shadow-xs"
+                className="bg-white border border-slate-200/90 hover:border-slate-300 rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 hover:shadow-md space-y-4 group shadow-xs"
               >
                 {/* Header: Title + Keywords Indicator */}
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   <div className="flex items-start justify-between gap-2">
                     <h3
-                      className="font-bold text-sm text-slate-900 group-hover:text-[#E60023] transition-colors truncate flex-1"
+                      className="font-bold text-sm text-slate-900 group-hover:text-[#E60023] transition-colors truncate flex-1 tracking-tight"
                       title={niche.title || niche.collection}
                     >
                       {niche.title || niche.collection}
@@ -234,12 +235,12 @@ export default function TabHub({
 
                     {/* Индикатор инициализации в Keywords */}
                     {isInitialized ? (
-                      <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full shrink-0">
+                      <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full shrink-0 shadow-2xs">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                         <span>В Keywords</span>
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full shrink-0">
+                      <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-500 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-full shrink-0">
                         <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                         <span>Не развернута</span>
                       </span>
@@ -251,27 +252,27 @@ export default function TabHub({
                     {/* Architecture Badge */}
                     {isMulti ? (
                       <span
-                        className="inline-flex items-center gap-1 text-[11px] font-semibold rounded bg-red-50 text-[#E60023] border border-red-200 px-2 py-0.5"
+                        className="inline-flex items-center gap-1.5 text-[11px] font-semibold rounded-full bg-red-50 text-[#E60023] border border-red-200 px-2.5 py-0.5"
                         title={`Мульти-сегментная ниша (${segCount} сегментов)`}
                       >
-                        <span>🔴</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#E60023]" />
                         <span>{segCount} сегмента</span>
                       </span>
                     ) : (
                       <span
-                        className="inline-flex items-center gap-1 text-[11px] font-medium rounded bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5"
+                        className="inline-flex items-center gap-1.5 text-[11px] font-medium rounded-full bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5"
                         title="Моно-ядро (единый набор интентов)"
                       >
-                        <span>⚪</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                         <span>Моно-ядро</span>
                       </span>
                     )}
 
-                    <span className="px-2 py-0.5 rounded bg-slate-50 border border-gray-200 text-slate-600 font-mono text-[11px]">
+                    <span className="px-2.5 py-0.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-600 font-mono text-[11px]">
                       {niche.category}
                     </span>
 
-                    <span className="inline-flex items-center gap-1 text-slate-500 text-xs">
+                    <span className="inline-flex items-center gap-1 text-slate-500 text-xs font-medium">
                       <ShoppingBag className="w-3.5 h-3.5 text-slate-400" />
                       <span>{pCount} шт.</span>
                     </span>
@@ -280,25 +281,25 @@ export default function TabHub({
 
                 {/* Sub-Segments Preview (if multi_segment) */}
                 {isMulti && Array.isArray(niche.segments) && niche.segments.length > 0 && (
-                  <div className="space-y-1.5 pt-1 border-t border-slate-100">
+                  <div className="space-y-2 pt-2 border-t border-slate-100">
                     <div className="text-[11px] font-medium text-slate-500 flex items-center justify-between">
                       <span>Сегменты ниши:</span>
                       <span className="text-[10px] text-slate-400 font-mono">{niche.segments.length} шт.</span>
                     </div>
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-1.5">
                       {niche.segments.slice(0, 4).map((seg) => (
                         <span
                           key={seg.name}
                           onClick={() => onSelectNiche?.(nicheId, 'pipeline')}
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-slate-50 hover:bg-red-50 text-slate-700 hover:text-[#E60023] border border-gray-200 hover:border-red-200 transition-colors cursor-pointer"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-medium bg-slate-50 hover:bg-red-50 text-slate-700 hover:text-[#E60023] border border-slate-200 hover:border-red-200 transition-colors cursor-pointer"
                           title={`Сегмент: ${seg.name} (${seg.completedCount}/10 шагов)`}
                         >
-                          <span className="w-1 h-1 rounded-full bg-[#E60023]" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#E60023]" />
                           <span className="truncate max-w-[130px]">{seg.name}</span>
                         </span>
                       ))}
                       {niche.segments.length > 4 && (
-                        <span className="text-[10px] text-slate-400 font-mono self-center">
+                        <span className="text-[10px] text-slate-400 font-mono self-center px-1">
                           +{niche.segments.length - 4} ещё
                         </span>
                       )}
@@ -316,7 +317,7 @@ export default function TabHub({
                       {percent}%
                     </span>
                   </div>
-                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200 p-0.5">
+                  <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200 p-0.5">
                     <div
                       className="bg-gradient-to-r from-red-600 via-rose-500 to-[#E60023] h-full rounded-full transition-all duration-300"
                       style={{ width: `${Math.max(4, percent)}%` }}
@@ -325,12 +326,12 @@ export default function TabHub({
                 </div>
 
                 {/* Кнопки действий */}
-                <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center gap-2">
                   {/* Кнопка "В Штурман" styled with Pinterest Red */}
                   <button
                     type="button"
                     onClick={() => onSelectNiche?.(nicheId, 'pipeline')}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#E60023] hover:bg-[#ad081b] rounded-lg shadow-2xs transition-all active:scale-95 cursor-pointer"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#E60023] hover:bg-[#ad081b] rounded-xl shadow-xs transition-all active:scale-[0.98] cursor-pointer"
                   >
                     <Compass className="w-3.5 h-3.5" />
                     <span>🧭 В Штурман</span>
@@ -339,7 +340,7 @@ export default function TabHub({
                   <button
                     type="button"
                     onClick={() => onSelectNiche?.(nicheId, 'auditor')}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-300 transition-colors cursor-pointer"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 hover:border-slate-300 transition-all active:scale-[0.98] cursor-pointer"
                   >
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                     <span>🛡️ В Аудитор</span>
@@ -350,7 +351,7 @@ export default function TabHub({
                       type="button"
                       onClick={() => handleInit(niche)}
                       disabled={isInitLoading}
-                      className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-amber-600 hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg shadow transition-colors cursor-pointer"
+                      className="w-full inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-amber-600 hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl shadow-xs transition-all active:scale-[0.98] cursor-pointer"
                     >
                       {isInitLoading ? (
                         <>
