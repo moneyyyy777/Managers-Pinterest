@@ -72,9 +72,22 @@ export async function POST(request) {
       }
     }
 
-    // 2. Resolve target directory or file
-    let targetArg = '';
-    if (mode === 'niche' && category && collection) {
+    // 2. Resolve target directories or files
+    let targetArgs = [];
+
+    if (Array.isArray(body.targets) && body.targets.length > 0) {
+      for (const t of body.targets) {
+        const cat = t.category;
+        const coll = t.collection;
+        const s = t.segment || t.segmentName;
+        if (!cat || !coll) continue;
+        const kwPath = findKeywordFolder(cat, coll);
+        if (kwPath && fs.existsSync(kwPath)) {
+          const targetDir = s && fs.existsSync(path.join(kwPath, s)) ? path.join(kwPath, s) : kwPath;
+          targetArgs.push(targetDir);
+        }
+      }
+    } else if (mode === 'niche' && category && collection) {
       const kwPath = findKeywordFolder(category, collection);
       if (!kwPath || !fs.existsSync(kwPath)) {
         return NextResponse.json(
@@ -88,7 +101,7 @@ export async function POST(request) {
           ? path.join(kwPath, seg)
           : kwPath;
 
-      targetArg = targetDir;
+      targetArgs.push(targetDir);
     }
 
     const scriptPath = path.join(root, 'Keywords', 'Scripts for Faster', 'searchvolume.js');
@@ -104,15 +117,20 @@ export async function POST(request) {
       fs.mkdirSync(logsDir, { recursive: true });
     }
     const logFile = path.join(logsDir, 'searchvolume.log');
-    fs.writeFileSync(logFile, `=== Batch SearchVolume start: ${new Date().toISOString()} ===\nTarget: ${targetArg || 'ALL'}\n`, 'utf-8');
+    const targetSummary = targetArgs.length > 0
+      ? `${targetArgs.length} папок: ${targetArgs.map((p) => path.basename(p)).join(', ')}`
+      : 'ALL';
+
+    fs.writeFileSync(
+      logFile,
+      `=== Batch SearchVolume start: ${new Date().toISOString()} ===\nTarget: ${targetSummary}\n`,
+      'utf-8'
+    );
 
     const outLog = fs.openSync(logFile, 'a');
     const errLog = fs.openSync(logFile, 'a');
 
-    const nodeArgs = [scriptPath];
-    if (targetArg) {
-      nodeArgs.push(targetArg);
-    }
+    const nodeArgs = [scriptPath, ...targetArgs];
     if (useSystemVpn) {
       nodeArgs.push('--system-vpn');
     }
@@ -144,10 +162,11 @@ export async function POST(request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Batch SearchVolume запущен в фоновом режиме',
+      message: `Batch SearchVolume запущен (${targetArgs.length > 0 ? targetArgs.length : 'все'} папок)`,
       chromeRunning: isChromeRunning,
       useSystemVpn: Boolean(useSystemVpn),
-      target: targetArg || 'ALL'
+      targetsCount: targetArgs.length,
+      target: targetSummary
     });
   } catch (error) {
     console.error('Error starting SearchVolume batch:', error);

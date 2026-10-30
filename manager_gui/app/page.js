@@ -9,6 +9,7 @@ import TabAuditor from '@/components/TabAuditor';
 import TabPrompts from '@/components/TabPrompts';
 import GitPullModal from '@/components/GitPullModal';
 import GitPushModal from '@/components/GitPushModal';
+import BatchSearchVolumeModal from '@/components/services/BatchSearchVolumeModal';
 
 import {
   Compass,
@@ -25,6 +26,7 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState('pipeline');
   const [isGitPullOpen, setIsGitPullOpen] = useState(false);
   const [isGitPushOpen, setIsGitPushOpen] = useState(false);
+  const [isBatchModalOpen, setIsBatchModalOpen] = useState(false);
   const [nicheDetail, setNicheDetail] = useState(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
 
@@ -232,6 +234,8 @@ export default function HomePage() {
       <Header 
         onOpenGitPull={() => setIsGitPullOpen(true)} 
         onOpenGitPush={() => setIsGitPushOpen(true)}
+        onOpenBatchSearchVolume={() => setIsBatchModalOpen(true)}
+        niches={niches}
       />
 
       {/* Main Body */}
@@ -294,6 +298,7 @@ export default function HomePage() {
               niches={niches}
               onSelectNiche={(key) => handleSelectNiche(key, 'pipeline')}
               onInitNiche={handleInitNiche}
+              onOpenBatchSearchVolume={() => setIsBatchModalOpen(true)}
             />
           )}
 
@@ -324,6 +329,15 @@ export default function HomePage() {
       <GitPushModal
         isOpen={isGitPushOpen}
         onClose={() => setIsGitPushOpen(false)}
+      />
+
+      {/* Batch SearchVolume Modal */}
+      <BatchSearchVolumeModal
+        isOpen={isBatchModalOpen}
+        onClose={() => setIsBatchModalOpen(false)}
+        niches={niches}
+        onSelectNiche={(key, tab) => handleSelectNiche(key, tab)}
+        onRefreshNiches={fetchNiches}
       />
     </div>
   );

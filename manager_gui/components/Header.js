@@ -3,7 +3,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ExternalLink, Loader2 } from 'lucide-react';
 
-export default function Header({ onOpenGitPull, onOpenGitPush }) {
+export default function Header({
+  onOpenGitPull,
+  onOpenGitPush,
+  onOpenBatchSearchVolume,
+  niches = []
+}) {
   const [servicesStatus, setServicesStatus] = useState({
     admin: { running: false, port: 3333, url: 'http://localhost:3333' },
     browser: { running: false, port: 9222, url: 'https://aistudio.google.com' }
@@ -55,6 +60,7 @@ export default function Header({ onOpenGitPull, onOpenGitPush }) {
 
   const adminOnline = Boolean(servicesStatus.admin?.running);
   const browserOnline = Boolean(servicesStatus.browser?.running);
+  const readyBatchCount = niches.filter((n) => n.searchVolumeStatus?.canBatch).length;
 
   return (
     <header className="bg-white/95 backdrop-blur border-b border-slate-200 text-slate-900 px-6 py-3 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-40 shadow-xs">
@@ -146,6 +152,23 @@ export default function Header({ onOpenGitPull, onOpenGitPush }) {
               <span>🌐</span>
             )}
             <span>AI Studio (9222)</span>
+          </button>
+        )}
+
+        {/* Service Button 3: Batch SearchVolume */}
+        {onOpenBatchSearchVolume && (
+          <button
+            type="button"
+            onClick={onOpenBatchSearchVolume}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition-all active:scale-95 shadow-2xs cursor-pointer"
+            title="Открыть пакетный сбор SearchVolume.io для нескольких ниш"
+          >
+            <span>🚀 Batch SearchVolume</span>
+            {readyBatchCount > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold bg-[#E60023] text-white">
+                {readyBatchCount}
+              </span>
+            )}
           </button>
         )}
 

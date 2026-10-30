@@ -371,22 +371,25 @@ async function main() {
         useSystemVpn = true;
     }
 
-    const targetArg = nonFlagArgs[0];
     let targetFiles = [];
 
-    if (targetArg) {
-        const resolvedPath = path.resolve(targetArg);
-        try {
-            const stat = await fs.stat(resolvedPath);
-            if (!stat.isDirectory()) {
-                targetFiles = [resolvedPath];
-            } else {
-                console.log(`🔍 Сканирование папки: ${resolvedPath}...`);
-                targetFiles = await findTargetFiles(resolvedPath);
+    if (nonFlagArgs.length > 0) {
+        for (const arg of nonFlagArgs) {
+            const resolvedPath = path.resolve(arg);
+            try {
+                const stat = await fs.stat(resolvedPath);
+                if (!stat.isDirectory()) {
+                    targetFiles.push(resolvedPath);
+                } else {
+                    console.log(`🔍 Сканирование папки: ${resolvedPath}...`);
+                    const found = await findTargetFiles(resolvedPath);
+                    targetFiles = targetFiles.concat(found);
+                }
+            } catch {
+                console.log(`⚠️ Путь не найден или недоступен: ${resolvedPath}`);
             }
-        } catch {
-            targetFiles = [];
         }
+        targetFiles = Array.from(new Set(targetFiles));
     } else {
         const rootDir = process.cwd();
         console.log(`🔍 Сканирование папок в поисках файлов '${INPUT_FILENAME}'...`);

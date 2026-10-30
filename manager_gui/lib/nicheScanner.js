@@ -169,9 +169,13 @@ export function scanKeywordFiles(dirPath) {
     hasAllProducts: false,
     hasSeedTags: false,
     seedTagsCount: 0,
+    seedTagsFile: null,
     hasPininspector: false,
+    pininspectorFile: null,
     hasPininspectorSeeds: false,
+    pininspectorSeedsFile: null,
     hasAllCsv: false,
+    allCsvFile: null,
     hasFilterOpenAi: false,
     filterOpenAiCount: 0,
     intentFiles: [],
@@ -217,19 +221,49 @@ export function scanKeywordFiles(dirPath) {
           if (lowerName.includes('seed tags') && lowerName.endsWith('.txt')) {
             result.hasSeedTags = true;
             try {
+              const stat = fs.statSync(fullPath);
               const lines = fs.readFileSync(fullPath, 'utf-8').split('\n').filter(l => l.trim().length > 0);
               result.seedTagsCount = Math.max(result.seedTagsCount, lines.length);
+              result.seedTagsFile = {
+                name: entry.name,
+                fullPath,
+                mtime: stat.mtime.toISOString(),
+                mtimeMs: stat.mtimeMs,
+                count: lines.length
+              };
             } catch (e) {}
           }
           if (lowerName.includes('pininspector') && lowerName.endsWith('.txt')) {
-            if (lowerName.includes('seed')) {
-              result.hasPininspectorSeeds = true;
-            } else {
-              result.hasPininspector = true;
-            }
+            try {
+              const stat = fs.statSync(fullPath);
+              const lines = fs.readFileSync(fullPath, 'utf-8').split('\n').filter(l => l.trim().length > 0);
+              const fObj = {
+                name: entry.name,
+                fullPath,
+                mtime: stat.mtime.toISOString(),
+                mtimeMs: stat.mtimeMs,
+                count: lines.length
+              };
+              if (lowerName.includes('seed')) {
+                result.hasPininspectorSeeds = true;
+                result.pininspectorSeedsFile = fObj;
+              } else {
+                result.hasPininspector = true;
+                result.pininspectorFile = fObj;
+              }
+            } catch (e) {}
           }
           if (lowerName.includes('(all).csv') || lowerName.endsWith(' all.csv')) {
             result.hasAllCsv = true;
+            try {
+              const stat = fs.statSync(fullPath);
+              result.allCsvFile = {
+                name: entry.name,
+                fullPath,
+                mtime: stat.mtime.toISOString(),
+                mtimeMs: stat.mtimeMs
+              };
+            } catch (e) {}
           }
           if (lowerName.includes('filter by openai') && lowerName.endsWith('.csv')) {
             result.hasFilterOpenAi = true;
@@ -326,12 +360,28 @@ export function getAllNiches() {
           if (filesInfo.hasAllProducts) segFiles.hasAllProducts = true;
 
           const segSteps = computeStepStatuses(segFiles, isInitialized);
+          const segTagFile = segFiles.pininspectorSeedsFile || (segFiles.hasPininspector ? segFiles.pininspectorFile : null);
+          const segCanBatch = Boolean(segFiles.hasPininspectorSeeds && (segFiles.pininspectorSeedsFile?.count || 0) > 0);
+          const segSearchVolumeStatus = {
+            canBatch: segCanBatch,
+            hasTxt: Boolean(segTagFile),
+            tagFileName: segTagFile?.name || null,
+            tagFilePath: segTagFile?.fullPath ? path.relative(rootDir, segTagFile.fullPath) : null,
+            tagCount: segTagFile?.count || 0,
+            mtime: segTagFile?.mtime || null,
+            hasAllCsv: Boolean(segFiles.hasAllCsv),
+            allCsvName: segFiles.allCsvFile?.name || null,
+            allCsvMtime: segFiles.allCsvFile?.mtime || null,
+            statusText: !segCanBatch ? 'Нет текстового файла' : (segFiles.hasAllCsv ? 'Собрано (All.csv)' : 'Готов к сбору')
+          };
+
           segments.push({
             name: seg.name,
             path: path.relative(rootDir, seg.fullPath),
             stepStatuses: segSteps.stepStatuses,
             currentStep: segSteps.currentStep,
             completedCount: segSteps.completedCount,
+            searchVolumeStatus: segSearchVolumeStatus,
             filesInfo: {
               hasLinksite: segFiles.hasLinksite,
               hasSeedTags: segFiles.hasSeedTags,
@@ -355,6 +405,30 @@ export function getAllNiches() {
 
       const { stepStatuses, currentStep, completedCount } = computeStepStatuses(filesInfo, isInitialized);
 
+      const isMulti = isMultiSegment || segments.length > 0;
+      const readySegmentsCount = segments.filter(s => s.searchVolumeStatus?.canBatch).length;
+      const mainTagFile = filesInfo.pininspectorSeedsFile;
+      const canBatch = isMulti
+        ? readySegmentsCount > 0
+        : Boolean(filesInfo.hasPininspectorSeeds && (filesInfo.pininspectorSeedsFile?.count || 0) > 0);
+
+      const searchVolumeStatus = {
+        canBatch,
+        hasTxt: canBatch,
+        tagFileName: mainTagFile?.name || (isMulti ? (readySegmentsCount > 0 ? `${readySegmentsCount}/${segments.length} сегментов готовы` : null) : null),
+        tagFilePath: mainTagFile?.fullPath ? path.relative(rootDir, mainTagFile.fullPath) : null,
+        tagCount: mainTagFile?.count || segments.reduce((sum, s) => sum + (s.searchVolumeStatus?.tagCount || 0), 0),
+        mtime: mainTagFile?.mtime || segments.find(s => s.searchVolumeStatus?.mtime)?.searchVolumeStatus?.mtime || null,
+        hasAllCsv: Boolean(filesInfo.hasAllCsv),
+        allCsvName: filesInfo.allCsvFile?.name || null,
+        allCsvMtime: filesInfo.allCsvFile?.mtime || null,
+        readySegmentsCount,
+        totalSegmentsCount: segments.length,
+        statusText: !canBatch
+          ? 'Нет текстового файла'
+          : (filesInfo.hasAllCsv ? 'Собрано (All.csv)' : 'Готов к сбору')
+      };
+
       niches.push({
         id: `${cat}/${coll}`,
         category: cat,
@@ -372,6 +446,7 @@ export function getAllNiches() {
         stepStatuses,
         currentStep,
         completedCount,
+        searchVolumeStatus,
         filesInfo: {
           hasLinksite: filesInfo.hasLinksite,
           hasSeedTags: filesInfo.hasSeedTags,
