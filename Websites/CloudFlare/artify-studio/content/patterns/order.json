@@ -1,6 +1,11 @@
 {
   "order": [
     "luxury",
-    "rustic"
+    "rustic",
+    "repeating",
+    "repeating-striped",
+    "neon-pop",
+    "pop",
+    "comic-digital-paper"
   ]
 }
