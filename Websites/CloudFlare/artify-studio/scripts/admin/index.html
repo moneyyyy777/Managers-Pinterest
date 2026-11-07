@@ -4656,6 +4656,10 @@
             const currentIdx = allCards.indexOf(card);
             if (currentIdx === pos - 1) return;
 
+            // Запоминаем соседнюю карточку для фиксации положения скролла без дёрганий
+            const anchorCard = card.nextElementSibling || card.previousElementSibling;
+            const anchorRectBefore = anchorCard ? anchorCard.getBoundingClientRect() : null;
+
             const targetCard = allCards[pos - 1];
             if (pos >= total) {
                 targetCard.after(card);
@@ -4667,10 +4671,17 @@
 
             updateBadges();
             markDirty();
-            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-            card.classList.add('ring-2', 'ring-emerald-400');
-            setTimeout(() => card.classList.remove('ring-2', 'ring-emerald-400'), 1500);
+            // Компенсируем сдвиг скролла, чтобы экран оставался ровно на том же месте где был пользователь
+            if (anchorCard && anchorRectBefore) {
+                const anchorRectAfter = anchorCard.getBoundingClientRect();
+                const diff = anchorRectAfter.top - anchorRectBefore.top;
+                if (Math.abs(diff) > 1) {
+                    window.scrollBy({ top: diff, behavior: 'instant' });
+                }
+            }
+
+            showToast(`Товар перемещён на позицию #${pos}`);
         };
 
         window.promptMoveToPosition = function(slug) {
