@@ -926,6 +926,17 @@
                 .replace(/'/g, '&#39;');
         }
 
+        function optimizeImageUrl(url, width = 500) {
+            if (!url) return '';
+            if (url.includes('i.pinimg.com')) {
+                return url.replace(/\/(1200x|originals)\//, '/564x/');
+            }
+            if (url.includes('cdn.creativefabrica.com') || url.includes('creativefabrica.com')) {
+                return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${width}&output=webp&q=80`;
+            }
+            return url;
+        }
+
         let categoriesData = [];
         let currentProducts = [];
         let currentTrashItems = [];
@@ -1197,7 +1208,7 @@
             if (product && confirmModalProductCard) {
                 confirmModalProductCard.classList.remove('hidden');
                 confirmModalProductCard.classList.add('flex');
-                if (confirmModalProdImg) confirmModalProdImg.src = product.image || '';
+                if (confirmModalProdImg) confirmModalProdImg.src = optimizeImageUrl(product.image || '', 160);
                 if (confirmModalProdTitle) confirmModalProdTitle.innerText = product.title || product.slug || '';
                 if (confirmModalProdSlug) confirmModalProdSlug.innerText = product.slug || '';
             } else if (confirmModalProductCard) {
@@ -2851,7 +2862,7 @@
                             <!-- Обложка -->
                             <div class="w-16 h-16 rounded-xl bg-neutral-900 border border-neutral-800 overflow-hidden shrink-0 flex items-center justify-center">
                                 ${c.image 
-                                    ? `<img src="${escapeHtml(c.image)}" alt="${escapeHtml(c.title)}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://via.placeholder.com/100x100?text=No+Photo';">`
+                                    ? `<img src="${optimizeImageUrl(c.image, 160)}" data-fallback="${escapeHtml(c.image)}" alt="${escapeHtml(c.title)}" class="w-full h-full object-cover" onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){this.src=this.dataset.fallback;}else{this.onerror=null; this.src='https://via.placeholder.com/100x100?text=No+Photo';}">`
                                     : `<span class="text-neutral-600 text-xl">🖼️</span>`
                                 }
                             </div>
@@ -3076,7 +3087,7 @@
                             <!-- Обложка -->
                             <div class="w-16 h-16 rounded-xl bg-neutral-900 border border-neutral-800 overflow-hidden shrink-0 flex items-center justify-center">
                                 ${col.image 
-                                    ? `<img src="${escapeHtml(col.image)}" alt="${escapeHtml(col.title)}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://via.placeholder.com/100x100?text=No+Photo';">`
+                                    ? `<img src="${optimizeImageUrl(col.image, 160)}" data-fallback="${escapeHtml(col.image)}" alt="${escapeHtml(col.title)}" class="w-full h-full object-cover" onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){this.src=this.dataset.fallback;}else{this.onerror=null; this.src='https://via.placeholder.com/100x100?text=No+Photo';}">`
                                     : `<span class="text-neutral-600 text-xl">🖼️</span>`
                                 }
                             </div>
@@ -3285,7 +3296,7 @@
                     : "🚀 Переместить товар";
             }
 
-            if (moveProdImg) moveProdImg.src = prod.image || '';
+            if (moveProdImg) moveProdImg.src = optimizeImageUrl(prod.image || '', 160);
             if (moveProdTitle) moveProdTitle.innerText = prod.title || slug;
             if (moveProdSlug) moveProdSlug.innerText = slug;
             if (moveFromLocation) {
@@ -4497,7 +4508,7 @@
 
                 card.innerHTML = `
                     <div class="relative aspect-[3/2] bg-neutral-950 overflow-hidden cursor-grab active:cursor-grabbing drag-handle">
-                        <img src="${prod.image || ''}" alt="${prod.title}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" loading="lazy">
+                        <img src="${optimizeImageUrl(prod.image, 500)}" data-fallback="${escapeHtml(prod.image || '')}" onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){this.src=this.dataset.fallback;}" alt="${escapeHtml(prod.title)}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" loading="lazy">
                         
                         <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-20">
                             <input type="checkbox" data-chk-slug="${prod.slug}" class="product-select-chk w-4 h-4 rounded bg-black/80 border-neutral-600 text-emerald-500 focus:ring-0 focus:ring-offset-0 cursor-pointer accent-emerald-500" ${isSelected ? 'checked' : ''} onclick="event.stopPropagation(); toggleSelectProduct('${prod.slug}', this.checked)">
@@ -4982,7 +4993,7 @@
                 card.innerHTML = `
                     <div class="relative aspect-[3/2] bg-neutral-950 overflow-hidden">
                         <a href="${canonicalUrl}" target="_blank" rel="noopener noreferrer" class="block w-full h-full cursor-pointer" title="Открыть страницу товара на Creative Fabrica (в новой вкладке)">
-                            <img src="${prod.image || ''}" alt="${prod.title}" class="w-full h-full object-cover opacity-85 group-hover:opacity-100 group-hover:scale-105 transition duration-300" loading="lazy">
+                            <img src="${optimizeImageUrl(prod.image, 500)}" data-fallback="${escapeHtml(prod.image || '')}" onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){this.src=this.dataset.fallback;}" alt="${escapeHtml(prod.title || '')}" class="w-full h-full object-cover opacity-85 group-hover:opacity-100 group-hover:scale-105 transition duration-300" loading="lazy">
                         </a>
                         
                         <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-20">
@@ -5285,7 +5296,7 @@
                         if (data.title) modalTitleInput.value = data.title;
                         if (data.slug) modalPreviewSlug.innerText = `slug: ${data.slug}`;
                         if (data.image) {
-                            modalPreviewImg.src = data.image;
+                            modalPreviewImg.src = optimizeImageUrl(data.image, 400);
                             modalPreviewImg.classList.remove('hidden');
                             modalPreviewPlaceholder.classList.add('hidden');
                             modalImgUrlInput.value = data.image;
@@ -5312,7 +5323,7 @@
         modalImgUrlInput.addEventListener('input', () => {
             const url = modalImgUrlInput.value.trim();
             if (url) {
-                modalPreviewImg.src = url;
+                modalPreviewImg.src = optimizeImageUrl(url, 400);
                 modalPreviewImg.classList.remove('hidden');
                 modalPreviewPlaceholder.classList.add('hidden');
             }
