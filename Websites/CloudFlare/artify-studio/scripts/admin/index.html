@@ -237,51 +237,60 @@
             </div>
         </div>
 
-        <!-- Контейнер каталога с поддержкой сплит-экрана -->
-        <div id="catalogLayoutContainer" class="flex gap-6 items-start transition-all duration-300">
-            <!-- Левая колонка: Основной каталог с drag-and-drop -->
-            <div id="mainCatalogCol" class="flex-1 min-w-0 transition-all duration-300">
-                <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    <div class="col-span-full py-20 text-center text-neutral-500 text-sm">
-                        Выберите категорию и подборку выше.
+        <!-- Контейнер каталога с поддержкой полноценного двойного сплит-экрана -->
+        <div id="catalogLayoutContainer" class="flex gap-6 items-start transition-all duration-300 w-full">
+            <!-- Левое окно каталога (в обычном режиме на 100% ширины, в сплите - 50%) -->
+            <div id="leftPaneWrapper" class="flex-1 min-w-0 transition-all duration-300">
+                <!-- Шапка левого окна (активна в режиме сплита) -->
+                <div id="leftPaneHeader" class="hidden items-center justify-between pb-3 mb-4 border-b border-neutral-800 bg-neutral-900/40 px-4 py-2.5 rounded-2xl shrink-0">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="text-xs font-black text-white uppercase tracking-wider">Левое окно</span>
+                        <span id="leftWindowCountBadge" class="bg-neutral-800 text-neutral-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded-md">0 тов.</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="scrollPaneTo('left', 'top')" class="px-2.5 py-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white text-[11px] font-bold rounded-lg transition cursor-pointer" title="Прокрутить левое окно в самый верх">⤒ Вверх</button>
+                        <button onclick="scrollPaneTo('left', 'bottom')" class="px-2.5 py-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white text-[11px] font-bold rounded-lg transition cursor-pointer" title="Прокрутить левое окно в самый низ">⤓ Вниз</button>
+                    </div>
+                </div>
+
+                <div id="leftScrollContainer" class="transition-all duration-300">
+                    <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div class="col-span-full py-20 text-center text-neutral-500 text-sm">
+                            Выберите категорию и подборку выше.
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Правая колонка: Сплит-инспектор (целевая зона перемещения) -->
-            <aside id="splitInspectorPanel" class="hidden w-[380px] xl:w-[420px] shrink-0 sticky top-4 bg-neutral-900/95 backdrop-blur-md border border-neutral-800 rounded-2xl shadow-2xl p-4 flex-col max-h-[calc(100vh-2rem)] overflow-hidden transition-all duration-300 z-30">
-                <!-- Шапка сплит-инспектора -->
-                <div class="flex items-center justify-between pb-3 border-b border-neutral-800 mb-3 shrink-0">
-                    <div class="flex items-center gap-2">
-                        <span class="text-emerald-400 text-base">◫</span>
-                        <div>
-                            <h3 class="text-xs font-black text-white uppercase tracking-wider flex items-center gap-1.5">
-                                <span>Целевая витрина</span>
-                                <span id="splitFocusBadge" class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold">#1–#8</span>
-                            </h3>
-                            <p class="text-[10px] text-neutral-400">Где появился товар и кто сместился</p>
-                        </div>
+            <!-- Правое окно (Полноценная синхронная копия каталога с независимым скроллом) -->
+            <div id="rightPaneWrapper" class="hidden flex-1 min-w-0 flex-col bg-neutral-900/30 rounded-2xl border border-neutral-800 p-4 overflow-hidden transition-all duration-300">
+                <!-- Шапка правого окна -->
+                <div class="flex items-center justify-between pb-3 mb-4 border-b border-neutral-800 shrink-0">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-sky-500 animate-pulse"></span>
+                        <span class="text-xs font-black text-white uppercase tracking-wider">Правое окно (Копия)</span>
+                        <span id="rightWindowCountBadge" class="bg-neutral-800 text-neutral-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded-md">0 тов.</span>
                     </div>
-                    <button onclick="toggleSplitMode(false)" class="text-neutral-400 hover:text-white p-1 rounded-lg hover:bg-neutral-800 text-xs transition cursor-pointer" title="Закрыть сплит-экран">✕</button>
-                </div>
-
-                <!-- Быстрые фильтры правого окна -->
-                <div class="flex items-center gap-1.5 pb-2.5 border-b border-neutral-800/60 mb-2.5 shrink-0">
-                    <button id="splitViewTopBtn" onclick="renderSplitInspector('top')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-neutral-800 hover:bg-neutral-700 text-white transition cursor-pointer">
-                        Топ #1–#8
-                    </button>
-                    <button id="splitViewLastMovedBtn" onclick="renderSplitInspector('lastMoved')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-neutral-400 hover:text-white hover:bg-neutral-800 transition cursor-pointer">
-                        🎯 Перемещённый
-                    </button>
-                </div>
-
-                <!-- Список карточек в целевой зоне -->
-                <div id="splitInspectorCards" class="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
-                    <div class="p-8 text-center text-xs text-neutral-500">
-                        Переместите любой товар или выберите подборку
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <button id="syncScrollBtn" onclick="toggleSyncScroll()" class="px-2.5 py-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white text-[11px] font-bold rounded-lg transition cursor-pointer flex items-center gap-1" title="Включить синхронную прокрутку обоих окон вместе">
+                            <span>🔗 Синхро-скролл</span>
+                        </button>
+                        <button onclick="scrollToLastMoved('right')" class="px-2.5 py-1 bg-sky-950 hover:bg-sky-900 text-sky-300 border border-sky-800/80 text-[11px] font-bold rounded-lg transition cursor-pointer flex items-center gap-1" title="Сфокусировать правое окно на последнем перемещенном товаре">
+                            <span>🎯 Где товар</span>
+                        </button>
+                        <button onclick="scrollPaneTo('right', 'top')" class="px-2.5 py-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white text-[11px] font-bold rounded-lg transition cursor-pointer" title="Прокрутить правое окно в самый верх">⤒ Вверх</button>
+                        <button onclick="scrollPaneTo('right', 'bottom')" class="px-2.5 py-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white text-[11px] font-bold rounded-lg transition cursor-pointer" title="Прокрутить правое окно в самый низ">⤓ Вниз</button>
+                        <button onclick="toggleSplitMode(false)" class="p-1 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg text-xs transition cursor-pointer" title="Закрыть сплит-экран">✕</button>
                     </div>
                 </div>
-            </aside>
+
+                <div id="rightScrollContainer" class="flex-1 overflow-y-auto max-h-[calc(100vh-210px)] custom-scrollbar pr-1.5">
+                    <div id="productsGridRight" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
+                        <!-- Полная копия витрины с drag-and-drop -->
+                    </div>
+                </div>
+            </div>
         </div>
 
     </main>
@@ -1033,6 +1042,9 @@
 
         // Состояние сплит-экрана и контроллера позиции
         let isSplitMode = false;
+        let isSyncScrollEnabled = false;
+        let isScrollingSync = false;
+        let sortableRightInstance = null;
         let lastMovedSlug = null;
         let lastMovedTargetPos = null;
         let lastDisplacedSlug = null;
@@ -4532,159 +4544,178 @@
 
             if (products.length === 0) {
                 const isFilter = Boolean(filterSelect.value);
-                productsGrid.innerHTML = isFilter 
+                const emptyHtml = isFilter 
                     ? `<div class="col-span-full py-20 text-center text-neutral-500">
                         В этом фильтре пока нет товаров.<br>
                         <span class="text-xs text-neutral-400">Запустите <code>node scripts/creative-fabrica/generate-filter-collections.js</code> или добавьте товар кнопкой "+ Добавить slug".</span>
                        </div>`
                     : '<div class="col-span-full py-20 text-center text-neutral-500">В этой подборке нет товаров.</div>';
+                productsGrid.innerHTML = emptyHtml;
+                const rightGrid = document.getElementById('productsGridRight');
+                if (rightGrid) rightGrid.innerHTML = emptyHtml;
+                updateWindowCountBadges();
                 return;
             }
 
             productsGrid.innerHTML = '';
             products.forEach((prod, index) => {
-                const card = document.createElement('div');
-                const isSelected = selectedSlugs.has(prod.slug);
-                card.className = `group relative bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-lg transition-all duration-200 hover:border-neutral-700 flex flex-col ${isSelected ? 'ring-2 ring-emerald-500 bg-neutral-850' : ''}`;
-                card.dataset.slug = prod.slug;
+                productsGrid.appendChild(createProductCardElement(prod, index));
+            });
 
-                let ratingBadge = '';
-                if (prod.isDraft) {
-                    ratingBadge = `<span class="bg-emerald-950/90 text-emerald-300 border border-emerald-500/80 text-xs font-extrabold px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-md"><span class="text-emerald-400 font-black">⚡</span><span>Черновик</span></span>`;
-                } else if (prod.rating !== null && prod.rating !== undefined) {
-                    if (prod.rating >= 4.8) {
-                        ratingBadge = `<span class="bg-black/90 text-white border border-emerald-500/70 text-xs font-black px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-md"><span class="text-amber-400 text-sm leading-none drop-shadow">★</span><span class="font-extrabold">${prod.rating}</span><span class="text-neutral-400 text-[10px] font-normal">(${prod.reviewsCount || 1})</span></span>`;
-                    } else if (prod.rating >= 4.5) {
-                        ratingBadge = `<span class="bg-black/90 text-white border border-amber-500/70 text-xs font-black px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-md"><span class="text-amber-400 text-sm leading-none drop-shadow">★</span><span class="font-extrabold">${prod.rating}</span><span class="text-neutral-400 text-[10px] font-normal">(${prod.reviewsCount || 1})</span></span>`;
-                    } else {
-                        ratingBadge = `<span class="bg-black/90 text-white border border-rose-600 text-xs font-black px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-md"><span class="text-rose-400 text-xs leading-none">⚠️</span><span class="font-extrabold text-rose-300">${prod.rating}</span><span class="text-neutral-400 text-[10px] font-normal">(${prod.reviewsCount || 1})</span></span>`;
-                    }
+            const addEndCard = createAddEndCardElement(products.length);
+            productsGrid.appendChild(addEndCard);
+
+            initSortable();
+
+            if (isSplitMode) {
+                populateRightGrid();
+            }
+            updateWindowCountBadges();
+        }
+
+        function createProductCardElement(prod, index) {
+            const card = document.createElement('div');
+            const isSelected = selectedSlugs.has(prod.slug);
+            card.className = `group relative bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-lg transition-all duration-200 hover:border-neutral-700 flex flex-col ${isSelected ? 'ring-2 ring-emerald-500 bg-neutral-850' : ''}`;
+            card.dataset.slug = prod.slug;
+
+            let ratingBadge = '';
+            if (prod.isDraft) {
+                ratingBadge = `<span class="bg-emerald-950/90 text-emerald-300 border border-emerald-500/80 text-xs font-extrabold px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-md"><span class="text-emerald-400 font-black">⚡</span><span>Черновик</span></span>`;
+            } else if (prod.rating !== null && prod.rating !== undefined) {
+                if (prod.rating >= 4.8) {
+                    ratingBadge = `<span class="bg-black/90 text-white border border-emerald-500/70 text-xs font-black px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-md"><span class="text-amber-400 text-sm leading-none drop-shadow">★</span><span class="font-extrabold">${prod.rating}</span><span class="text-neutral-400 text-[10px] font-normal">(${prod.reviewsCount || 1})</span></span>`;
+                } else if (prod.rating >= 4.5) {
+                    ratingBadge = `<span class="bg-black/90 text-white border border-amber-500/70 text-xs font-black px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-md"><span class="text-amber-400 text-sm leading-none drop-shadow">★</span><span class="font-extrabold">${prod.rating}</span><span class="text-neutral-400 text-[10px] font-normal">(${prod.reviewsCount || 1})</span></span>`;
                 } else {
-                    ratingBadge = `<span class="bg-neutral-950 text-neutral-400 border border-neutral-700 text-[11px] font-semibold px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm"><span class="text-neutral-500">☆</span><span>0 отзывов</span></span>`;
+                    ratingBadge = `<span class="bg-black/90 text-white border border-rose-600 text-xs font-black px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-md"><span class="text-rose-400 text-xs leading-none">⚠️</span><span class="font-extrabold text-rose-300">${prod.rating}</span><span class="text-neutral-400 text-[10px] font-normal">(${prod.reviewsCount || 1})</span></span>`;
                 }
+            } else {
+                ratingBadge = `<span class="bg-neutral-950 text-neutral-400 border border-neutral-700 text-[11px] font-semibold px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm"><span class="text-neutral-500">☆</span><span>0 отзывов</span></span>`;
+            }
 
-                let favoritesBadge = '';
-                const favVal = prod.favoritesRaw || (prod.favorites !== null && prod.favorites !== undefined && prod.favorites > 0 ? `${prod.favorites}X` : null);
-                if (favVal) {
-                    favoritesBadge = `<span class="bg-black/90 text-white border border-rose-500/70 text-xs font-black px-2 py-1 rounded-lg flex items-center gap-1 shadow-md" title="${favVal} Added to favorites"><span class="text-rose-500 text-xs leading-none drop-shadow">♥</span><span class="font-extrabold text-rose-200">${favVal}</span></span>`;
-                }
+            let favoritesBadge = '';
+            const favVal = prod.favoritesRaw || (prod.favorites !== null && prod.favorites !== undefined && prod.favorites > 0 ? `${prod.favorites}X` : null);
+            if (favVal) {
+                favoritesBadge = `<span class="bg-black/90 text-white border border-rose-500/70 text-xs font-black px-2 py-1 rounded-lg flex items-center gap-1 shadow-md" title="${favVal} Added to favorites"><span class="text-rose-500 text-xs leading-none drop-shadow">♥</span><span class="font-extrabold text-rose-200">${favVal}</span></span>`;
+            }
 
-                let tagsBadge = '';
-                if (Array.isArray(prod.designerTags) && prod.designerTags.length > 0) {
-                    const tCount = prod.designerTags.length;
-                    const tSample = prod.designerTags.slice(0, 5).join(', ') + (tCount > 5 ? '...' : '');
-                    tagsBadge = `<span class="bg-black/90 text-neutral-300 border border-neutral-700/80 text-xs font-bold px-2 py-1 rounded-lg flex items-center gap-1 shadow-md cursor-help" title="Designer tags (${tCount}):\n${tSample}"><span class="text-emerald-400 text-xs">🏷️</span><span class="text-[11px] font-semibold text-neutral-200">${tCount}</span></span>`;
-                }
+            let tagsBadge = '';
+            if (Array.isArray(prod.designerTags) && prod.designerTags.length > 0) {
+                const tCount = prod.designerTags.length;
+                const tSample = prod.designerTags.slice(0, 5).join(', ') + (tCount > 5 ? '...' : '');
+                tagsBadge = `<span class="bg-black/90 text-neutral-300 border border-neutral-700/80 text-xs font-bold px-2 py-1 rounded-lg flex items-center gap-1 shadow-md cursor-help" title="Designer tags (${tCount}):\n${tSample}"><span class="text-emerald-400 text-xs">🏷️</span><span class="text-[11px] font-semibold text-neutral-200">${tCount}</span></span>`;
+            }
 
-                const isFilterView = Boolean(filterSelect.value);
-                const deleteTitle = isFilterView 
-                    ? "Исключить из этого фильтра (запомнится в excluded)" 
-                    : "Удалить в delete_links.txt";
+            const isFilterView = Boolean(filterSelect.value);
+            const deleteTitle = isFilterView 
+                ? "Исключить из этого фильтра (запомнится в excluded)" 
+                : "Удалить в delete_links.txt";
 
-                let sourceBadge = '';
-                if (prod.sourceQuery || prod.sourceComment) {
-                    sourceBadge = `
-                        <div class="mt-2 flex flex-col gap-1 bg-neutral-950/70 border border-neutral-800/80 rounded-lg px-2.5 py-1.5 text-[11px]">
-                            ${prod.sourceQuery ? `
-                                <div class="flex items-center gap-1 text-neutral-300 font-medium truncate" title="Поисковый запрос сбора: ${escapeHtml(prod.sourceQuery)}">
-                                    <span class="text-emerald-400 text-xs shrink-0">🔍</span>
-                                    <span class="truncate"><span class="text-neutral-500 text-[10px]">Запрос:</span> <span class="font-mono text-emerald-300/90">${escapeHtml(prod.sourceQuery)}</span></span>
-                                </div>
-                            ` : ''}
-                            ${prod.sourceComment ? `
-                                <div class="flex items-start gap-1 text-amber-200/90 font-medium text-[10.5px] leading-tight" title="Примечание менеджера: ${escapeHtml(prod.sourceComment)}">
-                                    <span class="text-amber-400 text-xs shrink-0 mt-0.5">💡</span>
-                                    <span><span class="text-neutral-500 text-[10px]">Задача:</span> ${escapeHtml(prod.sourceComment)}</span>
-                                </div>
-                            ` : ''}
-                        </div>
-                    `;
-                }
+            let sourceBadge = '';
+            if (prod.sourceQuery || prod.sourceComment) {
+                sourceBadge = `
+                    <div class="mt-2 flex flex-col gap-1 bg-neutral-950/70 border border-neutral-800/80 rounded-lg px-2.5 py-1.5 text-[11px]">
+                        ${prod.sourceQuery ? `
+                            <div class="flex items-center gap-1 text-neutral-300 font-medium truncate" title="Поисковый запрос сбора: ${escapeHtml(prod.sourceQuery)}">
+                                <span class="text-emerald-400 text-xs shrink-0">🔍</span>
+                                <span class="truncate"><span class="text-neutral-500 text-[10px]">Запрос:</span> <span class="font-mono text-emerald-300/90">${escapeHtml(prod.sourceQuery)}</span></span>
+                            </div>
+                        ` : ''}
+                        ${prod.sourceComment ? `
+                            <div class="flex items-start gap-1 text-amber-200/90 font-medium text-[10.5px] leading-tight" title="Примечание менеджера: ${escapeHtml(prod.sourceComment)}">
+                                <span class="text-amber-400 text-xs shrink-0 mt-0.5">💡</span>
+                                <span><span class="text-neutral-500 text-[10px]">Задача:</span> ${escapeHtml(prod.sourceComment)}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
 
-                card.innerHTML = `
-                    <div class="relative aspect-[3/2] bg-neutral-950 overflow-hidden cursor-grab active:cursor-grabbing drag-handle">
-                        <img src="${optimizeImageUrl(prod.image, 500)}" data-fallback="${escapeHtml(prod.image || '')}" onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){this.src=this.dataset.fallback;}" alt="${escapeHtml(prod.title)}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" loading="lazy">
+            card.innerHTML = `
+                <div class="relative aspect-[3/2] bg-neutral-950 overflow-hidden cursor-grab active:cursor-grabbing drag-handle">
+                    <img src="${optimizeImageUrl(prod.image, 500)}" data-fallback="${escapeHtml(prod.image || '')}" onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){this.src=this.dataset.fallback;}" alt="${escapeHtml(prod.title)}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" loading="lazy">
+                    
+                    <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-20">
+                        <input type="checkbox" data-chk-slug="${prod.slug}" class="product-select-chk w-4 h-4 rounded bg-black/80 border-neutral-600 text-emerald-500 focus:ring-0 focus:ring-offset-0 cursor-pointer accent-emerald-500" ${isSelected ? 'checked' : ''} onclick="event.stopPropagation(); toggleSelectProduct('${prod.slug}', this.checked)">
                         
-                        <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-20">
-                            <input type="checkbox" data-chk-slug="${prod.slug}" class="product-select-chk w-4 h-4 rounded bg-black/80 border-neutral-600 text-emerald-500 focus:ring-0 focus:ring-offset-0 cursor-pointer accent-emerald-500" ${isSelected ? 'checked' : ''} onclick="event.stopPropagation(); toggleSelectProduct('${prod.slug}', this.checked)">
-                            
-                            <button onclick="event.stopPropagation(); openPosPopover(event, '${prod.slug}')" title="Кликните, чтобы ввести позицию вручную (цифрой)" class="pos-badge bg-black/85 hover:bg-emerald-950 text-emerald-400 font-extrabold text-xs px-2.5 py-1 rounded-lg border border-neutral-700 hover:border-emerald-500 shadow transition flex items-center gap-1 cursor-pointer">
-                                <span>#${index + 1}</span>
-                                <span class="text-[9px] text-neutral-400">✎</span>
+                        <button onclick="event.stopPropagation(); openPosPopover(event, '${prod.slug}')" title="Кликните, чтобы ввести позицию вручную (цифрой)" class="pos-badge bg-black/85 hover:bg-emerald-950 text-emerald-400 font-extrabold text-xs px-2.5 py-1 rounded-lg border border-neutral-700 hover:border-emerald-500 shadow transition flex items-center gap-1 cursor-pointer">
+                            <span>#${index + 1}</span>
+                            <span class="text-[9px] text-neutral-400">✎</span>
+                        </button>
+                    </div>
+
+                    <div class="absolute inset-0 bg-emerald-500/10 opacity-0 group-hover:opacity-100 transition flex items-center justify-center pointer-events-none">
+                        <span class="bg-black/70 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-md border border-neutral-700 font-medium">
+                            ⠿ Перетащить
+                        </span>
+                    </div>
+                </div>
+
+                <div class="p-3.5 flex-1 flex flex-col justify-between gap-3 bg-neutral-900">
+                    <div>
+                        <div class="flex items-center justify-between gap-1.5 mb-2 flex-wrap">
+                            <span class="text-[10px] font-mono text-neutral-400 select-all truncate bg-neutral-950 px-2 py-0.5 rounded-lg border border-neutral-800 max-w-[130px]" title="Слаг товара (кликните, чтобы скопировать)">${prod.slug}</span>
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                ${ratingBadge}
+                                ${favoritesBadge}
+                                ${tagsBadge}
+                            </div>
+                        </div>
+                        <h3 class="text-xs sm:text-sm font-bold text-white line-clamp-2 title-text" title="${prod.title}">
+                            ${prod.title}
+                        </h3>
+                        <a href="${prod.canonical || '#'}" target="_blank" class="text-[11px] text-neutral-400 hover:text-emerald-400 transition inline-flex items-center gap-1 mt-1.5">
+                            <span>Creative Fabrica</span> ↗
+                        </a>
+                        ${sourceBadge}
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2 border-t border-neutral-800 gap-1.5 flex-wrap">
+                        <div class="flex items-center gap-1">
+                            <button onclick="moveToTop('${prod.slug}')" title="Поднять на самое 1-е место" class="text-xs font-semibold text-neutral-400 hover:text-white bg-neutral-800 hover:bg-neutral-700 px-2 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer">
+                                <span>↑ 1-й</span>
+                            </button>
+
+                            <button onclick="openPosPopover(event, '${prod.slug}')" title="Переместить на любую позицию (ввести номер)" class="pos-popover-trigger text-xs font-semibold text-neutral-400 hover:text-emerald-400 bg-neutral-800 hover:bg-neutral-700 px-2 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer">
+                                <span>№</span>
+                            </button>
+
+                            <button onclick="openInsertModal(${index})" title="Вставить новый товар перед этой карточкой (на позицию #${index + 1})" class="text-xs font-semibold text-emerald-400 hover:text-white bg-emerald-950/70 hover:bg-emerald-900 border border-emerald-800/60 px-2 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer">
+                                <span>+ Сюда</span>
                             </button>
                         </div>
 
-                        <div class="absolute inset-0 bg-emerald-500/10 opacity-0 group-hover:opacity-100 transition flex items-center justify-center pointer-events-none">
-                            <span class="bg-black/70 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-md border border-neutral-700 font-medium">
-                                ⠿ Перетащить
-                            </span>
+                        <div class="flex items-center gap-1">
+                            <button onclick="openMoveProductModal('${prod.slug}', false)" title="Переместить товар в другую подборку или создать новую подборку" class="text-xs font-semibold text-sky-400 hover:text-white bg-sky-950/70 hover:bg-sky-900 border border-sky-800/60 px-2 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer">
+                                <span>↪️</span>
+                            </button>
+
+                            <button onclick="deleteProduct('${prod.slug}', '${prod.title.replace(/'/g, "\\'")}')" title="${deleteTitle}" class="text-xs font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 border border-transparent hover:border-rose-800/60 p-1.5 rounded-lg transition cursor-pointer">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
                         </div>
                     </div>
+                </div>
+            `;
 
-                    <div class="p-3.5 flex-1 flex flex-col justify-between gap-3 bg-neutral-900">
-                        <div>
-                            <div class="flex items-center justify-between gap-1.5 mb-2 flex-wrap">
-                                <span class="text-[10px] font-mono text-neutral-400 select-all truncate bg-neutral-950 px-2 py-0.5 rounded-lg border border-neutral-800 max-w-[130px]" title="Слаг товара (кликните, чтобы скопировать)">${prod.slug}</span>
-                                <div class="flex items-center gap-1.5 flex-wrap">
-                                    ${ratingBadge}
-                                    ${favoritesBadge}
-                                    ${tagsBadge}
-                                </div>
-                            </div>
-                            <h3 class="text-xs sm:text-sm font-bold text-white line-clamp-2 title-text" title="${prod.title}">
-                                ${prod.title}
-                            </h3>
-                            <a href="${prod.canonical || '#'}" target="_blank" class="text-[11px] text-neutral-400 hover:text-emerald-400 transition inline-flex items-center gap-1 mt-1.5">
-                                <span>Creative Fabrica</span> ↗
-                            </a>
-                            ${sourceBadge}
-                        </div>
-
-                        <div class="flex items-center justify-between pt-2 border-t border-neutral-800 gap-1.5 flex-wrap">
-                            <div class="flex items-center gap-1">
-                                <button onclick="moveToTop('${prod.slug}')" title="Поднять на самое 1-е место" class="text-xs font-semibold text-neutral-400 hover:text-white bg-neutral-800 hover:bg-neutral-700 px-2 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer">
-                                    <span>↑ 1-й</span>
-                                </button>
-
-                                <button onclick="openPosPopover(event, '${prod.slug}')" title="Переместить на любую позицию (ввести номер)" class="pos-popover-trigger text-xs font-semibold text-neutral-400 hover:text-emerald-400 bg-neutral-800 hover:bg-neutral-700 px-2 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer">
-                                    <span>№</span>
-                                </button>
-
-                                <button onclick="openInsertModal(${index})" title="Вставить новый товар перед этой карточкой (на позицию #${index + 1})" class="text-xs font-semibold text-emerald-400 hover:text-white bg-emerald-950/70 hover:bg-emerald-900 border border-emerald-800/60 px-2 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer">
-                                    <span>+ Сюда</span>
-                                </button>
-                            </div>
-
-                            <div class="flex items-center gap-1">
-                                <button onclick="openMoveProductModal('${prod.slug}', false)" title="Переместить товар в другую подборку или создать новую подборку" class="text-xs font-semibold text-sky-400 hover:text-white bg-sky-950/70 hover:bg-sky-900 border border-sky-800/60 px-2 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer">
-                                    <span>↪️</span>
-                                </button>
-
-                                <button onclick="deleteProduct('${prod.slug}', '${prod.title.replace(/'/g, "\\'")}')" title="${deleteTitle}" class="text-xs font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 border border-transparent hover:border-rose-800/60 p-1.5 rounded-lg transition cursor-pointer">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                card.addEventListener('click', (e) => {
-                    if (isDraggingCard) return;
-                    if (selectedSlugs.size > 0) {
-                        if (e.target.closest('button, input, select, textarea, .pos-badge')) return;
-                        e.preventDefault();
-                        const willSelect = !selectedSlugs.has(prod.slug);
-                        toggleSelectProduct(prod.slug, willSelect);
-                    }
-                });
-
-                productsGrid.appendChild(card);
+            card.addEventListener('click', (e) => {
+                if (isDraggingCard) return;
+                if (selectedSlugs.size > 0) {
+                    if (e.target.closest('button, input, select, textarea, .pos-badge')) return;
+                    e.preventDefault();
+                    const willSelect = !selectedSlugs.has(prod.slug);
+                    toggleSelectProduct(prod.slug, willSelect);
+                }
             });
 
-            // Карточка добавления в конец витрины
+            return card;
+        }
+
+        function createAddEndCardElement(length) {
             const addEndCard = document.createElement('div');
-            addEndCard.className = "border-2 border-dashed border-neutral-800 hover:border-emerald-500/60 hover:bg-neutral-900/40 rounded-2xl min-h-[220px] flex flex-col items-center justify-center gap-3 p-6 text-neutral-500 hover:text-emerald-400 transition cursor-pointer group";
-            addEndCard.onclick = () => openInsertModal(products.length);
+            addEndCard.className = "add-end-card border-2 border-dashed border-neutral-800 hover:border-emerald-500/60 hover:bg-neutral-900/40 rounded-2xl min-h-[220px] flex flex-col items-center justify-center gap-3 p-6 text-neutral-500 hover:text-emerald-400 transition cursor-pointer group";
+            addEndCard.onclick = () => openInsertModal(length);
             addEndCard.innerHTML = `
                 <div class="w-12 h-12 rounded-2xl bg-neutral-900 border border-neutral-800 group-hover:border-emerald-500/50 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition text-emerald-400">
                     +
@@ -4692,11 +4723,10 @@
                 <span class="text-xs font-bold text-center">Вставить товар в конец витрины</span>
                 <span class="text-[10px] text-neutral-500 text-center">По ссылке Creative Fabrica</span>
             `;
-            productsGrid.appendChild(addEndCard);
-
-            initSortable();
-            if (isSplitMode) renderSplitInspector('top');
+            return addEndCard;
         }
+
+
 
         function initSortable() {
             if (sortableInstance) sortableInstance.destroy();
@@ -4715,9 +4745,78 @@
                     }, 80);
                     updateBadges();
                     markDirty();
-                    if (isSplitMode) renderSplitInspector('top');
+                    if (isSplitMode) {
+                        syncRightGridFromLeft();
+                    }
                 }
             });
+        }
+
+        function initRightSortable() {
+            const rightGrid = document.getElementById('productsGridRight');
+            if (!rightGrid) return;
+            if (sortableRightInstance) sortableRightInstance.destroy();
+
+            sortableRightInstance = new Sortable(rightGrid, {
+                animation: 200,
+                handle: '.drag-handle',
+                draggable: '[data-slug]',
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                onStart: () => {
+                    isDraggingCard = true;
+                },
+                onEnd: () => {
+                    setTimeout(() => {
+                        isDraggingCard = false;
+                    }, 80);
+
+                    // Синхронизируем левую сетку по новому порядку из правой
+                    const rightCards = Array.from(rightGrid.querySelectorAll('[data-slug]'));
+                    rightCards.forEach(rc => {
+                        const lc = productsGrid.querySelector(`[data-slug="${rc.dataset.slug}"]`);
+                        if (lc) productsGrid.appendChild(lc);
+                    });
+                    const addEndCard = productsGrid.querySelector('.add-end-card');
+                    if (addEndCard) productsGrid.appendChild(addEndCard);
+
+                    updateBadges();
+                    updateRightBadges();
+                    markDirty();
+                }
+            });
+        }
+
+        function populateRightGrid() {
+            const rightGrid = document.getElementById('productsGridRight');
+            if (!rightGrid) return;
+            rightGrid.innerHTML = '';
+
+            const leftCards = Array.from(productsGrid.querySelectorAll('[data-slug]'));
+            leftCards.forEach((lc, index) => {
+                const slug = lc.dataset.slug;
+                const prod = currentProducts.find(p => p.slug === slug) || { slug, title: slug, image: '' };
+                rightGrid.appendChild(createProductCardElement(prod, index));
+            });
+
+            rightGrid.appendChild(createAddEndCardElement(leftCards.length));
+            initRightSortable();
+            updateRightBadges();
+            updateWindowCountBadges();
+        }
+
+        function syncRightGridFromLeft() {
+            if (!isSplitMode) return;
+            const rightGrid = document.getElementById('productsGridRight');
+            if (!rightGrid) return;
+            const leftCards = Array.from(productsGrid.querySelectorAll('[data-slug]'));
+            leftCards.forEach(lc => {
+                const rc = rightGrid.querySelector(`[data-slug="${lc.dataset.slug}"]`);
+                if (rc) rightGrid.appendChild(rc);
+            });
+            const rightAddEndCard = rightGrid.querySelector('.add-end-card');
+            if (rightAddEndCard) rightGrid.appendChild(rightAddEndCard);
+            updateRightBadges();
         }
 
         function updateBadges() {
@@ -4726,6 +4825,26 @@
                 const badge = card.querySelector('.pos-badge span');
                 if (badge) badge.innerText = `#${idx + 1}`;
             });
+            updateWindowCountBadges();
+        }
+
+        function updateRightBadges() {
+            const rightGrid = document.getElementById('productsGridRight');
+            if (!rightGrid) return;
+            const cards = rightGrid.querySelectorAll('[data-slug]');
+            cards.forEach((card, idx) => {
+                const badge = card.querySelector('.pos-badge span');
+                if (badge) badge.innerText = `#${idx + 1}`;
+            });
+            updateWindowCountBadges();
+        }
+
+        function updateWindowCountBadges() {
+            const count = productsGrid.querySelectorAll('[data-slug]').length;
+            const leftBadge = document.getElementById('leftWindowCountBadge');
+            const rightBadge = document.getElementById('rightWindowCountBadge');
+            if (leftBadge) leftBadge.innerText = `${count} тов.`;
+            if (rightBadge) rightBadge.innerText = `${count} тов.`;
         }
 
         function markDirty() {
@@ -4775,18 +4894,31 @@
             updateBadges();
             markDirty();
 
-            // Компенсируем сдвиг скролла, чтобы экран оставался ровно на том же месте где был пользователь
+            // Компенсируем сдвиг скролла в левом окне
             if (anchorCard && anchorRectBefore) {
                 const anchorRectAfter = anchorCard.getBoundingClientRect();
                 const diff = anchorRectAfter.top - anchorRectBefore.top;
                 if (Math.abs(diff) > 1) {
-                    window.scrollBy({ top: diff, behavior: 'instant' });
+                    if (isSplitMode) {
+                        const leftScroll = document.getElementById('leftScrollContainer');
+                        if (leftScroll) leftScroll.scrollBy({ top: diff, behavior: 'instant' });
+                    } else {
+                        window.scrollBy({ top: diff, behavior: 'instant' });
+                    }
                 }
             }
 
-            // Обновляем правое сплит-окно, если открыто
+            // Синхронизируем правую сетку в сплит-режиме и подсвечиваем результат
             if (isSplitMode) {
-                renderSplitInspector('auto');
+                syncRightGridFromLeft();
+                const rightCard = document.getElementById('productsGridRight')?.querySelector(`[data-slug="${slug}"]`);
+                if (rightCard) {
+                    rightCard.classList.add('ring-4', 'ring-emerald-400', 'shadow-2xl', 'shadow-emerald-500/50');
+                    rightCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    setTimeout(() => {
+                        rightCard.classList.remove('ring-4', 'ring-emerald-400', 'shadow-2xl', 'shadow-emerald-500/50');
+                    }, 2500);
+                }
             }
 
             showToast(`Товар перемещён на позицию #${pos}`);
@@ -4916,7 +5048,7 @@
             }
         });
 
-        // --- Режим Сплит-экрана (Разделенный экран) ---
+        // --- Режим Сплит-экрана (Разделенный экран: два синхронных независимых окна) ---
         window.toggleSplitMode = function(enable) {
             if (enable === undefined) {
                 isSplitMode = !isSplitMode;
@@ -4924,26 +5056,59 @@
                 isSplitMode = Boolean(enable);
             }
 
-            const panel = document.getElementById('splitInspectorPanel');
+            const leftWrapper = document.getElementById('leftPaneWrapper');
+            const leftHeader = document.getElementById('leftPaneHeader');
+            const leftScroll = document.getElementById('leftScrollContainer');
+            const rightWrapper = document.getElementById('rightPaneWrapper');
             const btn = document.getElementById('toggleSplitBtn');
             const btnText = document.getElementById('splitBtnText');
 
             if (isSplitMode) {
-                if (panel) {
-                    panel.classList.remove('hidden');
-                    panel.classList.add('flex');
+                if (leftHeader) {
+                    leftHeader.classList.remove('hidden');
+                    leftHeader.classList.add('flex');
                 }
+                if (leftScroll) {
+                    leftScroll.className = "flex-1 overflow-y-auto max-h-[calc(100vh-210px)] custom-scrollbar pr-1.5";
+                }
+                if (leftWrapper) {
+                    leftWrapper.className = "flex-1 min-w-0 flex flex-col bg-neutral-900/30 rounded-2xl border border-neutral-800 p-4 overflow-hidden transition-all duration-300";
+                }
+                if (rightWrapper) {
+                    rightWrapper.classList.remove('hidden');
+                    rightWrapper.classList.add('flex');
+                }
+                if (productsGrid) {
+                    productsGrid.className = "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-4";
+                }
+
                 if (btn) {
                     btn.classList.add('bg-emerald-950', 'text-emerald-300', 'border-emerald-600');
                     btn.classList.remove('bg-neutral-900', 'text-neutral-300', 'border-neutral-700');
                 }
                 if (btnText) btnText.innerText = 'Сплит: ВКЛ';
-                renderSplitInspector('auto');
+
+                populateRightGrid();
+                setupScrollSync();
             } else {
-                if (panel) {
-                    panel.classList.add('hidden');
-                    panel.classList.remove('flex');
+                if (leftHeader) {
+                    leftHeader.classList.add('hidden');
+                    leftHeader.classList.remove('flex');
                 }
+                if (leftScroll) {
+                    leftScroll.className = "transition-all duration-300";
+                }
+                if (leftWrapper) {
+                    leftWrapper.className = "flex-1 min-w-0 transition-all duration-300";
+                }
+                if (rightWrapper) {
+                    rightWrapper.classList.add('hidden');
+                    rightWrapper.classList.remove('flex');
+                }
+                if (productsGrid) {
+                    productsGrid.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6";
+                }
+
                 if (btn) {
                     btn.classList.remove('bg-emerald-950', 'text-emerald-300', 'border-emerald-600');
                     btn.classList.add('bg-neutral-900', 'text-neutral-300', 'border-neutral-700');
@@ -4952,107 +5117,68 @@
             }
         };
 
-        window.renderSplitInspector = function(viewMode = 'auto') {
-            if (!isSplitMode) return;
-            const cardsContainer = document.getElementById('splitInspectorCards');
-            const badge = document.getElementById('splitFocusBadge');
-            const topBtn = document.getElementById('splitViewTopBtn');
-            const lastMovedBtn = document.getElementById('splitViewLastMovedBtn');
-            if (!cardsContainer) return;
+        function setupScrollSync() {
+            const leftContainer = document.getElementById('leftScrollContainer');
+            const rightContainer = document.getElementById('rightScrollContainer');
+            if (!leftContainer || !rightContainer || leftContainer.dataset.syncBound) return;
+            leftContainer.dataset.syncBound = "true";
 
-            const allCards = Array.from(productsGrid.querySelectorAll('[data-slug]'));
-            const total = allCards.length;
-            if (total === 0) {
-                cardsContainer.innerHTML = `<div class="p-8 text-center text-xs text-neutral-500">Нет товаров в выбранной подборке</div>`;
-                return;
-            }
-
-            let startIdx = 0;
-            let endIdx = Math.min(8, total);
-
-            if (viewMode === 'lastMoved' && lastMovedTargetPos) {
-                const center = lastMovedTargetPos - 1;
-                startIdx = Math.max(0, center - 2);
-                endIdx = Math.min(total, startIdx + 7);
-                if (endIdx - startIdx < 7 && total >= 7) {
-                    startIdx = Math.max(0, endIdx - 7);
-                }
-                if (topBtn) topBtn.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold text-neutral-400 hover:text-white hover:bg-neutral-800 transition cursor-pointer";
-                if (lastMovedBtn) lastMovedBtn.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-neutral-800 hover:bg-neutral-700 text-white transition cursor-pointer";
-            } else if (viewMode === 'top') {
-                startIdx = 0;
-                endIdx = Math.min(8, total);
-                if (topBtn) topBtn.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-neutral-800 hover:bg-neutral-700 text-white transition cursor-pointer";
-                if (lastMovedBtn) lastMovedBtn.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold text-neutral-400 hover:text-white hover:bg-neutral-800 transition cursor-pointer";
-            } else { // 'auto'
-                if (lastMovedTargetPos && lastMovedTargetPos > 4) {
-                    const center = lastMovedTargetPos - 1;
-                    startIdx = Math.max(0, center - 2);
-                    endIdx = Math.min(total, startIdx + 7);
-                } else {
-                    startIdx = 0;
-                    endIdx = Math.min(8, total);
-                }
-            }
-
-            if (badge) badge.innerText = `#${startIdx + 1}–#${endIdx}`;
-
-            const sliceCards = allCards.slice(startIdx, endIdx);
-
-            let html = '';
-            sliceCards.forEach((c) => {
-                const slug = c.dataset.slug;
-                const currentPos = allCards.indexOf(c) + 1;
-                const prod = currentProducts.find(p => p.slug === slug) || { slug, title: slug, image: '' };
-
-                const isLastMoved = (slug === lastMovedSlug);
-                const isDisplaced = (slug === lastDisplacedSlug);
-
-                let borderClass = 'border-neutral-800 bg-neutral-950/70 hover:border-neutral-700';
-                let statusBadge = '';
-
-                if (isLastMoved) {
-                    borderClass = 'border-emerald-500 bg-emerald-950/40 ring-1 ring-emerald-500/80 shadow-lg shadow-emerald-950/50';
-                    statusBadge = `<span class="bg-emerald-500 text-black text-[10px] font-black px-1.5 py-0.5 rounded shadow">★ Перемещён сюда</span>`;
-                } else if (isDisplaced) {
-                    borderClass = 'border-amber-500/80 bg-amber-950/30 ring-1 ring-amber-500/50';
-                    statusBadge = `<span class="bg-amber-500/20 text-amber-300 border border-amber-600/60 text-[10px] font-bold px-1.5 py-0.5 rounded">↷ Сместился</span>`;
-                }
-
-                html += `
-                    <div class="p-2.5 rounded-xl border ${borderClass} flex items-center gap-2.5 transition group">
-                        <div class="relative shrink-0 w-12 h-12 rounded-lg bg-neutral-900 border border-neutral-800 overflow-hidden">
-                            <img src="${optimizeImageUrl(prod.image, 160)}" data-fallback="${escapeHtml(prod.image || '')}" onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){this.src=this.dataset.fallback;}" alt="" class="w-full h-full object-cover">
-                            <span class="absolute bottom-0 left-0 right-0 bg-black/85 text-[10px] font-black text-center font-mono ${isLastMoved ? 'text-emerald-400 font-extrabold' : 'text-neutral-300'}">#${currentPos}</span>
-                        </div>
-                        
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center gap-1.5 flex-wrap mb-0.5">
-                                <span class="text-[10px] font-mono text-neutral-400 bg-neutral-900 px-1 rounded truncate max-w-[120px]">${slug}</span>
-                                ${statusBadge}
-                            </div>
-                            <h5 class="text-xs font-bold text-white truncate" title="${escapeHtml(prod.title || slug)}">${escapeHtml(prod.title || slug)}</h5>
-                        </div>
-
-                        <div class="flex flex-col gap-1 shrink-0">
-                            <button onclick="nudgePosition('${slug}', -1)" ${currentPos <= 1 ? 'disabled class="opacity-20 cursor-not-allowed"' : 'class="p-1 rounded bg-neutral-800 hover:bg-neutral-700 hover:text-emerald-400 text-neutral-300 text-[10px] transition cursor-pointer"'} title="Поднять на 1 место выше">▲</button>
-                            <button onclick="nudgePosition('${slug}', 1)" ${currentPos >= total ? 'disabled class="opacity-20 cursor-not-allowed"' : 'class="p-1 rounded bg-neutral-800 hover:bg-neutral-700 hover:text-emerald-400 text-neutral-300 text-[10px] transition cursor-pointer"'} title="Опустить на 1 место ниже">▼</button>
-                        </div>
-                    </div>
-                `;
+            leftContainer.addEventListener('scroll', () => {
+                if (!isSyncScrollEnabled || isScrollingSync) return;
+                isScrollingSync = true;
+                const ratio = leftContainer.scrollTop / (leftContainer.scrollHeight - leftContainer.clientHeight || 1);
+                rightContainer.scrollTop = ratio * (rightContainer.scrollHeight - rightContainer.clientHeight);
+                setTimeout(() => { isScrollingSync = false; }, 40);
             });
 
-            cardsContainer.innerHTML = html;
+            rightContainer.addEventListener('scroll', () => {
+                if (!isSyncScrollEnabled || isScrollingSync) return;
+                isScrollingSync = true;
+                const ratio = rightContainer.scrollTop / (rightContainer.scrollHeight - rightContainer.clientHeight || 1);
+                leftContainer.scrollTop = ratio * (leftContainer.scrollHeight - leftContainer.clientHeight);
+                setTimeout(() => { isScrollingSync = false; }, 40);
+            });
+        }
+
+        window.toggleSyncScroll = function() {
+            isSyncScrollEnabled = !isSyncScrollEnabled;
+            const btn = document.getElementById('syncScrollBtn');
+            if (btn) {
+                if (isSyncScrollEnabled) {
+                    btn.className = "px-2.5 py-1 bg-emerald-950 text-emerald-300 border border-emerald-600 text-[11px] font-bold rounded-lg transition cursor-pointer flex items-center gap-1 shadow";
+                    btn.innerHTML = '<span>🔗 Синхро: ВКЛ</span>';
+                } else {
+                    btn.className = "px-2.5 py-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white text-[11px] font-bold rounded-lg transition cursor-pointer flex items-center gap-1";
+                    btn.innerHTML = '<span>🔗 Синхро-скролл</span>';
+                }
+            }
         };
 
-        window.nudgePosition = function(slug, delta) {
-            const card = productsGrid.querySelector(`[data-slug="${slug}"]`);
-            if (!card) return;
-            const allCards = Array.from(productsGrid.querySelectorAll('[data-slug]'));
-            const currentPos = allCards.indexOf(card) + 1;
-            const targetPos = currentPos + delta;
-            if (targetPos >= 1 && targetPos <= allCards.length) {
-                moveToPosition(slug, targetPos);
+        window.scrollPaneTo = function(pane, pos) {
+            const container = (pane === 'left') 
+                ? document.getElementById('leftScrollContainer') 
+                : document.getElementById('rightScrollContainer');
+            if (!container) return;
+            if (pos === 'top') {
+                container.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (pos === 'bottom') {
+                container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+            }
+        };
+
+        window.scrollToLastMoved = function(pane = 'right') {
+            if (!lastMovedSlug) return;
+            const grid = (pane === 'left') 
+                ? document.getElementById('productsGrid') 
+                : document.getElementById('productsGridRight');
+            if (!grid) return;
+            const card = grid.querySelector(`[data-slug="${lastMovedSlug}"]`);
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                card.classList.add('ring-4', 'ring-sky-400', 'shadow-2xl', 'shadow-sky-500/50');
+                setTimeout(() => {
+                    card.classList.remove('ring-4', 'ring-sky-400', 'shadow-2xl', 'shadow-sky-500/50');
+                }, 2000);
             }
         };
 

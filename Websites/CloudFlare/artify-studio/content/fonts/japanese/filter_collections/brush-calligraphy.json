@@ -3,6 +3,7 @@
   "label": "Brush Calligraphy",
   "items": [
     "japanese-bundle",
+    "shizuko",
     "kaze-japanese",
     "kuro-spirit",
     "hogback-2",
@@ -11,7 +12,6 @@
     "japan-wave-2",
     "onigashima",
     "zenjirou",
-    "shizuko",
     "asian-japanese",
     "aomine-kensai",
     "vicest",
@@ -93,5 +93,5 @@
     "yokai-pop",
     "gariep"
   ],
-  "updatedAt": "2026-11-07T12:35:39.283Z"
+  "updatedAt": "2026-11-07T17:11:14.930Z"
 }
