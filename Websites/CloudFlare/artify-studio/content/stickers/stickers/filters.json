@@ -1,1 +1,98 @@
-[]
+[
+  {
+    "id": "positive-quotes",
+    "label": "Positive Quotes",
+    "keywords": [
+      "quote",
+      "quotes",
+      "saying",
+      "sayings",
+      "motivational",
+      "mental health",
+      "affirmation",
+      "affirmations"
+    ]
+  },
+  {
+    "id": "cute-kawaii",
+    "label": "Cute Kawaii",
+    "keywords": [
+      "kawaii",
+      "cute",
+      "cartoon",
+      "chibi",
+      "pastel",
+      "sweet",
+      "sweetness"
+    ]
+  },
+  {
+    "id": "coffee-lifestyle",
+    "label": "Coffee Lifestyle",
+    "keywords": [
+      "coffee",
+      "tea",
+      "cafe",
+      "latte",
+      "book",
+      "books",
+      "daily life",
+      "lifestyle"
+    ]
+  },
+  {
+    "id": "floral-botanical",
+    "label": "Floral Botanical",
+    "keywords": [
+      "flower",
+      "flowers",
+      "floral",
+      "florals",
+      "botanical",
+      "botanicals",
+      "plant",
+      "plants",
+      "succulent"
+    ]
+  },
+  {
+    "id": "printable-cricut",
+    "label": "Printable Cricut",
+    "keywords": [
+      "printable",
+      "print and cut",
+      "cricut",
+      "silhouette",
+      "die cut",
+      "vinyl",
+      "decal",
+      "decals"
+    ]
+  },
+  {
+    "id": "retro-groovy",
+    "label": "Retro Groovy",
+    "keywords": [
+      "retro",
+      "groovy",
+      "70s",
+      "hippie",
+      "vintage",
+      "rainbow",
+      "psychedelic"
+    ]
+  },
+  {
+    "id": "planner-scrapbook",
+    "label": "Planner Scrapbook",
+    "keywords": [
+      "planner",
+      "planners",
+      "scrapbook",
+      "scrapbooking",
+      "journal",
+      "journaling",
+      "bujo"
+    ]
+  }
+]

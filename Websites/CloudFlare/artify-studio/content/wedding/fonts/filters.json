@@ -1,1 +1,104 @@
-[]
+[
+  {
+    "id": "calligraphy-script",
+    "label": "Calligraphy Script",
+    "keywords": [
+      "calligraphy",
+      "script",
+      "scripts",
+      "cursive",
+      "handwritten",
+      "signature",
+      "signatures"
+    ]
+  },
+  {
+    "id": "swashes-flourishes",
+    "label": "Swashes Flourishes",
+    "keywords": [
+      "swash",
+      "swashes",
+      "flourish",
+      "flourishes",
+      "tail",
+      "tails",
+      "alternate",
+      "ligatures"
+    ]
+  },
+  {
+    "id": "modern-serif",
+    "label": "Modern Serif",
+    "keywords": [
+      "serif",
+      "serifs",
+      "modern serif",
+      "editorial",
+      "classy",
+      "didone"
+    ]
+  },
+  {
+    "id": "luxury-elegant",
+    "label": "Luxury Elegant",
+    "keywords": [
+      "luxury",
+      "elegant",
+      "royal",
+      "chic",
+      "premium",
+      "prestige",
+      "sophisticated"
+    ]
+  },
+  {
+    "id": "romantic-love",
+    "label": "Romantic Love",
+    "keywords": [
+      "romantic",
+      "romance",
+      "love",
+      "sweet",
+      "bridal",
+      "bride",
+      "wedding"
+    ]
+  },
+  {
+    "id": "invitation-suite",
+    "label": "Invitation Suite",
+    "keywords": [
+      "invitation",
+      "invitations",
+      "rsvp",
+      "stationery",
+      "save the date",
+      "envelope"
+    ]
+  },
+  {
+    "id": "clean-minimalist",
+    "label": "Clean Minimalist",
+    "keywords": [
+      "clean",
+      "minimalist",
+      "minimal",
+      "sans",
+      "sans serif",
+      "simple"
+    ]
+  },
+  {
+    "id": "monogram-branding",
+    "label": "Monogram Branding",
+    "keywords": [
+      "monogram",
+      "monograms",
+      "initial",
+      "initials",
+      "logo",
+      "logos",
+      "branding"
+    ]
+  }
+]

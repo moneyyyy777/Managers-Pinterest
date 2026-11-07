@@ -1,1 +1,95 @@
-[]
+[
+  {
+    "id": "floral-watercolor",
+    "label": "Floral Watercolor",
+    "keywords": [
+      "floral",
+      "florals",
+      "flower",
+      "flowers",
+      "watercolor",
+      "watercolors",
+      "rose",
+      "roses",
+      "painted"
+    ]
+  },
+  {
+    "id": "eucalyptus-greenery",
+    "label": "Eucalyptus Greenery",
+    "keywords": [
+      "greenery",
+      "eucalyptus",
+      "leaf",
+      "leaves",
+      "foliage",
+      "olive branch",
+      "botanical"
+    ]
+  },
+  {
+    "id": "save-the-date",
+    "label": "Save The Date",
+    "keywords": [
+      "save the date",
+      "calendar",
+      "announcement",
+      "card",
+      "cards",
+      "invitation"
+    ]
+  },
+  {
+    "id": "rsvp-details",
+    "label": "RSVP Details",
+    "keywords": [
+      "rsvp",
+      "detail",
+      "details",
+      "menu",
+      "menus",
+      "insert",
+      "reception",
+      "stationery"
+    ]
+  },
+  {
+    "id": "modern-minimalist",
+    "label": "Modern Minimalist",
+    "keywords": [
+      "minimalist",
+      "modern",
+      "simple",
+      "clean",
+      "typography",
+      "black and white"
+    ]
+  },
+  {
+    "id": "gold-geometric",
+    "label": "Gold Geometric",
+    "keywords": [
+      "gold",
+      "golden",
+      "geometric",
+      "frame",
+      "frames",
+      "foil",
+      "metallic",
+      "border"
+    ]
+  },
+  {
+    "id": "boho-rustic",
+    "label": "Boho Rustic",
+    "keywords": [
+      "boho",
+      "rustic",
+      "terracotta",
+      "pampas grass",
+      "wood",
+      "earthy",
+      "country"
+    ]
+  }
+]

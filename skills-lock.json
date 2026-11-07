@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "copywriting": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "skillPath": "skills/copywriting/SKILL.md",
+      "computedHash": "fa83931a47fad42131875374585cab98c9fcf2c3299543bb5bae8828cf06ea08"
+    },
     "copywriting-cta": {
       "source": "samber/cc-skills",
       "sourceType": "github",
@@ -43,6 +49,18 @@
       "skillPath": "skills/hook-writer-sms/SKILL.md",
       "computedHash": "92d8693aeb96fc0c8108cd21d503da5eebeda8f28c4ca040fa39a404bc3048ec"
     },
+    "landing-page-conversion-audit": {
+      "source": "autonnel/autonnel-skills",
+      "sourceType": "github",
+      "skillPath": "landing-page-conversion-audit/SKILL.md",
+      "computedHash": "9f7689539e9e0e7a9fabdfff306749ac4fbdae8bb156ab46b19261944c9d3bd5"
+    },
+    "marketing-psychology": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing-psychology/SKILL.md",
+      "computedHash": "50d735eb0f5c36f379ed2200f21aeacc9b9ad85667b5d33ec6111857352a1340"
+    },
     "pinterest-growth": {
       "source": "social-media-skills/skills",
       "sourceType": "github",
@@ -60,6 +78,24 @@
       "sourceType": "github",
       "skillPath": "skills/pinterest-seo/SKILL.md",
       "computedHash": "8a4656d9b63591ebd48e3e7acd16b0d100a0870cdab84ea73452532cefccfb1d"
+    },
+    "popups": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "skillPath": "skills/popups/SKILL.md",
+      "computedHash": "2917e676fb79292a0cc25367e7bca504de03aa4c4f96012e185ea5c86d08b768"
+    },
+    "post-purchase-upsell-flow": {
+      "source": "autonnel/autonnel-skills",
+      "sourceType": "github",
+      "skillPath": "post-purchase-upsell-flow/SKILL.md",
+      "computedHash": "297dedb10a2453760a59abd61dfe4925a99492bc77c67fb2d3f2436df1986fcd"
+    },
+    "prompt-engineering-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "skillPath": "plugins/llm-application-dev/skills/prompt-engineering-patterns/SKILL.md",
+      "computedHash": "6a8cf3a5e9120641c1c1953c870c156377c57be4a806e1df6fc5f073a41cc639"
     }
   }
 }

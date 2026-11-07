@@ -1,1 +1,96 @@
-[]
+[
+  {
+    "id": "wood-grain",
+    "label": "Wood Grain",
+    "keywords": [
+      "wood",
+      "wooden",
+      "wood grain",
+      "plank",
+      "planks",
+      "timber",
+      "shiplap",
+      "board"
+    ]
+  },
+  {
+    "id": "farmhouse-plaid",
+    "label": "Farmhouse Plaid",
+    "keywords": [
+      "plaid",
+      "plaids",
+      "buffalo check",
+      "tartan",
+      "tartans",
+      "gingham",
+      "country",
+      "farmhouse"
+    ]
+  },
+  {
+    "id": "burlap-kraft",
+    "label": "Burlap Kraft",
+    "keywords": [
+      "burlap",
+      "kraft",
+      "canvas",
+      "linen",
+      "rough",
+      "textured paper",
+      "cardboard"
+    ]
+  },
+  {
+    "id": "vintage-floral",
+    "label": "Vintage Floral",
+    "keywords": [
+      "floral",
+      "florals",
+      "flower",
+      "flowers",
+      "botanical",
+      "botanicals",
+      "wildflower",
+      "cottagecore"
+    ]
+  },
+  {
+    "id": "holiday-winter",
+    "label": "Holiday Winter",
+    "keywords": [
+      "christmas",
+      "winter",
+      "holiday",
+      "pine",
+      "snow",
+      "festive",
+      "rustic christmas"
+    ]
+  },
+  {
+    "id": "autumn-harvest",
+    "label": "Autumn Harvest",
+    "keywords": [
+      "autumn",
+      "fall",
+      "harvest",
+      "pumpkin",
+      "pumpkins",
+      "leaves",
+      "warm tone",
+      "thanksgiving"
+    ]
+  },
+  {
+    "id": "seamless-surface",
+    "label": "Seamless Surface",
+    "keywords": [
+      "seamless",
+      "seamless pattern",
+      "digital paper",
+      "scrapbook",
+      "wallpaper",
+      "surface"
+    ]
+  }
+]

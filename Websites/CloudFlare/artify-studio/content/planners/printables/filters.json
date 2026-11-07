@@ -1,1 +1,97 @@
-[]
+[
+  {
+    "id": "junk-journal",
+    "label": "Junk Journal",
+    "keywords": [
+      "junk journal",
+      "junk journals",
+      "ephemera",
+      "vintage paper",
+      "tags",
+      "collage",
+      "scrapbook"
+    ]
+  },
+  {
+    "id": "school-teacher",
+    "label": "School Teacher",
+    "keywords": [
+      "school",
+      "schools",
+      "teacher",
+      "teachers",
+      "classroom",
+      "student",
+      "students",
+      "lesson",
+      "homeschool"
+    ]
+  },
+  {
+    "id": "home-organization",
+    "label": "Home Organization",
+    "keywords": [
+      "home",
+      "cleaning",
+      "chore",
+      "chores",
+      "meal planner",
+      "household",
+      "family planner"
+    ]
+  },
+  {
+    "id": "budget-finance",
+    "label": "Budget Finance",
+    "keywords": [
+      "budget",
+      "budgets",
+      "finance",
+      "finances",
+      "expense",
+      "expenses",
+      "money",
+      "savings"
+    ]
+  },
+  {
+    "id": "reading-bookish",
+    "label": "Reading Bookish",
+    "keywords": [
+      "reading",
+      "book",
+      "books",
+      "reading log",
+      "bookmark",
+      "bookmarks",
+      "review",
+      "library"
+    ]
+  },
+  {
+    "id": "checklists-forms",
+    "label": "Checklists Forms",
+    "keywords": [
+      "checklist",
+      "checklists",
+      "printable",
+      "worksheet",
+      "worksheets",
+      "binder",
+      "pdf"
+    ]
+  },
+  {
+    "id": "holiday-planner",
+    "label": "Holiday Planner",
+    "keywords": [
+      "holiday",
+      "holidays",
+      "christmas",
+      "party planner",
+      "event",
+      "events",
+      "seasonal"
+    ]
+  }
+]

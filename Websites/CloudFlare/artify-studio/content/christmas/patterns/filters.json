@@ -1,1 +1,129 @@
-[]
+[
+  {
+    "id": "plaid-tartan",
+    "label": "Plaid Tartan",
+    "keywords": [
+      "plaid",
+      "plaids",
+      "tartan",
+      "tartans",
+      "buffalo check",
+      "gingham",
+      "checkered"
+    ]
+  },
+  {
+    "id": "watercolor-botanical",
+    "label": "Watercolor Botanical",
+    "keywords": [
+      "watercolor",
+      "watercolors",
+      "botanical",
+      "botanicals",
+      "pine",
+      "pines",
+      "holly",
+      "berry",
+      "berries",
+      "eucalyptus"
+    ]
+  },
+  {
+    "id": "retro-groovy",
+    "label": "Retro Groovy",
+    "keywords": [
+      "retro",
+      "groovy",
+      "70s",
+      "vintage",
+      "wavy",
+      "psychedelic",
+      "nostalgic"
+    ]
+  },
+  {
+    "id": "farmhouse",
+    "label": "Farmhouse",
+    "keywords": [
+      "farmhouse",
+      "farmhouses",
+      "rustic",
+      "truck",
+      "trucks",
+      "kraft",
+      "wood",
+      "cozy"
+    ]
+  },
+  {
+    "id": "gingerbread-sweets",
+    "label": "Gingerbread Sweets",
+    "keywords": [
+      "gingerbread",
+      "gingerbreads",
+      "candy",
+      "candies",
+      "cookie",
+      "cookies",
+      "peppermint",
+      "candy cane"
+    ]
+  },
+  {
+    "id": "cute-animals",
+    "label": "Cute Animals",
+    "keywords": [
+      "animal",
+      "animals",
+      "reindeer",
+      "deer",
+      "bear",
+      "bears",
+      "penguin",
+      "penguins",
+      "fox",
+      "foxes"
+    ]
+  },
+  {
+    "id": "snowflakes",
+    "label": "Snowflakes",
+    "keywords": [
+      "snowflake",
+      "snowflakes",
+      "snow",
+      "frost",
+      "frosty",
+      "icy",
+      "ice",
+      "winter"
+    ]
+  },
+  {
+    "id": "coquette-pastel",
+    "label": "Coquette Pastel",
+    "keywords": [
+      "pink",
+      "pinks",
+      "pastel",
+      "pastels",
+      "bow",
+      "bows",
+      "coquette",
+      "ribbon",
+      "ribbons"
+    ]
+  },
+  {
+    "id": "digital-paper",
+    "label": "Digital Paper",
+    "keywords": [
+      "digital paper",
+      "digital papers",
+      "scrapbook",
+      "scrapbooks",
+      "scrapbooking",
+      "wrapping paper"
+    ]
+  }
+]

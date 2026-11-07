@@ -1,1 +1,95 @@
-[]
+[
+  {
+    "id": "cartoon",
+    "label": "Cartoon",
+    "keywords": [
+      "cartoon",
+      "cartoons",
+      "animated",
+      "animation",
+      "toon",
+      "toons",
+      "anime"
+    ]
+  },
+  {
+    "id": "superhero",
+    "label": "Superhero",
+    "keywords": [
+      "superhero",
+      "superheroes",
+      "hero",
+      "action",
+      "pow",
+      "bam",
+      "pop art"
+    ]
+  },
+  {
+    "id": "playful-kids",
+    "label": "Playful Kids",
+    "keywords": [
+      "kid",
+      "kids",
+      "children",
+      "school",
+      "classroom",
+      "playful",
+      "fun",
+      "youth"
+    ]
+  },
+  {
+    "id": "bubble-rounded",
+    "label": "Bubble Rounded",
+    "keywords": [
+      "bubble",
+      "bubbles",
+      "rounded",
+      "round",
+      "chubby",
+      "puffy",
+      "balloon",
+      "balloons"
+    ]
+  },
+  {
+    "id": "retro-comic",
+    "label": "Retro Comic",
+    "keywords": [
+      "retro",
+      "vintage",
+      "80s",
+      "classic",
+      "comic book",
+      "nostalgic"
+    ]
+  },
+  {
+    "id": "bold-headline",
+    "label": "Bold Headline",
+    "keywords": [
+      "bold",
+      "heavy",
+      "headline",
+      "headlines",
+      "poster",
+      "posters",
+      "display",
+      "title"
+    ]
+  },
+  {
+    "id": "gaming",
+    "label": "Gaming",
+    "keywords": [
+      "game",
+      "games",
+      "gaming",
+      "arcade",
+      "video game",
+      "gamer",
+      "level"
+    ]
+  }
+]

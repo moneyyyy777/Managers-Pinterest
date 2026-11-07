@@ -1,1 +1,114 @@
-[]
+[
+  {
+    "id": "princess",
+    "label": "Princess",
+    "keywords": [
+      "princess",
+      "princesses",
+      "royal",
+      "royals",
+      "crown",
+      "crowns",
+      "tiara",
+      "gown",
+      "gowns"
+    ]
+  },
+  {
+    "id": "castles",
+    "label": "Castles",
+    "keywords": [
+      "castle",
+      "castles",
+      "palace",
+      "palaces",
+      "kingdom",
+      "kingdoms",
+      "tower",
+      "towers"
+    ]
+  },
+  {
+    "id": "fairies",
+    "label": "Fairies",
+    "keywords": [
+      "fairy",
+      "fairies",
+      "pixie",
+      "pixies",
+      "wings",
+      "magical",
+      "magic",
+      "wand",
+      "wands"
+    ]
+  },
+  {
+    "id": "floral-garden",
+    "label": "Floral Garden",
+    "keywords": [
+      "flower",
+      "flowers",
+      "floral",
+      "florals",
+      "rose",
+      "roses",
+      "botanical",
+      "botanicals",
+      "garden",
+      "gardens"
+    ]
+  },
+  {
+    "id": "butterflies",
+    "label": "Butterflies",
+    "keywords": [
+      "butterfly",
+      "butterflies",
+      "dragonfly",
+      "dragonflies",
+      "wings",
+      "flutter",
+      "glitter"
+    ]
+  },
+  {
+    "id": "watercolor",
+    "label": "Watercolor",
+    "keywords": [
+      "watercolor",
+      "watercolors",
+      "watercolour",
+      "hand painted",
+      "soft wash",
+      "pastel"
+    ]
+  },
+  {
+    "id": "baby-nursery",
+    "label": "Baby Nursery",
+    "keywords": [
+      "nursery",
+      "nurseries",
+      "baby shower",
+      "baby girl",
+      "newborn",
+      "little girl",
+      "toddler"
+    ]
+  },
+  {
+    "id": "enchanted-forest",
+    "label": "Enchanted Forest",
+    "keywords": [
+      "forest",
+      "forests",
+      "woodland",
+      "woodlands",
+      "mushroom",
+      "mushrooms",
+      "tree",
+      "trees"
+    ]
+  }
+]

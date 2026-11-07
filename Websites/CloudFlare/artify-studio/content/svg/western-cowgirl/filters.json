@@ -1,0 +1,110 @@
+[
+  {
+    "id": "boots-hats",
+    "label": "Boots Hats",
+    "keywords": [
+      "boot",
+      "boots",
+      "cowboy boot",
+      "cowboy boots",
+      "hat",
+      "hats",
+      "cowboy hat",
+      "stetson"
+    ]
+  },
+  {
+    "id": "howdy-quotes",
+    "label": "Howdy Quotes",
+    "keywords": [
+      "howdy",
+      "quote",
+      "quotes",
+      "saying",
+      "sayings",
+      "southern",
+      "wild west",
+      "rodeo"
+    ]
+  },
+  {
+    "id": "cowgirl-retro",
+    "label": "Cowgirl Retro",
+    "keywords": [
+      "cowgirl",
+      "cowgirls",
+      "retro",
+      "groovy",
+      "vintage western",
+      "70s",
+      "disco"
+    ]
+  },
+  {
+    "id": "desert-cactus",
+    "label": "Desert Cactus",
+    "keywords": [
+      "cactus",
+      "cacti",
+      "desert",
+      "deserts",
+      "steer",
+      "skull",
+      "longhorn",
+      "southwest"
+    ]
+  },
+  {
+    "id": "sublimation",
+    "label": "Sublimation",
+    "keywords": [
+      "sublimation",
+      "sublimations",
+      "tumbler",
+      "tumblers",
+      "png",
+      "t-shirt",
+      "transfer"
+    ]
+  },
+  {
+    "id": "cricut-cut-files",
+    "label": "Cricut Cut Files",
+    "keywords": [
+      "svg",
+      "cricut",
+      "silhouette",
+      "cut file",
+      "cut files",
+      "vinyl",
+      "iron on"
+    ]
+  },
+  {
+    "id": "country-music",
+    "label": "Country Music",
+    "keywords": [
+      "country",
+      "country music",
+      "nashville",
+      "concert",
+      "music",
+      "guitar",
+      "rodeo queen"
+    ]
+  },
+  {
+    "id": "floral-sunflower",
+    "label": "Floral Sunflower",
+    "keywords": [
+      "floral",
+      "florals",
+      "flower",
+      "flowers",
+      "sunflower",
+      "sunflowers",
+      "boho western",
+      "turquoise"
+    ]
+  }
+]

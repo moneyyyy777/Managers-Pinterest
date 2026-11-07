@@ -1,1 +1,97 @@
-[]
+[
+  {
+    "id": "brush-calligraphy",
+    "label": "Brush Calligraphy",
+    "keywords": [
+      "brush",
+      "brushes",
+      "calligraphy",
+      "sumi",
+      "ink",
+      "shodo",
+      "stroke",
+      "strokes"
+    ]
+  },
+  {
+    "id": "cyberpunk-tokyo",
+    "label": "Cyberpunk Tokyo",
+    "keywords": [
+      "cyberpunk",
+      "tokyo",
+      "futuristic",
+      "future",
+      "neon",
+      "sci-fi",
+      "modern",
+      "techno"
+    ]
+  },
+  {
+    "id": "asian-minimalist",
+    "label": "Asian Minimalist",
+    "keywords": [
+      "asian",
+      "oriental",
+      "minimalist",
+      "clean",
+      "zen",
+      "simple",
+      "bamboo"
+    ]
+  },
+  {
+    "id": "food-restaurant",
+    "label": "Food Restaurant",
+    "keywords": [
+      "food",
+      "foods",
+      "restaurant",
+      "restaurants",
+      "ramen",
+      "sushi",
+      "menu",
+      "menus",
+      "dining"
+    ]
+  },
+  {
+    "id": "anime-manga",
+    "label": "Anime Manga",
+    "keywords": [
+      "anime",
+      "manga",
+      "comic",
+      "comics",
+      "otaku",
+      "japanese pop",
+      "cosplay"
+    ]
+  },
+  {
+    "id": "traditional-samurai",
+    "label": "Traditional Samurai",
+    "keywords": [
+      "traditional",
+      "samurai",
+      "ninja",
+      "warrior",
+      "historic",
+      "heritage",
+      "japan"
+    ]
+  },
+  {
+    "id": "bold-geometric",
+    "label": "Bold Geometric",
+    "keywords": [
+      "geometric",
+      "bold",
+      "poster",
+      "posters",
+      "display",
+      "headline",
+      "modern display"
+    ]
+  }
+]

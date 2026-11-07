@@ -1,1 +1,98 @@
-[]
+[
+  {
+    "id": "gold-foil",
+    "label": "Gold Foil",
+    "keywords": [
+      "gold",
+      "golds",
+      "golden",
+      "foil",
+      "metallic",
+      "shimmer",
+      "glitter",
+      "bronze"
+    ]
+  },
+  {
+    "id": "art-deco",
+    "label": "Art Deco",
+    "keywords": [
+      "art deco",
+      "deco",
+      "geometric",
+      "line art",
+      "lines",
+      "abstract",
+      "modern luxury"
+    ]
+  },
+  {
+    "id": "marble-stone",
+    "label": "Marble Stone",
+    "keywords": [
+      "marble",
+      "marbles",
+      "stone",
+      "stones",
+      "agate",
+      "mineral",
+      "liquid marble",
+      "fluid"
+    ]
+  },
+  {
+    "id": "royal-damask",
+    "label": "Royal Damask",
+    "keywords": [
+      "damask",
+      "damasks",
+      "royal",
+      "royals",
+      "baroque",
+      "ornamental",
+      "rococo",
+      "regal"
+    ]
+  },
+  {
+    "id": "dark-celestial",
+    "label": "Dark Celestial",
+    "keywords": [
+      "celestial",
+      "dark",
+      "night",
+      "emerald",
+      "navy",
+      "midnight",
+      "stars",
+      "star"
+    ]
+  },
+  {
+    "id": "botanical-florals",
+    "label": "Botanical Florals",
+    "keywords": [
+      "floral",
+      "florals",
+      "flower",
+      "flowers",
+      "botanical",
+      "botanicals",
+      "leaves",
+      "leaf"
+    ]
+  },
+  {
+    "id": "seamless-paper",
+    "label": "Seamless Paper",
+    "keywords": [
+      "seamless",
+      "repeat",
+      "pattern",
+      "patterns",
+      "digital paper",
+      "surface",
+      "texture"
+    ]
+  }
+]

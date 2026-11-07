@@ -105,5 +105,31 @@
   "isDraft": false,
   "deepParsed": true,
   "addedViaExtension": true,
-  "scrapedAt": "2026-10-24T08:48:08.701Z"
+  "scrapedAt": "2026-10-24T08:48:08.701Z",
+  "semanticTags": [
+    "brand",
+    "brush",
+    "culture",
+    "film",
+    "handwritting",
+    "japan",
+    "japanese",
+    "logo",
+    "logotype",
+    "tokyo",
+    "typeface",
+    "tengura",
+    "japanese inspired font",
+    "asian brush typeface",
+    "kanji style font",
+    "tokyo cyberpunk typography",
+    "sumi ink lettering",
+    "ramen menu font",
+    "sushi restaurant branding",
+    "anime manga title",
+    "samurai oriental font",
+    "zen minimalist typeface",
+    "oriental display font",
+    "martial arts typography"
+  ]
 }

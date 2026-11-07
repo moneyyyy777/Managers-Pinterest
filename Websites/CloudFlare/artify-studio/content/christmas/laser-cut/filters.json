@@ -1,1 +1,109 @@
-[]
+[
+  {
+    "id": "ornaments",
+    "label": "Ornaments",
+    "keywords": [
+      "ornament",
+      "ornaments",
+      "bauble",
+      "baubles",
+      "hanging",
+      "tag",
+      "tags"
+    ]
+  },
+  {
+    "id": "layered-3d",
+    "label": "Layered 3D",
+    "keywords": [
+      "layered",
+      "layer",
+      "layers",
+      "3d",
+      "multi layer",
+      "multi-layer",
+      "shadow box"
+    ]
+  },
+  {
+    "id": "glowforge",
+    "label": "Glowforge",
+    "keywords": [
+      "glowforge",
+      "laser cut",
+      "laser",
+      "lasers",
+      "wood",
+      "wooden",
+      "acrylic"
+    ]
+  },
+  {
+    "id": "holiday-signs",
+    "label": "Holiday Signs",
+    "keywords": [
+      "sign",
+      "signs",
+      "door hanger",
+      "door hangers",
+      "porch sign",
+      "wall decor",
+      "plaque"
+    ]
+  },
+  {
+    "id": "candle-holders",
+    "label": "Candle Holders",
+    "keywords": [
+      "candle",
+      "candles",
+      "candle holder",
+      "candle holders",
+      "lantern",
+      "lanterns",
+      "luminary",
+      "tea light"
+    ]
+  },
+  {
+    "id": "holiday-village",
+    "label": "Holiday Village",
+    "keywords": [
+      "village",
+      "villages",
+      "house",
+      "houses",
+      "santa",
+      "sleigh",
+      "sitter",
+      "standing",
+      "shelf sitter"
+    ]
+  },
+  {
+    "id": "christmas-trees",
+    "label": "Christmas Trees",
+    "keywords": [
+      "tree",
+      "trees",
+      "christmas tree",
+      "pine",
+      "pines",
+      "fir",
+      "evergreen"
+    ]
+  },
+  {
+    "id": "nativity",
+    "label": "Nativity",
+    "keywords": [
+      "nativity",
+      "nativities",
+      "holy night",
+      "bethlehem",
+      "manger",
+      "religious",
+      "christian"
+    ]
+  }
+]

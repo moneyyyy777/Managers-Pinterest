@@ -1,1 +1,108 @@
-[]
+[
+  {
+    "id": "wildstyle",
+    "label": "Wildstyle",
+    "keywords": [
+      "wildstyle",
+      "street art",
+      "underground",
+      "burner",
+      "complex"
+    ]
+  },
+  {
+    "id": "bubble-throwup",
+    "label": "Bubble Throwup",
+    "keywords": [
+      "bubble",
+      "bubbles",
+      "throwup",
+      "throw up",
+      "fat cap",
+      "rounded",
+      "chubby"
+    ]
+  },
+  {
+    "id": "drip-slime",
+    "label": "Drip Slime",
+    "keywords": [
+      "drip",
+      "drips",
+      "dripping",
+      "melted",
+      "slime",
+      "melt",
+      "leak",
+      "spray"
+    ]
+  },
+  {
+    "id": "marker-tag",
+    "label": "Marker Tag",
+    "keywords": [
+      "marker",
+      "markers",
+      "tag",
+      "tags",
+      "tagging",
+      "chisel",
+      "handstyle",
+      "hand style"
+    ]
+  },
+  {
+    "id": "urban-hiphop",
+    "label": "Urban HipHop",
+    "keywords": [
+      "urban",
+      "hip hop",
+      "hiphop",
+      "rap",
+      "rapper",
+      "skate",
+      "skateboard",
+      "streetwear"
+    ]
+  },
+  {
+    "id": "stencil-grunge",
+    "label": "Stencil Grunge",
+    "keywords": [
+      "stencil",
+      "stencils",
+      "grunge",
+      "distressed",
+      "rough",
+      "spray paint",
+      "splatter"
+    ]
+  },
+  {
+    "id": "futuristic-cyber",
+    "label": "Futuristic Cyber",
+    "keywords": [
+      "cyber",
+      "futuristic",
+      "future",
+      "modern street",
+      "techno",
+      "sci-fi",
+      "y2k"
+    ]
+  },
+  {
+    "id": "bold-display",
+    "label": "Bold Display",
+    "keywords": [
+      "bold",
+      "heavy",
+      "poster",
+      "posters",
+      "headline",
+      "headlines",
+      "title",
+      "titles"
+    ]
+  }
+]

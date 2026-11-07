@@ -1,1 +1,94 @@
-[]
+[
+  {
+    "id": "bride-tribe",
+    "label": "Bride Tribe",
+    "keywords": [
+      "bride",
+      "brides",
+      "bride tribe",
+      "bridesmaid",
+      "bridesmaids",
+      "bachelorette",
+      "maid of honor"
+    ]
+  },
+  {
+    "id": "mr-mrs-quotes",
+    "label": "Mr Mrs Quotes",
+    "keywords": [
+      "mr and mrs",
+      "husband",
+      "wife",
+      "just married",
+      "marriage",
+      "quote",
+      "quotes"
+    ]
+  },
+  {
+    "id": "wedding-signs",
+    "label": "Wedding Signs",
+    "keywords": [
+      "sign",
+      "signs",
+      "welcome sign",
+      "seating chart",
+      "table number",
+      "decor",
+      "acrylic"
+    ]
+  },
+  {
+    "id": "romantic-floral",
+    "label": "Romantic Floral",
+    "keywords": [
+      "floral",
+      "florals",
+      "flower",
+      "flowers",
+      "wreath",
+      "wreaths",
+      "heart",
+      "hearts",
+      "love"
+    ]
+  },
+  {
+    "id": "cricut-cut-files",
+    "label": "Cricut Cut Files",
+    "keywords": [
+      "cricut",
+      "silhouette",
+      "svg",
+      "cut file",
+      "cut files",
+      "vinyl",
+      "iron on"
+    ]
+  },
+  {
+    "id": "cake-toppers",
+    "label": "Cake Toppers",
+    "keywords": [
+      "cake topper",
+      "cake toppers",
+      "topper",
+      "toppers",
+      "celebration",
+      "anniversary"
+    ]
+  },
+  {
+    "id": "groom-party",
+    "label": "Groom Party",
+    "keywords": [
+      "groom",
+      "grooms",
+      "groomsman",
+      "groomsmen",
+      "best man",
+      "bachelor",
+      "beer glass"
+    ]
+  }
+]

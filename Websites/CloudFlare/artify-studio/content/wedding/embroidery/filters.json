@@ -1,1 +1,98 @@
-[]
+[
+  {
+    "id": "bride-groom",
+    "label": "Bride Groom",
+    "keywords": [
+      "bride",
+      "brides",
+      "groom",
+      "grooms",
+      "mr and mrs",
+      "couple",
+      "couples",
+      "wedding dress"
+    ]
+  },
+  {
+    "id": "floral-wreaths",
+    "label": "Floral Wreaths",
+    "keywords": [
+      "floral",
+      "florals",
+      "flower",
+      "flowers",
+      "wreath",
+      "wreaths",
+      "rose",
+      "roses",
+      "botanical"
+    ]
+  },
+  {
+    "id": "romantic-hearts",
+    "label": "Romantic Hearts",
+    "keywords": [
+      "heart",
+      "hearts",
+      "love",
+      "romance",
+      "romantic",
+      "cupid",
+      "forever"
+    ]
+  },
+  {
+    "id": "monogram-frames",
+    "label": "Monogram Frames",
+    "keywords": [
+      "monogram",
+      "monograms",
+      "initial",
+      "initials",
+      "crest",
+      "frame",
+      "frames",
+      "alphabet"
+    ]
+  },
+  {
+    "id": "machine-embroidery",
+    "label": "Machine Embroidery",
+    "keywords": [
+      "machine embroidery",
+      "embroidery",
+      "pes",
+      "dst",
+      "jef",
+      "hoop",
+      "stitch",
+      "stitches"
+    ]
+  },
+  {
+    "id": "wedding-sayings",
+    "label": "Wedding Sayings",
+    "keywords": [
+      "quote",
+      "quotes",
+      "saying",
+      "sayings",
+      "just married",
+      "save the date",
+      "celebration"
+    ]
+  },
+  {
+    "id": "lace-ornamental",
+    "label": "Lace Ornamental",
+    "keywords": [
+      "lace",
+      "ornamental",
+      "filigree",
+      "vintage",
+      "border",
+      "borders",
+      "decorative"
+    ]
+  }
+]

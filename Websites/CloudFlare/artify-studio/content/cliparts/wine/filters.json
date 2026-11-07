@@ -1,1 +1,108 @@
-[]
+[
+  {
+    "id": "red-wine",
+    "label": "Red Wine",
+    "keywords": [
+      "red wine",
+      "red wines",
+      "cabernet",
+      "merlot",
+      "pinot",
+      "burgundy",
+      "crimson"
+    ]
+  },
+  {
+    "id": "wine-glass",
+    "label": "Wine Glass",
+    "keywords": [
+      "wine glass",
+      "wine glasses",
+      "glass",
+      "glasses",
+      "goblet",
+      "goblets",
+      "stemware"
+    ]
+  },
+  {
+    "id": "champagne",
+    "label": "Champagne",
+    "keywords": [
+      "champagne",
+      "champagnes",
+      "prosecco",
+      "sparkling",
+      "sparkling wine",
+      "toast",
+      "bubbly"
+    ]
+  },
+  {
+    "id": "grapes-vineyard",
+    "label": "Grapes Vineyard",
+    "keywords": [
+      "grape",
+      "grapes",
+      "vineyard",
+      "vineyards",
+      "winery",
+      "wineries",
+      "vine",
+      "vines"
+    ]
+  },
+  {
+    "id": "watercolor",
+    "label": "Watercolor",
+    "keywords": [
+      "watercolor",
+      "watercolors",
+      "watercolour",
+      "hand painted",
+      "splash",
+      "paint"
+    ]
+  },
+  {
+    "id": "girls-night",
+    "label": "Girls Night",
+    "keywords": [
+      "girls night",
+      "bachelorette",
+      "party",
+      "parties",
+      "cheers",
+      "celebration",
+      "cocktail",
+      "cocktails"
+    ]
+  },
+  {
+    "id": "wine-bottle",
+    "label": "Wine Bottle",
+    "keywords": [
+      "bottle",
+      "bottles",
+      "wine bottle",
+      "wine bottles",
+      "cork",
+      "corks",
+      "cellar"
+    ]
+  },
+  {
+    "id": "sublimation",
+    "label": "Sublimation",
+    "keywords": [
+      "sublimation",
+      "sublimations",
+      "tumbler",
+      "tumblers",
+      "mug",
+      "mugs",
+      "quote",
+      "quotes"
+    ]
+  }
+]

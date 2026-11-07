@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Canine Behavior & Routine Diagnostic | 60-Second Dog Assessment</title>
+  <meta name="description" content="Take this fast, vet-approved 60-second quiz to solve puppy potty accidents, apartment barking, and leash pulling with a personalized action plan.">
+  <meta name="theme-color" content="#10b981">
+
+  <!-- Open Graph / Pinterest Rich Pins -->
+  <meta property="og:title" content="Solve Dog Potty Accidents, Barking & Leash Pulling in Days">
+  <meta property="og:description" content="Free 60-second personalized quiz for dog owners. Discover the exact step-by-step routine for your dog.">
+  <meta property="og:type" content="website">
+
+  <style>
+    /* -------------------------------------------------------------
+       ZERO-DEPENDENCY CSS RESET & OPTIMIZED UTILITY ENGINE
+       Loaded inline for 0ms network latency and 0 Layout Shift
+    ------------------------------------------------------------- */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary: #059669;
+      --primary-hover: #047857;
+      --primary-light: #ecfdf5;
+      --primary-border: #a7f3d0;
+      --accent-warm: #f59e0b;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 40px;
+    }
+
+    /* Top Trust Ribbon */
+    .top-bar {
+      background: #064e3b;
+      color: #a7f3d0;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      padding: 8px 12px;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .top-bar svg {
+      width: 14px;
+      height: 14px;
+      fill: #34d399;
+      flex-shrink: 0;
+    }
+
+    /* Main Container */
+    .app-container {
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 16px 16px 32px;
+    }
+
+    /* Header */
+    .site-header {
+      text-align: center;
+      margin-top: 8px;
+      margin-bottom: 20px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary-light);
+      border: 1px solid var(--primary-border);
+      color: var(--primary);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    .hero-title {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.25;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .hero-title span {
+      color: var(--primary);
+    }
+
+    .hero-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Card Wrapper */
+    .quiz-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-lg);
+      padding: 20px 18px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Progress Bar */
+    .progress-section {
+      margin-bottom: 18px;
+    }
+
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 7px;
+      background: #e2e8f0;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+      width: 33.33%;
+      transition: width 0.35s ease;
+      border-radius: 9999px;
+    }
+
+    /* Question Screen */
+    .step-screen {
+      display: none;
+    }
+
+    .step-screen.active {
+      display: block;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .question-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+
+    .question-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* Options List */
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      font-weight: 600;
+      color: #1e293b;
+      transition: all 0.15s ease;
+      outline: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      width: 100%;
+    }
+
+    .quiz-option:hover, .quiz-option:focus-visible {
+      border-color: var(--primary);
+      background: #f0fdf4;
+      transform: translateY(-1px);
+    }
+
+    .quiz-option:active {
+      transform: scale(0.99);
+      background: #dcfce7;
+    }
+
+    .quiz-option .opt-icon {
+      font-size: 22px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .quiz-option .opt-text {
+      flex-grow: 1;
+    }
+
+    .quiz-option .opt-sub {
+      display: block;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .quiz-option .opt-arrow {
+      width: 18px;
+      height: 18px;
+      stroke: #94a3b8;
+      flex-shrink: 0;
+      transition: stroke 0.15s;
+    }
+
+    .quiz-option:hover .opt-arrow {
+      stroke: var(--primary);
+    }
+
+    /* Loading Analysis Screen */
+    .loading-screen {
+      text-align: center;
+      padding: 36px 12px;
+    }
+
+    .spinner {
+      width: 52px;
+      height: 52px;
+      border: 4px solid #e2e8f0;
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-step-text {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+
+    .loading-subtext {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Results Screen */
+    .results-screen {
+      display: none;
+    }
+
+    .results-screen.active {
+      display: block;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .diagnostic-banner {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .diag-icon {
+      width: 24px;
+      height: 24px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .diag-content h4 {
+      font-size: 14px;
+      font-weight: 800;
+      color: #064e3b;
+      margin-bottom: 2px;
+    }
+
+    .diag-content p {
+      font-size: 12px;
+      color: #047857;
+      line-height: 1.4;
+    }
+
+    /* Offer Box */
+    .offer-box {
+      background: #ffffff;
+      border: 2px solid #10b981;
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      margin-bottom: 22px;
+      box-shadow: 0 8px 24px -4px rgba(16, 185, 129, 0.15);
+      position: relative;
+    }
+
+    .ribbon-tag {
+      position: absolute;
+      top: -12px;
+      left: 18px;
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .offer-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.25;
+      margin-top: 6px;
+      margin-bottom: 8px;
+    }
+
+    .offer-summary {
+      font-size: 13px;
+      color: #334155;
+      margin-bottom: 14px;
+      line-height: 1.45;
+    }
+
+    .bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .bullet-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      color: #1e293b;
+      font-weight: 500;
+    }
+
+    .bullet-item svg {
+      width: 16px;
+      height: 16px;
+      fill: #10b981;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Primary CTA Button */
+    .cta-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      text-decoration: none;
+      padding: 15px 20px;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.39);
+      transition: all 0.2s ease;
+      text-align: center;
+      animation: pulseBtn 2.2s infinite;
+    }
+
+    .cta-btn:hover {
+      background: linear-gradient(180deg, #059669 0%, #047857 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px 0 rgba(16, 185, 129, 0.45);
+    }
+
+    .cta-btn:active {
+      transform: scale(0.98);
+    }
+
+    @keyframes pulseBtn {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .guarantee-note {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    /* Amazon Hardware Section */
+    .hardware-section {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px dashed #cbd5e1;
+    }
+
+    .hardware-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .hardware-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .products-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .product-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.15s ease;
+    }
+
+    .product-row:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      transform: translateX(2px);
+    }
+
+    .prod-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .prod-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1.25;
+    }
+
+    .prod-tag {
+      font-size: 11px;
+      color: #d97706;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .prod-badge {
+      background: #fef3c7;
+      color: #b45309;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Social Proof Bar */
+    .proof-footer {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px solid #f1f5f9;
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .proof-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* -------------------------------------------------------------
+       EXIT-INTENT POPUP MODAL
+    ------------------------------------------------------------- */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      max-width: 440px;
+      width: 100%;
+      padding: 24px 20px;
+      position: relative;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+      transform: scale(0.95);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-overlay.open .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: #f1f5f9;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #64748b;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .modal-badge {
+      display: inline-block;
+      background: #fee2e2;
+      color: #b91c1c;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    .modal-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+
+    .modal-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.45;
+    }
+
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .modal-input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .modal-input:focus {
+      border-color: var(--primary);
+    }
+
+    .modal-submit {
+      width: 100%;
+      background: #f59e0b;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 14px;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+      transition: background 0.15s;
+    }
+
+    .modal-submit:hover {
+      background: #d97706;
+    }
+
+    .modal-dismiss {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .modal-dismiss-link {
+      font-size: 11px;
+      color: #94a3b8;
+      text-decoration: underline;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Trust Header -->
+  <div class="top-bar">
+    <svg viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm3.707 6.707l-4.5 4.5a1 1 0 01-1.414 0l-2-2a1 1 0 111.414-1.414L8.5 11.086l3.793-3.793a1 1 0 111.414 1.414z"/></svg>
+    <span>Canine Behavioral Assessment • Trusted by 42,000+ Dog Parents</span>
+  </div>
+
+  <div class="app-container">
+
+    <!-- Header Section -->
+    <header class="site-header">
+      <div class="badge-pill">
+        <span>🐾 60-Second Fast Diagnostic</span>
+      </div>
+      <h1 class="hero-title" id="pageMainHeading">
+        Fix Puppy Accidents, Barking &amp; Leash Pulling in <span>7 Days</span>
+      </h1>
+      <p class="hero-subtitle">
+        Answer 3 quick questions to unlock your dog's custom, vet-approved routine without harsh punishment.
+      </p>
+    </header>
+
+    <!-- Quiz Interactive Card -->
+    <main class="quiz-card" id="quizCard">
+
+      <!-- Progress Section -->
+      <div class="progress-section" id="progressSection">
+        <div class="progress-labels">
+          <span id="progressText">Question 1 of 3</span>
+          <span id="percentText">33% Completed</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <!-- STEP 1: Main Challenge (Dynamic Intent Router) -->
+      <section class="step-screen active" id="step1">
+        <h2 class="question-title">What is your #1 struggle right now?</h2>
+        <p class="question-desc">Select the main behavior you need solved fastest:</p>
+        <div class="options-grid">
+          <button type="button" class="quiz-option" data-route="potty" onclick="handleSelect(1, 'potty')">
+            <span class="opt-icon">🚽</span>
+            <div class="opt-text">
+              Potty Training &amp; Piddle Accidents
+              <span class="opt-sub">Peeing on rugs, won't hold it, messy crate</span>
+            </div>
+            <svg class="opt-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+          </button>
+
+          <button type="button" class="quiz-option" data-route="apartment" onclick="handleSelect(1, 'apartment')">
+            <span class="opt-icon">🏢</span>
+            <div class="opt-text">
+              Apartment Barking &amp; Alone Anxiety
+              <span class="opt-sub">Howling when alone, door scratches, noise complaints</span>
+            </div>
+            <svg class="opt-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+          </button>
+
+          <button type="button" class="quiz-option" data-route="training" onclick="handleSelect(1, 'training')">
+            <span class="opt-icon">🦮</span>
+            <div class="opt-text">
+              Leash Pulling, Biting &amp; Hyperactivity
+              <span class="opt-sub">Ignores recall, pulls your arm, sharp puppy teeth</span>
+            </div>
+            <svg class="opt-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 2: Age Bracket -->
+      <section class="step-screen" id="step2">
+        <h2 class="question-title">How old is your dog?</h2>
+        <p class="question-desc">Bladder size and brain neuroplasticity depend on age:</p>
+        <div class="options-grid">
+          <button type="button" class="quiz-option" onclick="handleSelect(2, 'puppy')">
+            <span class="opt-icon">🐶</span>
+            <div class="opt-text">
+              Young Puppy (Under 6 months)
+              <span class="opt-sub">Rapid learning window, needs strict timing schedule</span>
+            </div>
+            <svg class="opt-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+          </button>
+
+          <button type="button" class="quiz-option" onclick="handleSelect(2, 'teen')">
+            <span class="opt-icon">🐕</span>
+            <div class="opt-text">
+              Adolescent (6 to 18 months)
+              <span class="opt-sub">Testing boundaries, sudden training regressions</span>
+            </div>
+            <svg class="opt-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+          </button>
+
+          <button type="button" class="quiz-option" onclick="handleSelect(2, 'adult')">
+            <span class="opt-icon">🦮</span>
+            <div class="opt-text">
+              Adult or Senior Dog (1.5+ years)
+              <span class="opt-sub">Stubborn habits, needs gentle behavior retraining</span>
+            </div>
+            <svg class="opt-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 3: Timeline & Urgency -->
+      <section class="step-screen" id="step3">
+        <h2 class="question-title">How long has this been happening?</h2>
+        <p class="question-desc">This shapes your immediate 7-day correction protocol:</p>
+        <div class="options-grid">
+          <button type="button" class="quiz-option" onclick="handleSelect(3, 'new')">
+            <span class="opt-icon">⏱️</span>
+            <div class="opt-text">
+              Just started recently (Under 2 weeks)
+              <span class="opt-sub">Easy to fix before it hardwires as a habit</span>
+            </div>
+            <svg class="opt-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+          </button>
+
+          <button type="button" class="quiz-option" onclick="handleSelect(3, 'months')">
+            <span class="opt-icon">📅</span>
+            <div class="opt-text">
+              A few weeks to several months
+              <span class="opt-sub">Occasional good days, but regular messy setbacks</span>
+            </div>
+            <svg class="opt-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+          </button>
+
+          <button type="button" class="quiz-option" onclick="handleSelect(3, 'urgent')">
+            <span class="opt-icon">🚨</span>
+            <div class="opt-text">
+              Urgent ongoing crisis
+              <span class="opt-sub">Threat of landlord complaints or destroyed home</span>
+            </div>
+            <svg class="opt-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 4: Processing Animation -->
+      <section class="step-screen" id="stepLoading">
+        <div class="loading-screen">
+          <div class="spinner"></div>
+          <div class="loading-step-text" id="loadingText">Analyzing canine response data...</div>
+          <p class="loading-subtext">Building your personalized 7-day solution protocol</p>
+        </div>
+      </section>
+
+      <!-- RESULTS SCREEN (Dynamic Offer Routing) -->
+      <section class="results-screen" id="stepResults">
+
+        <!-- Diagnostic Feedback Banner -->
+        <div class="diagnostic-banner">
+          <div class="diag-icon">✓</div>
+          <div class="diag-content">
+            <h4 id="diagHeading">Diagnostic Match: 98.4% Compatibility</h4>
+            <p id="diagSummary">Based on your dog's age and triggers, conventional yelling or punishment actually increases anxiety. Here is the scientifically proven 7-day fix.</p>
+          </div>
+        </div>
+
+        <!-- Primary Digital Solution (Digistore24 DogBook7) -->
+        <div class="offer-box">
+          <div class="ribbon-tag" id="offerRibbon">★ #1 RECOMMENDED PROTOCOL</div>
+          <h3 class="offer-title" id="offerTitle">The 7-Day Rapid Housebreaking &amp; Potty Miracle</h3>
+          <p class="offer-summary" id="offerSummary">
+            The step-by-step system to end indoor accidents, crate crying, and carpet stains for good using gentle neuro-association.
+          </p>
+
+          <ul class="bullet-list" id="offerBullets">
+            <li class="bullet-item">
+              <svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+              <span>Eliminates indoor puddles in as little as 3 to 7 days</span>
+            </li>
+            <li class="bullet-item">
+              <svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+              <span>Full 24-hour hour-by-hour feeding &amp; bathroom schedule</span>
+            </li>
+            <li class="bullet-item">
+              <svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+              <span>Stops nighttime whining so you can finally sleep 8 hours</span>
+            </li>
+          </ul>
+
+          <!-- Primary CTA Button -->
+          <a href="#" class="cta-btn" id="primaryCtaLink" target="_blank" rel="noopener noreferrer">
+            <span id="ctaBtnText">Unlock My 7-Day Plan Now &rarr;</span>
+          </a>
+
+          <div class="guarantee-note">
+            <span>🔒 60-Day 100% Money-Back Guarantee • Instant Digital Download</span>
+          </div>
+        </div>
+
+        <!-- Complementary Physical Solutions (Amazon Associates Golden Mean) -->
+        <div class="hardware-section">
+          <div class="hardware-title">
+            <span>📦</span>
+            <span id="hardwareHeading">Essential Tools for Fast Results</span>
+          </div>
+          <p class="hardware-subtitle" id="hardwareSub">Combine with the routine above to accelerate your dog's progress:</p>
+
+          <div class="products-grid" id="amazonProductsGrid">
+            <!-- Dynamically populated based on intent -->
+          </div>
+        </div>
+
+        <!-- Trust & Security Signals -->
+        <div class="proof-footer">
+          <div class="proof-item">✓ Vet-Approved Methods</div>
+          <div class="proof-item">✓ Zero Shock / Choke</div>
+          <div class="proof-item">✓ 42,000+ Happy Pups</div>
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- EXIT-INTENT POPUP MODAL -->
+  <div class="modal-overlay" id="exitModal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button type="button" class="modal-close-btn" onclick="closeModal()" aria-label="Close modal">&times;</button>
+      <span class="modal-badge">Wait! Special Free Gift</span>
+      <h3 class="modal-title">Before You Go: Get the Free 24-Hour Emergency Routine Checklist</h3>
+      <p class="modal-desc">
+        Don't leave your dog's behavior to guesswork. Download our printable hour-by-hour schedule to prevent accidents and barking starting tonight.
+      </p>
+
+      <form class="modal-form" id="exitForm" onsubmit="handleLeadSubmit(event)">
+        <input type="email" class="modal-input" id="leadEmail" placeholder="Enter your best email address..." required>
+        <button type="submit" class="modal-submit">Send Me the Free PDF &amp; Plan &rarr;</button>
+      </form>
+
+      <div class="modal-dismiss">
+        <button type="button" class="modal-dismiss-link" onclick="closeModal()">No thanks, I'll figure it out on my own</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- -------------------------------------------------------------
+       HIGH-PERFORMANCE CLIENT SCRIPT & DYNAMIC ROUTING ENGINE
+  ------------------------------------------------------------- -->
+  <script>
+    /* ==========================================================
+       CONFIG & SOURCE OF TRUTH (Easily replace with your IDs)
+    ========================================================== */
+    const CONFIG = {
+      AFFILIATE_ID: 'YOUR_AFFILIATE_ID', // Replace with your Digistore24 affiliate ID
+      AMAZON_TAG: 'YOUR_AMAZON_TAG-20',   // Replace with your Amazon Associates Tag
+
+      // Digistore24 Offer URLs per Segment
+      DIGISTORE_OFFERS: {
+        potty: 'https://www.digistore24.com/redir/DOGBOOK7_ID/AFFILIATE_ID?subid=potty',
+        apartment: 'https://www.digistore24.com/redir/DOGBOOK7_ID/AFFILIATE_ID?subid=apartment',
+        training: 'https://www.digistore24.com/redir/DOGBOOK7_ID/AFFILIATE_ID?subid=training',
+        default: 'https://www.digistore24.com/redir/DOGBOOK7_ID/AFFILIATE_ID?subid=quiz'
+      },
+
+      // Amazon Associates Recommendations Matrix
+      AMAZON_MATRIX: {
+        potty: [
+          {
+            name: "Rocco & Roxie Bio-Enzymatic Stain & Odor Eliminator",
+            tag: "Essential: Destroys pee pheromones permanently",
+            badge: "Amazon #1 Best Seller",
+            asin: "B00CKFL93K",
+            keyword: "enzymatic+cleaner+dog"
+          },
+          {
+            name: "Potty Patch Real-Feel Grass Box with Drainage Tray",
+            tag: "High-Rise & Rainy Day Balcony Solution",
+            badge: "4.8 ★ (12k+ Reviews)",
+            asin: "B07PBXN9P8",
+            keyword: "dog+grass+potty+pad"
+          },
+          {
+            name: "Ultra-Absorbent Charcoal Leak-Proof Training Pads",
+            tag: "Turns liquid to gel immediately with zero run-off",
+            badge: "Save 20% on Amazon",
+            asin: "B08927T234",
+            keyword: "heavy+duty+puppy+pads"
+          }
+        ],
+        apartment: [
+          {
+            name: "Original Snuggle Puppy Behavioral Anxiety Aid",
+            tag: "Real-feel pulsing heartbeat calms alone crying",
+            badge: "Vet Recommended",
+            asin: "B000S753WK",
+            keyword: "snuggle+puppy+heartbeat"
+          },
+          {
+            name: "Calming Textured Lick Mat (2-Pack) for Peanut Butter",
+            tag: "Releases calming endorphins when you leave home",
+            badge: "Amazon Choice",
+            asin: "B0892J8M29",
+            keyword: "dog+lick+mat"
+          },
+          {
+            name: "Adaptil Pheromone Calming Diffuser for Apartments",
+            tag: "Clinically proven to stop stress-induced barking",
+            badge: "Top Rated",
+            asin: "B000O5H57K",
+            keyword: "adaptil+calming+diffuser"
+          }
+        ],
+        training: [
+          {
+            name: "Rabbitgoo Ergonomic No-Pull Front-Clip Dog Harness",
+            tag: "Instantly ends choking and heavy arm pulling",
+            badge: "Over 160k Reviews",
+            asin: "B01M8JT6FT",
+            keyword: "no+pull+dog+harness"
+          },
+          {
+            name: "PureBites Freeze-Dried Raw Single-Ingredient Treats",
+            tag: "High-value currency dogs will do anything for",
+            badge: "100% Pure Beef Liver",
+            asin: "B0002FP3YW",
+            keyword: "freeze+dried+dog+treats"
+          },
+          {
+            name: "Coachi Dog Training Clicker with Wrist Lanyard",
+            tag: "Pinpoints exact positive behavior instantly",
+            badge: "Trainer Standard",
+            asin: "B00589G9U6",
+            keyword: "dog+training+clicker"
+          }
+        ]
+      }
+    };
+
+    /* State Management */
+    const userAnswers = {
+      route: 'potty', // default fallback
+      age: 'puppy',
+      duration: 'new'
+    };
+
+    function handleSelect(stepNumber, value) {
+      if (stepNumber === 1) {
+        userAnswers.route = value;
+        goToStep(2);
+      } else if (stepNumber === 2) {
+        userAnswers.age = value;
+        goToStep(3);
+      } else if (stepNumber === 3) {
+        userAnswers.duration = value;
+        runAnalysis();
+      }
+    }
+
+    function goToStep(nextStep) {
+      document.querySelectorAll('.step-screen').forEach(el => el.classList.remove('active'));
+      const nextEl = document.getElementById('step' + nextStep);
+      if (nextEl) nextEl.classList.add('active');
+
+      // Update Progress
+      const fill = document.getElementById('progressFill');
+      const pText = document.getElementById('progressText');
+      const pPercent = document.getElementById('percentText');
+
+      if (nextStep === 2) {
+        fill.style.width = '66.66%';
+        pText.innerText = 'Question 2 of 3';
+        pPercent.innerText = '66% Completed';
+      } else if (nextStep === 3) {
+        fill.style.width = '100%';
+        pText.innerText = 'Question 3 of 3';
+        pPercent.innerText = 'Almost Finished';
+      }
+    }
+
+    function runAnalysis() {
+      // Hide Step 3, Show Loading Screen
+      document.querySelectorAll('.step-screen').forEach(el => el.classList.remove('active'));
+      const loadingScreen = document.getElementById('stepLoading');
+      loadingScreen.classList.add('active');
+
+      const loadingText = document.getElementById('loadingText');
+      const messages = [
+        "Analyzing behavioral indicators...",
+        "Evaluating " + userAnswers.age + " neuro-development factors...",
+        "Formulating 7-day correction protocol..."
+      ];
+
+      let msgIndex = 0;
+      const interval = setInterval(() => {
+        msgIndex++;
+        if (msgIndex < messages.length) {
+          loadingText.innerText = messages[msgIndex];
+        }
+      }, 400);
+
+      // Transition to results after 1.2s
+      setTimeout(() => {
+        clearInterval(interval);
+        displayResults();
+      }, 1250);
+    }
+
+    function displayResults() {
+      // Hide all steps & progress bar
+      document.querySelectorAll('.step-screen').forEach(el => el.classList.remove('active'));
+      document.getElementById('progressSection').style.display = 'none';
+
+      const resultsScreen = document.getElementById('stepResults');
+      resultsScreen.classList.add('active');
+
+      // Scroll smoothly to results card
+      document.getElementById('quizCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Populate content dynamically based on route
+      const route = userAnswers.route || 'potty';
+      const ctaLink = document.getElementById('primaryCtaLink');
+
+      // Set target URL
+      let targetUrl = CONFIG.DIGISTORE_OFFERS[route] || CONFIG.DIGISTORE_OFFERS.default;
+      targetUrl = targetUrl.replace('AFFILIATE_ID', CONFIG.AFFILIATE_ID);
+      ctaLink.href = targetUrl;
+
+      // Update Texts
+      if (route === 'potty') {
+        document.getElementById('pageMainHeading').innerHTML = "Your Custom <span>Potty &amp; Housebreaking</span> Action Plan";
+        document.getElementById('offerTitle').innerText = "The 7-Day Rapid Housebreaking & Potty Miracle";
+        document.getElementById('offerSummary').innerText = "Step-by-step masterplan to stop carpet puddles, crate accidents, and middle-of-the-night cries once and for all.";
+        document.getElementById('offerBullets').innerHTML = `
+          <li class="bullet-item"><svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg><span>Stops indoor accidents in 3 to 7 days flat</span></li>
+          <li class="bullet-item"><svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg><span>Printable 24-hour hour-by-hour puppy bathroom schedule</span></li>
+          <li class="bullet-item"><svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg><span>Eliminates pheromone attraction so they stop re-soiling the same spot</span></li>
+        `;
+        document.getElementById('ctaBtnText').innerHTML = "Get The 7-Day Potty Miracle &rarr;";
+      } else if (route === 'apartment') {
+        document.getElementById('pageMainHeading').innerHTML = "Your Custom <span>Apartment Calm &amp; Anti-Bark</span> Action Plan";
+        document.getElementById('offerTitle').innerText = "Apartment Calm & Separation Anxiety Mastery";
+        document.getElementById('offerSummary').innerText = "End hallway barking, door chewing, and lonely howling before your landlord issues a noise notice.";
+        document.getElementById('offerBullets').innerHTML = `
+          <li class="bullet-item"><svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg><span>The 'Silent Departure' routine: leave home without whining or panic</span></li>
+          <li class="bullet-item"><svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg><span>Desensitize trigger noises: doorbells, elevator footsteps &amp; sirens</span></li>
+          <li class="bullet-item"><svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg><span>High-rise &amp; balcony bathroom hacks to avoid 3am elevator trips</span></li>
+        `;
+        document.getElementById('ctaBtnText').innerHTML = "End Apartment Barking Now &rarr;";
+      } else if (route === 'training') {
+        document.getElementById('pageMainHeading').innerHTML = "Your Custom <span>Leash &amp; Obedience Mastery</span> Plan";
+        document.getElementById('offerTitle').innerText = "Brain Training & Loose-Leash Walking Protocol";
+        document.getElementById('offerSummary').innerText = "Transform pulling, puppy biting, and selective hearing into calm, joyful focus on every single walk.";
+        document.getElementById('offerBullets').innerHTML = `
+          <li class="bullet-item"><svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg><span>The 'Gentle Brake' method: walk with a completely loose leash</span></li>
+          <li class="bullet-item"><svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg><span>Emergency recall command that snaps your dog's attention back 100%</span></li>
+          <li class="bullet-item"><svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg><span>Stop puppy mouthing and ankle biting with positive redirection</span></li>
+        `;
+        document.getElementById('ctaBtnText').innerHTML = "Get The Obedience Blueprint &rarr;";
+      }
+
+      // Populate Amazon Physical Gear
+      const products = CONFIG.AMAZON_MATRIX[route] || CONFIG.AMAZON_MATRIX.potty;
+      const grid = document.getElementById('amazonProductsGrid');
+      grid.innerHTML = '';
+
+      products.forEach(p => {
+        const amazonUrl = `https://www.amazon.com/s?k=${p.keyword}&tag=${CONFIG.AMAZON_TAG}`;
+        const row = document.createElement('a');
+        row.className = 'product-row';
+        row.href = amazonUrl;
+        row.target = '_blank';
+        row.rel = 'noopener noreferrer';
+        row.innerHTML = `
+          <div class="prod-details">
+            <span class="prod-name">${p.name}</span>
+            <span class="prod-tag">★ ${p.tag}</span>
+          </div>
+          <span class="prod-badge">${p.badge}</span>
+        `;
+        grid.appendChild(row);
+      });
+    }
+
+    /* ==========================================================
+       EXIT-INTENT POPUP LOGIC (Desktop mouseout + Mobile back)
+    ========================================================== */
+    let exitModalFired = false;
+
+    function openModal() {
+      if (exitModalFired) return;
+      exitModalFired = true;
+      const modal = document.getElementById('exitModal');
+      modal.classList.add('open');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('exitModal');
+      modal.classList.remove('open');
+    }
+
+    // 1. Desktop Exit Intent (Cursor leaves viewport top)
+    document.addEventListener('mouseleave', (e) => {
+      if (e.clientY <= 15 && !exitModalFired) {
+        openModal();
+      }
+    });
+
+    // 2. Mobile Exit Intent (Back button trap via history pushState)
+    window.addEventListener('load', () => {
+      try {
+        window.history.pushState({ page: 'quiz-start' }, '');
+      } catch (err) {}
+    });
+
+    window.addEventListener('popstate', (e) => {
+      if (!exitModalFired) {
+        openModal();
+        try {
+          window.history.pushState(null, '', window.location.href);
+        } catch (err) {}
+      }
+    });
+
+    // 3. Lead Form Submission Handler
+    function handleLeadSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('leadEmail').value;
+      if (!email) return;
+
+      // Immediate positive UX confirmation
+      const form = document.getElementById('exitForm');
+      form.innerHTML = `
+        <div style="background:#ecfdf5; border:1px solid #a7f3d0; padding:12px; border-radius:10px; color:#065f46; font-size:13px; font-weight:700; text-align:center;">
+          ✓ Success! Check your inbox in 2 minutes for the PDF.
+        </div>
+      `;
+
+      // Redirect to offer after 1.5 seconds
+      setTimeout(() => {
+        closeModal();
+        const route = userAnswers.route || 'potty';
+        let targetUrl = CONFIG.DIGISTORE_OFFERS[route] || CONFIG.DIGISTORE_OFFERS.default;
+        targetUrl = targetUrl.replace('AFFILIATE_ID', CONFIG.AFFILIATE_ID);
+        window.location.href = targetUrl;
+      }, 1500);
+    }
+  </script>
+</body>
+</html>

@@ -1,1 +1,92 @@
-[]
+[
+  {
+    "id": "weekly-spreads",
+    "label": "Weekly Spreads",
+    "keywords": [
+      "weekly",
+      "week",
+      "weeks",
+      "weekly planner",
+      "schedule",
+      "agenda",
+      "weekly spread"
+    ]
+  },
+  {
+    "id": "habit-trackers",
+    "label": "Habit Trackers",
+    "keywords": [
+      "habit",
+      "habits",
+      "tracker",
+      "trackers",
+      "tracking",
+      "routine",
+      "challenge"
+    ]
+  },
+  {
+    "id": "monthly-calendar",
+    "label": "Monthly Calendar",
+    "keywords": [
+      "monthly",
+      "month",
+      "months",
+      "calendar",
+      "calendars",
+      "overview",
+      "monthly planner"
+    ]
+  },
+  {
+    "id": "dot-grid",
+    "label": "Dot Grid",
+    "keywords": [
+      "dot grid",
+      "grid",
+      "dotted",
+      "blank layout",
+      "minimalist",
+      "clean layout"
+    ]
+  },
+  {
+    "id": "mood-wellness",
+    "label": "Mood Wellness",
+    "keywords": [
+      "mood",
+      "moods",
+      "wellness",
+      "mental health",
+      "self care",
+      "sleep",
+      "water tracker"
+    ]
+  },
+  {
+    "id": "doodles-stickers",
+    "label": "Doodles Stickers",
+    "keywords": [
+      "doodle",
+      "doodles",
+      "sticker",
+      "stickers",
+      "aesthetic",
+      "hand drawn",
+      "icons"
+    ]
+  },
+  {
+    "id": "digital-goodnotes",
+    "label": "Digital Goodnotes",
+    "keywords": [
+      "digital planner",
+      "goodnotes",
+      "notability",
+      "ipad",
+      "tablet",
+      "pdf",
+      "hyperlinked"
+    ]
+  }
+]

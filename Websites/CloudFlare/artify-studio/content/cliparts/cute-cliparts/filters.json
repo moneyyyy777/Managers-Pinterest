@@ -1,1 +1,134 @@
-[]
+[
+  {
+    "id": "kawaii-animals",
+    "label": "Kawaii Animals",
+    "keywords": [
+      "animal",
+      "animals",
+      "bunny",
+      "bunnies",
+      "cat",
+      "cats",
+      "dog",
+      "dogs",
+      "bear",
+      "bears",
+      "panda",
+      "puppy",
+      "kitten"
+    ]
+  },
+  {
+    "id": "cute-food",
+    "label": "Cute Food",
+    "keywords": [
+      "food",
+      "foods",
+      "dessert",
+      "desserts",
+      "sweet",
+      "sweets",
+      "cake",
+      "cakes",
+      "coffee",
+      "donut",
+      "ice cream",
+      "boba"
+    ]
+  },
+  {
+    "id": "pastel-aesthetic",
+    "label": "Pastel Aesthetic",
+    "keywords": [
+      "pastel",
+      "pastels",
+      "pink",
+      "soft",
+      "blush",
+      "dreamy",
+      "cute",
+      "kawaii"
+    ]
+  },
+  {
+    "id": "stickers",
+    "label": "Stickers",
+    "keywords": [
+      "sticker",
+      "stickers",
+      "planner sticker",
+      "die cut",
+      "printable sticker",
+      "decal",
+      "decals"
+    ]
+  },
+  {
+    "id": "sublimation",
+    "label": "Sublimation",
+    "keywords": [
+      "sublimation",
+      "sublimations",
+      "t-shirt",
+      "t-shirts",
+      "tumbler",
+      "tumblers",
+      "mug",
+      "mugs"
+    ]
+  },
+  {
+    "id": "doodles",
+    "label": "Doodles",
+    "keywords": [
+      "doodle",
+      "doodles",
+      "hand drawn",
+      "sketch",
+      "sketches",
+      "cartoon",
+      "cartoons"
+    ]
+  },
+  {
+    "id": "watercolor",
+    "label": "Watercolor",
+    "keywords": [
+      "watercolor",
+      "watercolors",
+      "watercolour",
+      "hand painted",
+      "soft wash"
+    ]
+  },
+  {
+    "id": "baby-shower",
+    "label": "Baby Shower",
+    "keywords": [
+      "baby",
+      "babies",
+      "nursery",
+      "kid",
+      "kids",
+      "child",
+      "children",
+      "baby shower",
+      "toddler"
+    ]
+  },
+  {
+    "id": "holiday-seasonal",
+    "label": "Holiday Seasonal",
+    "keywords": [
+      "holiday",
+      "holidays",
+      "seasonal",
+      "halloween",
+      "christmas",
+      "autumn",
+      "fall",
+      "easter",
+      "spring"
+    ]
+  }
+]

@@ -1,1 +1,111 @@
-[]
+[
+  {
+    "id": "watercolor",
+    "label": "Watercolor",
+    "keywords": [
+      "watercolor",
+      "watercolors",
+      "watercolour",
+      "watercolours",
+      "hand painted",
+      "painted"
+    ]
+  },
+  {
+    "id": "cottage",
+    "label": "Cottage",
+    "keywords": [
+      "cottage",
+      "cottages",
+      "cabin",
+      "cabins",
+      "chalet",
+      "chalets",
+      "lodge",
+      "lodges"
+    ]
+  },
+  {
+    "id": "gingerbread",
+    "label": "Gingerbread",
+    "keywords": [
+      "gingerbread",
+      "gingerbreads",
+      "gingerbread house",
+      "gingerbread houses",
+      "candy house",
+      "cookie house"
+    ]
+  },
+  {
+    "id": "snowy-winter",
+    "label": "Snowy Winter",
+    "keywords": [
+      "snow",
+      "snows",
+      "snowy",
+      "winter",
+      "winters",
+      "blizzard",
+      "frost",
+      "frosty"
+    ]
+  },
+  {
+    "id": "village",
+    "label": "Village",
+    "keywords": [
+      "village",
+      "villages",
+      "town",
+      "towns",
+      "street",
+      "streets",
+      "neighborhood",
+      "city"
+    ]
+  },
+  {
+    "id": "victorian",
+    "label": "Victorian",
+    "keywords": [
+      "victorian",
+      "vintage",
+      "retro",
+      "antique",
+      "traditional",
+      "classic",
+      "heritage"
+    ]
+  },
+  {
+    "id": "holiday-lights",
+    "label": "Holiday Lights",
+    "keywords": [
+      "light",
+      "lights",
+      "lamp",
+      "lamps",
+      "lantern",
+      "lanterns",
+      "glowing",
+      "wreath",
+      "wreaths",
+      "garland"
+    ]
+  },
+  {
+    "id": "sublimation",
+    "label": "Sublimation",
+    "keywords": [
+      "sublimation",
+      "sublimations",
+      "tumbler",
+      "tumblers",
+      "mug",
+      "mugs",
+      "t-shirt",
+      "printable"
+    ]
+  }
+]

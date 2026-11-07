@@ -1,1 +1,85 @@
-[]
+[
+  {
+    "id": "floral-frames",
+    "label": "Floral Frames",
+    "keywords": [
+      "floral",
+      "florals",
+      "flower",
+      "flowers",
+      "wreath",
+      "wreaths",
+      "botanical",
+      "frame",
+      "frames"
+    ]
+  },
+  {
+    "id": "split-monograms",
+    "label": "Split Monograms",
+    "keywords": [
+      "split",
+      "split letter",
+      "split monogram",
+      "cut file",
+      "cricut",
+      "silhouette",
+      "cut"
+    ]
+  },
+  {
+    "id": "vintage-crests",
+    "label": "Vintage Crests",
+    "keywords": [
+      "crest",
+      "crests",
+      "shield",
+      "heraldic",
+      "regal",
+      "vintage",
+      "baroque",
+      "antique"
+    ]
+  },
+  {
+    "id": "calligraphy-letters",
+    "label": "Calligraphy Letters",
+    "keywords": [
+      "calligraphy",
+      "script",
+      "letter",
+      "letters",
+      "alphabet",
+      "alphabets",
+      "initial",
+      "initials"
+    ]
+  },
+  {
+    "id": "geometric-frames",
+    "label": "Geometric Frames",
+    "keywords": [
+      "geometric",
+      "modern",
+      "circle",
+      "hexagon",
+      "diamond",
+      "frame",
+      "line art"
+    ]
+  },
+  {
+    "id": "couples-wedding",
+    "label": "Couples Wedding",
+    "keywords": [
+      "couple",
+      "couples",
+      "wedding",
+      "weddings",
+      "bride",
+      "groom",
+      "mr and mrs",
+      "love"
+    ]
+  }
+]

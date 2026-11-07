@@ -1,1 +1,106 @@
-[]
+[
+  {
+    "id": "calligraphy",
+    "label": "Calligraphy",
+    "keywords": [
+      "calligraphy",
+      "script",
+      "scripts",
+      "cursive",
+      "flourish",
+      "flourishes",
+      "swash",
+      "swashes"
+    ]
+  },
+  {
+    "id": "handwritten",
+    "label": "Handwritten",
+    "keywords": [
+      "handwritten",
+      "handwriting",
+      "signature",
+      "signatures",
+      "natural script",
+      "hand written"
+    ]
+  },
+  {
+    "id": "wedding-romance",
+    "label": "Wedding Romance",
+    "keywords": [
+      "wedding",
+      "weddings",
+      "bridal",
+      "bride",
+      "romance",
+      "romantic",
+      "love",
+      "valentines"
+    ]
+  },
+  {
+    "id": "smooth-cricut",
+    "label": "Smooth Cricut",
+    "keywords": [
+      "cricut",
+      "silhouette",
+      "cut file",
+      "cutting",
+      "vinyl",
+      "craft",
+      "crafts",
+      "crafting"
+    ]
+  },
+  {
+    "id": "serif",
+    "label": "Serif",
+    "keywords": [
+      "serif",
+      "serifs",
+      "modern serif",
+      "classy",
+      "editorial",
+      "luxury"
+    ]
+  },
+  {
+    "id": "bold-display",
+    "label": "Bold Display",
+    "keywords": [
+      "bold",
+      "display",
+      "headline",
+      "chunky",
+      "thick",
+      "heavy",
+      "poster"
+    ]
+  },
+  {
+    "id": "monogram",
+    "label": "Monogram",
+    "keywords": [
+      "monogram",
+      "monograms",
+      "initial",
+      "initials",
+      "split monogram",
+      "lettering"
+    ]
+  },
+  {
+    "id": "playful-cute",
+    "label": "Playful Cute",
+    "keywords": [
+      "cute",
+      "playful",
+      "doodle",
+      "doodles",
+      "fun",
+      "bouncy",
+      "quirky"
+    ]
+  }
+]

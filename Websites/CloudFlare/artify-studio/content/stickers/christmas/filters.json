@@ -1,1 +1,113 @@
-[]
+[
+  {
+    "id": "snowman-santa",
+    "label": "Snowman Santa",
+    "keywords": [
+      "snowman",
+      "snowmen",
+      "santa",
+      "santa claus",
+      "reindeer",
+      "elf",
+      "elves"
+    ]
+  },
+  {
+    "id": "gingerbread-sweets",
+    "label": "Gingerbread Sweets",
+    "keywords": [
+      "gingerbread",
+      "candy cane",
+      "cookie",
+      "cookies",
+      "hot cocoa",
+      "sweet",
+      "sweets"
+    ]
+  },
+  {
+    "id": "printable-diecut",
+    "label": "Printable DieCut",
+    "keywords": [
+      "die cut",
+      "printable",
+      "print and cut",
+      "cricut",
+      "silhouette",
+      "kiss cut",
+      "sheet"
+    ]
+  },
+  {
+    "id": "holiday-quotes",
+    "label": "Holiday Quotes",
+    "keywords": [
+      "quote",
+      "quotes",
+      "saying",
+      "sayings",
+      "merry christmas",
+      "lettering",
+      "typography"
+    ]
+  },
+  {
+    "id": "cute-animals",
+    "label": "Cute Animals",
+    "keywords": [
+      "animal",
+      "animals",
+      "dog",
+      "dogs",
+      "cat",
+      "cats",
+      "owl",
+      "owls",
+      "penguin",
+      "penguins",
+      "turtle",
+      "unicorn"
+    ]
+  },
+  {
+    "id": "watercolor",
+    "label": "Watercolor",
+    "keywords": [
+      "watercolor",
+      "watercolors",
+      "watercolour",
+      "hand painted",
+      "soft wash",
+      "artistic"
+    ]
+  },
+  {
+    "id": "winter-woodland",
+    "label": "Winter Woodland",
+    "keywords": [
+      "winter",
+      "woodland",
+      "tree",
+      "trees",
+      "pine",
+      "animal",
+      "animals",
+      "cozy"
+    ]
+  },
+  {
+    "id": "planner-labels",
+    "label": "Planner Labels",
+    "keywords": [
+      "planner",
+      "planners",
+      "journal",
+      "calendar",
+      "tag",
+      "tags",
+      "gift tag",
+      "label",
+      "labels"
+    ]
+  }
+]

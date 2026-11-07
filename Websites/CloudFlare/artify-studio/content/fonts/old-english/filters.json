@@ -1,1 +1,94 @@
-[]
+[
+  {
+    "id": "gothic-blackletter",
+    "label": "Gothic Blackletter",
+    "keywords": [
+      "gothic",
+      "blackletter",
+      "fraktur",
+      "textur",
+      "dark",
+      "darkness"
+    ]
+  },
+  {
+    "id": "tattoo-lettering",
+    "label": "Tattoo Lettering",
+    "keywords": [
+      "tattoo",
+      "tattoos",
+      "chicano",
+      "lettering",
+      "flash",
+      "ink",
+      "body art"
+    ]
+  },
+  {
+    "id": "medieval-victorian",
+    "label": "Medieval Victorian",
+    "keywords": [
+      "medieval",
+      "victorian",
+      "middle ages",
+      "renaissance",
+      "antique",
+      "ancient",
+      "historic"
+    ]
+  },
+  {
+    "id": "biker-streetwear",
+    "label": "Biker Streetwear",
+    "keywords": [
+      "biker",
+      "bikers",
+      "streetwear",
+      "heavy metal",
+      "rock",
+      "punk",
+      "rebel",
+      "motorcycle"
+    ]
+  },
+  {
+    "id": "calligraphy-swashes",
+    "label": "Calligraphy Swashes",
+    "keywords": [
+      "calligraphy",
+      "swash",
+      "swashes",
+      "flourish",
+      "flourishes",
+      "ornamental",
+      "script"
+    ]
+  },
+  {
+    "id": "vintage-classic",
+    "label": "Vintage Classic",
+    "keywords": [
+      "vintage",
+      "classic",
+      "heritage",
+      "old",
+      "old school",
+      "traditional",
+      "retro"
+    ]
+  },
+  {
+    "id": "bold-monogram",
+    "label": "Bold Monogram",
+    "keywords": [
+      "monogram",
+      "monograms",
+      "initial",
+      "initials",
+      "crest",
+      "insignia",
+      "emblem",
+      "emblems"
+    ]
+  }
+]
