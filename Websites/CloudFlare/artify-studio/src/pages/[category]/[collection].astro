@@ -793,12 +793,39 @@ const getProductFilters = (product) => {
       currentFilter = btn.getAttribute('data-filter');
       updateGrid();
 
+      // Обновляем параметр в URL (?filter=id) без перезагрузки страницы
+      try {
+        const u = new URL(window.location.href);
+        if (currentFilter && currentFilter !== 'all') {
+          u.searchParams.set('filter', currentFilter);
+        } else {
+          u.searchParams.delete('filter');
+        }
+        window.history.replaceState({}, '', u.toString());
+      } catch (e) {}
+
       // На мобильном: если развернуто - сворачиваем
       if (filterContainer && filterContainer.classList.contains('flex-wrap')) {
         mobileExpandBtn.click();
       }
     });
   });
+
+  // Авто-активация фильтра при переходе по ссылке с параметром ?filter=id
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialFilter = urlParams.get('filter') || window.location.hash.replace(/^#/, '');
+    if (initialFilter && initialFilter !== 'all') {
+      const targetBtn = Array.from(filterBtns).find(b => b.getAttribute('data-filter') === initialFilter);
+      if (targetBtn) {
+        targetBtn.click();
+        if (filterContainer) {
+          const btnLeft = targetBtn.offsetLeft;
+          filterContainer.scrollTo({ left: Math.max(0, btnLeft - 40), behavior: 'smooth' });
+        }
+      }
+    }
+  } catch (e) {}
 
   // Логика кнопок прокрутки фильтров
   const scrollLeftBtn = document.getElementById('scroll-left');

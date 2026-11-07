@@ -3720,17 +3720,21 @@
                                 </div>
                             </div>
 
-                            <div class="flex items-center gap-1.5">
-                                <button onclick="moveFilter(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Поднять выше" class="p-1.5 text-xs bg-neutral-900 hover:bg-neutral-800 disabled:opacity-30 disabled:hover:bg-neutral-900 text-neutral-300 hover:text-white rounded-lg border border-neutral-800 transition cursor-pointer disabled:cursor-not-allowed">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <button onclick="openFilterProducts('${escapeHtml(f.id)}')" title="Перейти к сортировке и управлению товарами этого фильтра на витрине" class="px-2.5 py-1.5 text-xs bg-emerald-950/90 hover:bg-emerald-900 text-emerald-300 hover:text-white rounded-lg border border-emerald-700/60 transition cursor-pointer font-bold flex items-center gap-1 shadow-sm">
+                                    <span>🎯</span>
+                                    <span>Товары (${f.count || 0})</span>
+                                </button>
+                                <button onclick="moveFilter(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Поднять кнопку фильтра выше в шапке сайта" class="p-1.5 text-xs bg-neutral-900 hover:bg-neutral-800 disabled:opacity-30 disabled:hover:bg-neutral-900 text-neutral-300 hover:text-white rounded-lg border border-neutral-800 transition cursor-pointer disabled:cursor-not-allowed">
                                     ⬆️
                                 </button>
-                                <button onclick="moveFilter(${idx}, 1)" ${idx === currentFilters.length - 1 ? 'disabled' : ''} title="Опустить ниже" class="p-1.5 text-xs bg-neutral-900 hover:bg-neutral-800 disabled:opacity-30 disabled:hover:bg-neutral-900 text-neutral-300 hover:text-white rounded-lg border border-neutral-800 transition cursor-pointer disabled:cursor-not-allowed">
+                                <button onclick="moveFilter(${idx}, 1)" ${idx === currentFilters.length - 1 ? 'disabled' : ''} title="Опустить кнопку фильтра ниже в шапке сайта" class="p-1.5 text-xs bg-neutral-900 hover:bg-neutral-800 disabled:opacity-30 disabled:hover:bg-neutral-900 text-neutral-300 hover:text-white rounded-lg border border-neutral-800 transition cursor-pointer disabled:cursor-not-allowed">
                                     ⬇️
                                 </button>
-                                <button onclick="startFilterEdit('${escapeHtml(f.id)}')" title="Редактировать фильтр" class="px-2.5 py-1.5 text-xs bg-neutral-900 hover:bg-neutral-800 text-sky-400 hover:text-white rounded-lg border border-neutral-800 transition cursor-pointer flex items-center gap-1">
+                                <button onclick="startFilterEdit('${escapeHtml(f.id)}')" title="Редактировать название и теги фильтра" class="px-2 py-1.5 text-xs bg-neutral-900 hover:bg-neutral-800 text-sky-400 hover:text-white rounded-lg border border-neutral-800 transition cursor-pointer flex items-center gap-1">
                                     <span>✏️</span>
                                 </button>
-                                <button onclick="deleteFilter('${escapeHtml(f.id)}', '${escapeHtml(f.label)}')" title="Удалить фильтр" class="px-2.5 py-1.5 text-xs bg-neutral-900 hover:bg-rose-950/60 text-rose-400 hover:text-rose-200 rounded-lg border border-neutral-800 hover:border-rose-800 transition cursor-pointer flex items-center gap-1">
+                                <button onclick="deleteFilter('${escapeHtml(f.id)}', '${escapeHtml(f.label)}')" title="Удалить фильтр" class="px-2 py-1.5 text-xs bg-neutral-900 hover:bg-rose-950/60 text-rose-400 hover:text-rose-200 rounded-lg border border-neutral-800 hover:border-rose-800 transition cursor-pointer flex items-center gap-1">
                                     <span>🗑️</span>
                                 </button>
                             </div>
@@ -3791,6 +3795,24 @@
                 }
             } catch (e) {
                 showToast("Ошибка сети при обновлении фильтра", true);
+            }
+        };
+
+        window.openFilterProducts = function(filterId) {
+            if (filterSelect) {
+                filterSelect.value = filterId;
+                closeFilterManagerModal();
+                loadCurrentView();
+                showToast(`Открыт фильтр #${filterId}! Теперь вы можете менять порядок товаров, исключать или добавлять их.`);
+            }
+        };
+
+        window.resetToAllCollection = function(e) {
+            if (e) e.stopPropagation();
+            if (filterSelect) {
+                filterSelect.value = "";
+                loadCurrentView();
+                showToast("Возврат ко всей подборке");
             }
         };
 
@@ -4313,16 +4335,24 @@
 
             if (filterId) {
                 const selectedText = filterSelect.options[filterSelect.selectedIndex]?.innerText || filterId;
-                currentViewBadge.innerText = `Фильтр: ${selectedText}`;
-                currentViewBadge.className = "text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-950/80 border border-amber-800/60 px-3 py-1 rounded-lg";
+                currentViewBadge.innerHTML = `<span>Фильтр: ${escapeHtml(selectedText)}</span> <button onclick="resetToAllCollection(event)" class="ml-1.5 text-[10px] text-amber-200 hover:text-white bg-amber-900/60 hover:bg-amber-800 px-2 py-0.5 rounded cursor-pointer transition font-bold" title="Вернуться ко всей подборке">✕ Все товары</button>`;
+                currentViewBadge.className = "text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-950/80 border border-amber-800/60 px-3 py-1 rounded-lg flex items-center gap-1";
                 if (activeTab === 'active') {
                     addSlugBtn.classList.remove('hidden');
                     addSlugBtn.classList.add('flex');
+                }
+                if (previewBtn) {
+                    previewBtn.href = `http://localhost:4321/${cat}/${col}?filter=${encodeURIComponent(filterId)}`;
+                    previewBtn.title = `Открыть фильтр "${filterId}" на сайте (в том же порядке)`;
                 }
             } else {
                 currentViewBadge.innerText = `Витрина: Все товары`;
                 currentViewBadge.className = "text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/80 border border-emerald-800/60 px-3 py-1 rounded-lg";
                 addSlugBtn.classList.add('hidden');
+                if (previewBtn) {
+                    previewBtn.href = `http://localhost:4321/${cat}/${col}`;
+                    previewBtn.title = `Открыть всю подборку на сайте`;
+                }
             }
 
             loadProducts(cat, col, filterId);
