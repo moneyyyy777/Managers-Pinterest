@@ -353,6 +353,7 @@ const parseJsonBody = (req) => {
 const server = http.createServer(async (req, res) => {
     const reqUrl = new URL(req.url, `http://${req.headers.host}`);
     const pathname = reqUrl.pathname;
+    const query = reqUrl.searchParams;
 
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -3572,8 +3573,8 @@ const server = http.createServer(async (req, res) => {
     // 6.7 API управления фильтрами подборки (Создание, Редактирование, Порядок, Удаление)
     if (pathname === "/api/filters" && req.method === "GET") {
         try {
-            const category = query.get("category");
-            const collection = query.get("collection");
+            const category = reqUrl.searchParams.get("category");
+            const collection = reqUrl.searchParams.get("collection");
             if (!category || !collection) {
                 res.writeHead(400, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ error: "category и collection обязательны" }));
