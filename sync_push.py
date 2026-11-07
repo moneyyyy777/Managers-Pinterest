@@ -86,14 +86,18 @@ def sync_artify(commit_msg):
         run(f'{git_cmd_base} add -A', cwd=ARTIFY_DIR)
         run(f'{git_cmd_base} commit -m "{commit_msg}"', cwd=ARTIFY_DIR)
 
-    # 3. Подтягиваем обновления от менеджера (pull --rebase с авто-пропуском дубликатов)
+    # 3. Подтягиваем обновления от менеджера (pull --rebase с авто-пропуском дубликатов, с фоллбэком на merge)
     print("   📥 Подтягиваем обновления с GitHub (artify-studio)...")
     ok, out, err = run(f'{git_cmd_base} -c rebase.empty=drop -c rebase.autoStash=true pull --rebase --autostash origin main', cwd=ARTIFY_DIR)
     if not ok:
         ok_c, _, _ = run(f'{git_cmd_base} rebase --continue', cwd=ARTIFY_DIR)
         if not ok_c and "up to date" not in (err + out).lower():
-            print(f"   ℹ️ Статус pull artify-studio: {err or out}")
             run(f'{git_cmd_base} rebase --abort', cwd=ARTIFY_DIR)
+            # Если rebase не прошёл из-за параллельных коммитов — пробуем мягкое слияние (merge)
+            ok_m, out_m, err_m = run(f'{git_cmd_base} pull --no-rebase origin main -m "merge: auto sync remote changes"', cwd=ARTIFY_DIR)
+            if not ok_m:
+                print(f"   ❌ Конфликт при подтягивании artify-studio: {err_m or out_m}")
+                return False
 
     # 4. Проверяем, нужно ли пушить (есть ли незапушенные коммиты)
     ok, ahead, _ = run(f'{git_cmd_base} rev-list origin/main..HEAD --count', cwd=ARTIFY_DIR)
@@ -135,8 +139,12 @@ def sync_managers_pinterest(commit_msg):
         if not ok_p:
             ok_c, _, _ = run('git rebase --continue', cwd=ROOT_DIR)
             if not ok_c and "up to date" not in (err + out).lower():
-                print(f"   ℹ️ Статус pull Managers Pinterest: {err or out}")
                 run('git rebase --abort', cwd=ROOT_DIR)
+                # Если rebase не прошёл — пробуем мягкое слияние (merge)
+                ok_m, out_m, err_m = run('git pull --no-rebase origin main -m "merge: auto sync remote changes"', cwd=ROOT_DIR)
+                if not ok_m:
+                    print(f"   ❌ Конфликт при подтягивании Managers Pinterest: {err_m or out_m}")
+                    return False
 
     # 4. Пушим
     print("   🚀 Отправляем на GitHub (moneyyyy777/Managers-Pinterest)...")
