@@ -229,15 +229,59 @@
             </div>
 
             <div class="flex items-center gap-3">
+                <button id="toggleSplitBtn" onclick="toggleSplitMode()" class="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl border border-neutral-700 bg-neutral-900 text-neutral-300 hover:text-white hover:border-emerald-500/60 transition cursor-pointer" title="Разделить экран на два окна (слева каталог, справа куда переместился товар)">
+                    <span class="text-sm">◫</span>
+                    <span id="splitBtnText">Сплит-экран</span>
+                </button>
                 <input id="searchInput" type="text" placeholder="Быстрый поиск по названию..." class="bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder-neutral-500 outline-none focus:border-emerald-500 w-64">
             </div>
         </div>
 
-        <!-- Сетка товаров с drag-and-drop -->
-        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <div class="col-span-full py-20 text-center text-neutral-500 text-sm">
-                Выберите категорию и подборку выше.
+        <!-- Контейнер каталога с поддержкой сплит-экрана -->
+        <div id="catalogLayoutContainer" class="flex gap-6 items-start transition-all duration-300">
+            <!-- Левая колонка: Основной каталог с drag-and-drop -->
+            <div id="mainCatalogCol" class="flex-1 min-w-0 transition-all duration-300">
+                <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div class="col-span-full py-20 text-center text-neutral-500 text-sm">
+                        Выберите категорию и подборку выше.
+                    </div>
+                </div>
             </div>
+
+            <!-- Правая колонка: Сплит-инспектор (целевая зона перемещения) -->
+            <aside id="splitInspectorPanel" class="hidden w-[380px] xl:w-[420px] shrink-0 sticky top-4 bg-neutral-900/95 backdrop-blur-md border border-neutral-800 rounded-2xl shadow-2xl p-4 flex-col max-h-[calc(100vh-2rem)] overflow-hidden transition-all duration-300 z-30">
+                <!-- Шапка сплит-инспектора -->
+                <div class="flex items-center justify-between pb-3 border-b border-neutral-800 mb-3 shrink-0">
+                    <div class="flex items-center gap-2">
+                        <span class="text-emerald-400 text-base">◫</span>
+                        <div>
+                            <h3 class="text-xs font-black text-white uppercase tracking-wider flex items-center gap-1.5">
+                                <span>Целевая витрина</span>
+                                <span id="splitFocusBadge" class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold">#1–#8</span>
+                            </h3>
+                            <p class="text-[10px] text-neutral-400">Где появился товар и кто сместился</p>
+                        </div>
+                    </div>
+                    <button onclick="toggleSplitMode(false)" class="text-neutral-400 hover:text-white p-1 rounded-lg hover:bg-neutral-800 text-xs transition cursor-pointer" title="Закрыть сплит-экран">✕</button>
+                </div>
+
+                <!-- Быстрые фильтры правого окна -->
+                <div class="flex items-center gap-1.5 pb-2.5 border-b border-neutral-800/60 mb-2.5 shrink-0">
+                    <button id="splitViewTopBtn" onclick="renderSplitInspector('top')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-neutral-800 hover:bg-neutral-700 text-white transition cursor-pointer">
+                        Топ #1–#8
+                    </button>
+                    <button id="splitViewLastMovedBtn" onclick="renderSplitInspector('lastMoved')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-neutral-400 hover:text-white hover:bg-neutral-800 transition cursor-pointer">
+                        🎯 Перемещённый
+                    </button>
+                </div>
+
+                <!-- Список карточек в целевой зоне -->
+                <div id="splitInspectorCards" class="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+                    <div class="p-8 text-center text-xs text-neutral-500">
+                        Переместите любой товар или выберите подборку
+                    </div>
+                </div>
+            </aside>
         </div>
 
     </main>
@@ -909,6 +953,45 @@
         </div>
     </div>
 
+    <!-- Всплывающий контроллер ввода позиции товара (вместо window.prompt) -->
+    <div id="posPopover" class="fixed z-50 hidden bg-neutral-900/98 backdrop-blur-xl border border-neutral-700/80 rounded-2xl shadow-2xl p-4 w-72 text-white transition-all duration-150">
+        <div class="flex items-center justify-between pb-2 mb-2.5 border-b border-neutral-800">
+            <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400 font-extrabold text-sm">#</span>
+                <span class="text-xs font-black text-white">Переместить товар</span>
+            </div>
+            <button onclick="closePosPopover()" class="text-neutral-400 hover:text-white text-xs p-1 rounded-lg hover:bg-neutral-800 transition cursor-pointer">✕</button>
+        </div>
+
+        <div class="flex items-center gap-2.5 mb-3">
+            <img id="posPopoverImg" src="" class="w-12 h-12 rounded-xl object-cover bg-neutral-950 border border-neutral-800 shrink-0" alt="">
+            <div class="min-w-0 flex-1">
+                <h4 id="posPopoverTitle" class="text-xs font-bold text-white truncate"></h4>
+                <p id="posPopoverCurrentText" class="text-[11px] text-neutral-400 mt-0.5 font-medium">Текущее место: #1</p>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="block text-[10px] uppercase font-bold text-neutral-400 mb-1.5">Новый номер (1 – <span id="posPopoverMaxText">0</span>):</label>
+            <div class="flex items-center gap-2">
+                <input id="posPopoverInput" type="number" min="1" class="flex-1 bg-neutral-950 border border-neutral-700 focus:border-emerald-500 rounded-xl px-3 py-1.5 text-sm font-black text-white text-center outline-none focus:ring-1 focus:ring-emerald-500">
+                <button id="posPopoverSubmitBtn" onclick="submitPosPopover()" class="bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs px-3.5 py-2 rounded-xl transition flex items-center gap-1 cursor-pointer shadow-lg shadow-emerald-950">
+                    <span>ОК ↵</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Быстрые пресеты -->
+        <div class="flex items-center gap-1 flex-wrap pt-2.5 border-t border-neutral-800/80">
+            <span class="text-[10px] text-neutral-500 font-bold mr-0.5">Быстро:</span>
+            <button onclick="setPosPopoverValue(1)" class="px-2 py-0.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-[11px] font-bold text-emerald-400 transition cursor-pointer">1-й</button>
+            <button onclick="setPosPopoverValue(3)" class="px-2 py-0.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-[11px] font-bold text-neutral-300 transition cursor-pointer">3-й</button>
+            <button onclick="setPosPopoverValue(5)" class="px-2 py-0.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-[11px] font-bold text-neutral-300 transition cursor-pointer">5-й</button>
+            <button onclick="setPosPopoverValue(10)" class="px-2 py-0.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-[11px] font-bold text-neutral-300 transition cursor-pointer">10-й</button>
+            <button id="posPopoverEndBtn" onclick="setPosPopoverValue('end')" class="px-2 py-0.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-[11px] font-bold text-amber-400 transition cursor-pointer">Конец</button>
+        </div>
+    </div>
+
     <!-- Тост-уведомление -->
     <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-emerald-500 text-black font-extrabold px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -947,6 +1030,13 @@
         let undoStack = [];
         let redoStack = [];
         let previewTimer = null;
+
+        // Состояние сплит-экрана и контроллера позиции
+        let isSplitMode = false;
+        let lastMovedSlug = null;
+        let lastMovedTargetPos = null;
+        let lastDisplacedSlug = null;
+        let activePosPopoverSlug = null;
 
         const catSelect = document.getElementById('catSelect');
         const colSelect = document.getElementById('colSelect');
@@ -1286,14 +1376,19 @@
         }
 
         function showToast(msg, isError = false) {
-            toastMsg.innerText = msg;
             toast.className = isError 
-                ? "fixed bottom-6 right-6 z-50 bg-rose-500 text-white font-extrabold px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 transition-all duration-300 transform translate-y-0 opacity-100"
-                : "fixed bottom-6 right-6 z-50 bg-emerald-500 text-black font-extrabold px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 transition-all duration-300 transform translate-y-0 opacity-100";
+                ? "fixed bottom-6 right-6 z-50 bg-rose-500 text-white font-extrabold px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 transition-all duration-300 transform translate-y-0 opacity-100"
+                : "fixed bottom-6 right-6 z-50 bg-emerald-500 text-black font-extrabold px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 transition-all duration-300 transform translate-y-0 opacity-100";
+            
+            if (!isError && !isSplitMode && lastMovedSlug) {
+                toastMsg.innerHTML = `<span>${msg}</span> <button onclick="toggleSplitMode(true)" class="ml-2 underline text-xs font-black cursor-pointer bg-black/15 hover:bg-black/30 px-2 py-0.5 rounded-lg transition">◫ Сплит</button>`;
+            } else {
+                toastMsg.innerText = msg;
+            }
             
             setTimeout(() => {
                 toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
+            }, 3500);
         }
 
         // --- Undo / Redo Система ---
@@ -4513,7 +4608,7 @@
                         <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-20">
                             <input type="checkbox" data-chk-slug="${prod.slug}" class="product-select-chk w-4 h-4 rounded bg-black/80 border-neutral-600 text-emerald-500 focus:ring-0 focus:ring-offset-0 cursor-pointer accent-emerald-500" ${isSelected ? 'checked' : ''} onclick="event.stopPropagation(); toggleSelectProduct('${prod.slug}', this.checked)">
                             
-                            <button onclick="event.stopPropagation(); promptMoveToPosition('${prod.slug}')" title="Кликните, чтобы ввести позицию вручную (цифрой)" class="pos-badge bg-black/85 hover:bg-emerald-950 text-emerald-400 font-extrabold text-xs px-2.5 py-1 rounded-lg border border-neutral-700 hover:border-emerald-500 shadow transition flex items-center gap-1 cursor-pointer">
+                            <button onclick="event.stopPropagation(); openPosPopover(event, '${prod.slug}')" title="Кликните, чтобы ввести позицию вручную (цифрой)" class="pos-badge bg-black/85 hover:bg-emerald-950 text-emerald-400 font-extrabold text-xs px-2.5 py-1 rounded-lg border border-neutral-700 hover:border-emerald-500 shadow transition flex items-center gap-1 cursor-pointer">
                                 <span>#${index + 1}</span>
                                 <span class="text-[9px] text-neutral-400">✎</span>
                             </button>
@@ -4551,7 +4646,7 @@
                                     <span>↑ 1-й</span>
                                 </button>
 
-                                <button onclick="promptMoveToPosition('${prod.slug}')" title="Переместить на любую позицию (ввести номер)" class="text-xs font-semibold text-neutral-400 hover:text-emerald-400 bg-neutral-800 hover:bg-neutral-700 px-2 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer">
+                                <button onclick="openPosPopover(event, '${prod.slug}')" title="Переместить на любую позицию (ввести номер)" class="pos-popover-trigger text-xs font-semibold text-neutral-400 hover:text-emerald-400 bg-neutral-800 hover:bg-neutral-700 px-2 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer">
                                     <span>№</span>
                                 </button>
 
@@ -4600,6 +4695,7 @@
             productsGrid.appendChild(addEndCard);
 
             initSortable();
+            if (isSplitMode) renderSplitInspector('top');
         }
 
         function initSortable() {
@@ -4619,6 +4715,7 @@
                     }, 80);
                     updateBadges();
                     markDirty();
+                    if (isSplitMode) renderSplitInspector('top');
                 }
             });
         }
@@ -4661,6 +4758,12 @@
             const anchorRectBefore = anchorCard ? anchorCard.getBoundingClientRect() : null;
 
             const targetCard = allCards[pos - 1];
+            
+            // Фиксируем перемещение для сплит-инспектора (кто переместился и кто сместился)
+            lastMovedSlug = slug;
+            lastMovedTargetPos = pos;
+            lastDisplacedSlug = targetCard ? targetCard.dataset.slug : null;
+
             if (pos >= total) {
                 targetCard.after(card);
             } else if (currentIdx < pos - 1) {
@@ -4681,23 +4784,276 @@
                 }
             }
 
+            // Обновляем правое сплит-окно, если открыто
+            if (isSplitMode) {
+                renderSplitInspector('auto');
+            }
+
             showToast(`Товар перемещён на позицию #${pos}`);
         };
 
-        window.promptMoveToPosition = function(slug) {
-            const card = productsGrid.querySelector(`[data-slug="${slug}"]`);
-            const allCards = Array.from(productsGrid.querySelectorAll('[data-slug]'));
-            const currentPos = allCards.indexOf(card) + 1;
-            const total = allCards.length;
-
-            const input = prompt(`Введите желаемый номер позиции для этого товара (от 1 до ${total}):`, currentPos);
-            if (input !== null && input.trim() !== '') {
-                moveToPosition(slug, input.trim());
+        // --- Всплывающий контроллер номера позиции (вместо window.prompt) ---
+        window.openPosPopover = function(event, slug) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
             }
+            const card = productsGrid.querySelector(`[data-slug="${slug}"]`);
+            if (!card) return;
+
+            activePosPopoverSlug = slug;
+            const allCards = Array.from(productsGrid.querySelectorAll('[data-slug]'));
+            const total = allCards.length;
+            const currentPos = allCards.indexOf(card) + 1;
+
+            const prod = currentProducts.find(p => p.slug === slug) || { slug, title: slug, image: '' };
+
+            const popover = document.getElementById('posPopover');
+            const popoverImg = document.getElementById('posPopoverImg');
+            const popoverTitle = document.getElementById('posPopoverTitle');
+            const popoverCurrent = document.getElementById('posPopoverCurrentText');
+            const popoverMax = document.getElementById('posPopoverMaxText');
+            const popoverInput = document.getElementById('posPopoverInput');
+
+            if (popoverImg) popoverImg.src = optimizeImageUrl(prod.image, 120);
+            if (popoverTitle) popoverTitle.innerText = prod.title || prod.slug;
+            if (popoverCurrent) popoverCurrent.innerText = `Текущее место: #${currentPos} из ${total}`;
+            if (popoverMax) popoverMax.innerText = total;
+            if (popoverInput) {
+                popoverInput.max = total;
+                popoverInput.value = currentPos;
+            }
+
+            // Вычисляем координаты для позиционирования попапа рядом с кнопкой
+            const btn = (event && event.currentTarget) ? event.currentTarget : (event && event.target ? event.target.closest('button') : null);
+            const btnRect = btn ? btn.getBoundingClientRect() : card.getBoundingClientRect();
+            
+            popover.classList.remove('hidden');
+
+            const popoverWidth = 288;
+            const popoverHeight = 230;
+
+            let left = btnRect.left;
+            if (left + popoverWidth > window.innerWidth - 16) {
+                left = window.innerWidth - popoverWidth - 16;
+            }
+            if (left < 16) left = 16;
+
+            let top = btnRect.bottom + 8;
+            if (top + popoverHeight > window.innerHeight - 16) {
+                top = btnRect.top - popoverHeight - 8;
+            }
+            if (top < 16) top = 16;
+
+            popover.style.left = `${left}px`;
+            popover.style.top = `${top}px`;
+
+            setTimeout(() => {
+                if (popoverInput) {
+                    popoverInput.focus();
+                    popoverInput.select();
+                }
+            }, 30);
+        };
+
+        window.closePosPopover = function() {
+            const popover = document.getElementById('posPopover');
+            if (popover) popover.classList.add('hidden');
+            activePosPopoverSlug = null;
+        };
+
+        window.setPosPopoverValue = function(val) {
+            const popoverInput = document.getElementById('posPopoverInput');
+            if (!popoverInput) return;
+            const allCards = Array.from(productsGrid.querySelectorAll('[data-slug]'));
+            if (val === 'end') {
+                popoverInput.value = allCards.length;
+            } else {
+                popoverInput.value = val;
+            }
+            popoverInput.focus();
+        };
+
+        window.submitPosPopover = function() {
+            if (!activePosPopoverSlug) return;
+            const popoverInput = document.getElementById('posPopoverInput');
+            const targetPos = popoverInput ? popoverInput.value.trim() : '';
+            const slug = activePosPopoverSlug;
+            closePosPopover();
+            if (targetPos) {
+                moveToPosition(slug, targetPos);
+            }
+        };
+
+        window.promptMoveToPosition = function(slug, event) {
+            openPosPopover(event || window.event, slug);
         };
 
         window.moveToTop = function(slug) {
             moveToPosition(slug, 1);
+        };
+
+        // Слушатели клавиш для контроллера номера
+        const posPopoverInputEl = document.getElementById('posPopoverInput');
+        if (posPopoverInputEl) {
+            posPopoverInputEl.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    submitPosPopover();
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    closePosPopover();
+                }
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            const popover = document.getElementById('posPopover');
+            if (popover && !popover.classList.contains('hidden')) {
+                if (!popover.contains(e.target) && !e.target.closest('.pos-popover-trigger') && !e.target.closest('.pos-badge')) {
+                    closePosPopover();
+                }
+            }
+        });
+
+        // --- Режим Сплит-экрана (Разделенный экран) ---
+        window.toggleSplitMode = function(enable) {
+            if (enable === undefined) {
+                isSplitMode = !isSplitMode;
+            } else {
+                isSplitMode = Boolean(enable);
+            }
+
+            const panel = document.getElementById('splitInspectorPanel');
+            const btn = document.getElementById('toggleSplitBtn');
+            const btnText = document.getElementById('splitBtnText');
+
+            if (isSplitMode) {
+                if (panel) {
+                    panel.classList.remove('hidden');
+                    panel.classList.add('flex');
+                }
+                if (btn) {
+                    btn.classList.add('bg-emerald-950', 'text-emerald-300', 'border-emerald-600');
+                    btn.classList.remove('bg-neutral-900', 'text-neutral-300', 'border-neutral-700');
+                }
+                if (btnText) btnText.innerText = 'Сплит: ВКЛ';
+                renderSplitInspector('auto');
+            } else {
+                if (panel) {
+                    panel.classList.add('hidden');
+                    panel.classList.remove('flex');
+                }
+                if (btn) {
+                    btn.classList.remove('bg-emerald-950', 'text-emerald-300', 'border-emerald-600');
+                    btn.classList.add('bg-neutral-900', 'text-neutral-300', 'border-neutral-700');
+                }
+                if (btnText) btnText.innerText = 'Сплит-экран';
+            }
+        };
+
+        window.renderSplitInspector = function(viewMode = 'auto') {
+            if (!isSplitMode) return;
+            const cardsContainer = document.getElementById('splitInspectorCards');
+            const badge = document.getElementById('splitFocusBadge');
+            const topBtn = document.getElementById('splitViewTopBtn');
+            const lastMovedBtn = document.getElementById('splitViewLastMovedBtn');
+            if (!cardsContainer) return;
+
+            const allCards = Array.from(productsGrid.querySelectorAll('[data-slug]'));
+            const total = allCards.length;
+            if (total === 0) {
+                cardsContainer.innerHTML = `<div class="p-8 text-center text-xs text-neutral-500">Нет товаров в выбранной подборке</div>`;
+                return;
+            }
+
+            let startIdx = 0;
+            let endIdx = Math.min(8, total);
+
+            if (viewMode === 'lastMoved' && lastMovedTargetPos) {
+                const center = lastMovedTargetPos - 1;
+                startIdx = Math.max(0, center - 2);
+                endIdx = Math.min(total, startIdx + 7);
+                if (endIdx - startIdx < 7 && total >= 7) {
+                    startIdx = Math.max(0, endIdx - 7);
+                }
+                if (topBtn) topBtn.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold text-neutral-400 hover:text-white hover:bg-neutral-800 transition cursor-pointer";
+                if (lastMovedBtn) lastMovedBtn.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-neutral-800 hover:bg-neutral-700 text-white transition cursor-pointer";
+            } else if (viewMode === 'top') {
+                startIdx = 0;
+                endIdx = Math.min(8, total);
+                if (topBtn) topBtn.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-neutral-800 hover:bg-neutral-700 text-white transition cursor-pointer";
+                if (lastMovedBtn) lastMovedBtn.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold text-neutral-400 hover:text-white hover:bg-neutral-800 transition cursor-pointer";
+            } else { // 'auto'
+                if (lastMovedTargetPos && lastMovedTargetPos > 4) {
+                    const center = lastMovedTargetPos - 1;
+                    startIdx = Math.max(0, center - 2);
+                    endIdx = Math.min(total, startIdx + 7);
+                } else {
+                    startIdx = 0;
+                    endIdx = Math.min(8, total);
+                }
+            }
+
+            if (badge) badge.innerText = `#${startIdx + 1}–#${endIdx}`;
+
+            const sliceCards = allCards.slice(startIdx, endIdx);
+
+            let html = '';
+            sliceCards.forEach((c) => {
+                const slug = c.dataset.slug;
+                const currentPos = allCards.indexOf(c) + 1;
+                const prod = currentProducts.find(p => p.slug === slug) || { slug, title: slug, image: '' };
+
+                const isLastMoved = (slug === lastMovedSlug);
+                const isDisplaced = (slug === lastDisplacedSlug);
+
+                let borderClass = 'border-neutral-800 bg-neutral-950/70 hover:border-neutral-700';
+                let statusBadge = '';
+
+                if (isLastMoved) {
+                    borderClass = 'border-emerald-500 bg-emerald-950/40 ring-1 ring-emerald-500/80 shadow-lg shadow-emerald-950/50';
+                    statusBadge = `<span class="bg-emerald-500 text-black text-[10px] font-black px-1.5 py-0.5 rounded shadow">★ Перемещён сюда</span>`;
+                } else if (isDisplaced) {
+                    borderClass = 'border-amber-500/80 bg-amber-950/30 ring-1 ring-amber-500/50';
+                    statusBadge = `<span class="bg-amber-500/20 text-amber-300 border border-amber-600/60 text-[10px] font-bold px-1.5 py-0.5 rounded">↷ Сместился</span>`;
+                }
+
+                html += `
+                    <div class="p-2.5 rounded-xl border ${borderClass} flex items-center gap-2.5 transition group">
+                        <div class="relative shrink-0 w-12 h-12 rounded-lg bg-neutral-900 border border-neutral-800 overflow-hidden">
+                            <img src="${optimizeImageUrl(prod.image, 160)}" data-fallback="${escapeHtml(prod.image || '')}" onerror="if(this.dataset.fallback && this.src !== this.dataset.fallback){this.src=this.dataset.fallback;}" alt="" class="w-full h-full object-cover">
+                            <span class="absolute bottom-0 left-0 right-0 bg-black/85 text-[10px] font-black text-center font-mono ${isLastMoved ? 'text-emerald-400 font-extrabold' : 'text-neutral-300'}">#${currentPos}</span>
+                        </div>
+                        
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5 flex-wrap mb-0.5">
+                                <span class="text-[10px] font-mono text-neutral-400 bg-neutral-900 px-1 rounded truncate max-w-[120px]">${slug}</span>
+                                ${statusBadge}
+                            </div>
+                            <h5 class="text-xs font-bold text-white truncate" title="${escapeHtml(prod.title || slug)}">${escapeHtml(prod.title || slug)}</h5>
+                        </div>
+
+                        <div class="flex flex-col gap-1 shrink-0">
+                            <button onclick="nudgePosition('${slug}', -1)" ${currentPos <= 1 ? 'disabled class="opacity-20 cursor-not-allowed"' : 'class="p-1 rounded bg-neutral-800 hover:bg-neutral-700 hover:text-emerald-400 text-neutral-300 text-[10px] transition cursor-pointer"'} title="Поднять на 1 место выше">▲</button>
+                            <button onclick="nudgePosition('${slug}', 1)" ${currentPos >= total ? 'disabled class="opacity-20 cursor-not-allowed"' : 'class="p-1 rounded bg-neutral-800 hover:bg-neutral-700 hover:text-emerald-400 text-neutral-300 text-[10px] transition cursor-pointer"'} title="Опустить на 1 место ниже">▼</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cardsContainer.innerHTML = html;
+        };
+
+        window.nudgePosition = function(slug, delta) {
+            const card = productsGrid.querySelector(`[data-slug="${slug}"]`);
+            if (!card) return;
+            const allCards = Array.from(productsGrid.querySelectorAll('[data-slug]'));
+            const currentPos = allCards.indexOf(card) + 1;
+            const targetPos = currentPos + delta;
+            if (targetPos >= 1 && targetPos <= allCards.length) {
+                moveToPosition(slug, targetPos);
+            }
         };
 
         // Сохранить новый порядок (для витрины ИЛИ для конкретного фильтра)

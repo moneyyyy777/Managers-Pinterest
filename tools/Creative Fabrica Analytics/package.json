@@ -1,0 +1,23 @@
+{
+  "name": "creative-fabrica-analytics",
+  "version": "1.0.0",
+  "description": "Cross-platform Playwright automation for Creative Fabrica stats collection & sync",
+  "type": "module",
+  "main": "src/cli.js",
+  "scripts": {
+    "auth": "node src/cli.js --auth",
+    "stats": "node src/cli.js --stats",
+    "stats:headless": "node src/cli.js --stats --headless",
+    "sync": "node src/cli.js --stats --sync",
+    "verify-stealth": "node src/cli.js --verify-stealth"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "playwright": "^1.50.1",
+    "playwright-extra": "^4.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  },
+  "devDependencies": {
+    "liarjs": "^0.3.3"
+  }
+}

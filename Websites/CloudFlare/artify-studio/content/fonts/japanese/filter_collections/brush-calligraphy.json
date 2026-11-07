@@ -2,10 +2,13 @@
   "filterId": "brush-calligraphy",
   "label": "Brush Calligraphy",
   "items": [
+    "japanese-bundle",
+    "kaze-japanese",
+    "kuro-spirit",
+    "hogback-2",
     "japanese-sumi",
     "akiro",
     "japan-wave-2",
-    "hogback-2",
     "onigashima",
     "zenjirou",
     "shizuko",
@@ -14,11 +17,8 @@
     "vicest",
     "yujimoto",
     "kitsune-9",
-    "japanese-bundle",
     "the-last-shuriken-2",
     "comica-5",
-    "kuro-spirit",
-    "kaze-japanese",
     "hashira-senju",
     "onsen-japan",
     "kayooh",
@@ -92,5 +92,6 @@
     "japan-11",
     "yokai-pop",
     "gariep"
-  ]
+  ],
+  "updatedAt": "2026-11-07T12:35:39.283Z"
 }
