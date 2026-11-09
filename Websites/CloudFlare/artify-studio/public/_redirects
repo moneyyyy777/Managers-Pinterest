@@ -1,2 +1,12 @@
-/christmas/christmas-mugs/*  /christmas/laser-cut/:splat  301
-/christmas/christmas-mugs    /christmas/laser-cut         301
+# Cloudflare Pages Redirects - Route all traffic to Telegram landing
+/cliparts/*    /  302
+/christmas/*   /  302
+/fonts/*       /  302
+/patterns/*    /  302
+/planners/*    /  302
+/procreate/*   /  302
+/stickers/*    /  302
+/svg/*         /  302
+/wedding/*     /  302
+/:category/*   /  302
+/:category     /  302

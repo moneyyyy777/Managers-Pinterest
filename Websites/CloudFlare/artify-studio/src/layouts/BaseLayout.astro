@@ -33,6 +33,14 @@ const {
 		<!-- Canonical -->
 		<link rel="canonical" href={canonical || Astro.url.href} />
 
+		<!-- Temporary Redirect to Telegram Landing for all subpages -->
+		<meta http-equiv="refresh" content="0; url=/" />
+		<script is:inline>
+			if (window.location.pathname !== '/' && window.location.pathname !== '') {
+				window.location.replace('/');
+			}
+		</script>
+
 		<!-- Open Graph -->
 		<meta property="og:type" content={ogType || 'website'} />
 		<meta property="og:url" content={Astro.url.href} />
@@ -74,7 +82,7 @@ const {
 		</script>
 	</head>
 
-	<body class="bg-[#090A0C] text-[#F7F7F8] min-h-screen flex flex-col justify-between antialiased selection:bg-[#FF4B26] selection:text-white">
+	<body class="bg-[#09090b] text-white min-h-screen flex flex-col justify-between antialiased selection:bg-emerald-500 selection:text-black">
 
 		<!-- Липкий Header -->
 		<Header />

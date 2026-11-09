@@ -1,0 +1,61 @@
+---
+// src/pages/index.astro
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CollectionCard from "../components/CollectionCard.astro";
+import categories from "../data/categories.json";
+import type { ImageMetadata } from "astro";
+
+// Автоматически находим локальные обложки категорий из src/assets/category/
+const localCategoryImages = import.meta.glob<{ default: ImageMetadata }>('../assets/category/*.{png,jpg,jpeg,webp}', { eager: true });
+
+const getCategoryImage = (id: string, fallbackUrl: string) => {
+	const matchedPath = Object.keys(localCategoryImages).find(path => {
+		const filename = path.split('/').pop()?.split('.')[0];
+		return filename === id;
+	});
+	return matchedPath ? localCategoryImages[matchedPath].default.src : fallbackUrl;
+};
+---
+
+<BaseLayout 
+	title="Artify Studio — Curated Creative Discovery Platform"
+	description="Discover handpicked collections of fonts, Procreate brushes, and SVG cut files."
+>
+
+<section class="container mx-auto px-4 py-12 sm:py-20 max-w-7xl">
+
+	<!-- Hero Заголовок -->
+	<div class="max-w-3xl mb-12 sm:mb-16">
+		<span class="text-xs font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-800/50">
+			Creative Asset Hub
+		</span>
+
+		<h1 class="text-4xl sm:text-6xl font-black text-white mt-4 tracking-tight leading-tight">
+			Discover the best creative assets
+		</h1>
+
+		<p class="mt-4 text-base sm:text-xl text-neutral-400 leading-relaxed">
+			Select a category below to explore handpicked collections for your next design project.
+		</p>
+	</div>
+
+	<!-- Сетка 3-х главных Разделов -->
+	<div class="grid gap-8 md:grid-cols-3">
+		{
+			categories.map((category, index) => (
+				<CollectionCard
+					title={category.title}
+					description={category.description}
+					image={getCategoryImage(category.id, category.image)}
+					category="Main Category"
+					count={category.count}
+					href={category.href}
+					priority={index < 4}
+				/>
+			))
+		}
+	</div>
+
+</section>
+
+</BaseLayout>

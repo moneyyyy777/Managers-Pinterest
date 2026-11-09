@@ -47,10 +47,10 @@ const images = rawImages.map(img => ({
 }));
 ---
 
-<div class="group flex flex-col rounded-xl border border-[#24262B] bg-[#141518] overflow-hidden transition duration-300 hover:border-[#FF4B26]/60 hover:shadow-2xl hover:shadow-[#FF4B26]/5">
+<div class="group flex flex-col rounded-2xl border border-neutral-800 bg-[#121212] overflow-hidden transition duration-300 hover:border-neutral-700 hover:shadow-2xl hover:shadow-emerald-900/10">
 	
 	<!-- 1. КАРАУСЕЛЬ ФОТОГРАФИЙ (ТОЛЬКО ДЛЯ СВАЙПА И ПРОСМОТРА) -->
-	<div class="relative aspect-[3/2] overflow-hidden bg-[#090A0C] group/carousel">
+	<div class="relative aspect-[3/2] overflow-hidden bg-neutral-900 group/carousel">
 		<div class="flex h-full w-full overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth carousel-scroll-container">
 			{images.map((imgItem, index) => {
 				const isEager = index === 0 && priority;
@@ -59,7 +59,7 @@ const images = rawImages.map(img => ({
 						href={affiliateUrl}
 						target="_blank"
 						rel="nofollow sponsored"
-						class="block h-full w-full flex-none snap-center relative bg-[#090A0C] cursor-pointer"
+						class="block h-full w-full flex-none snap-center relative bg-neutral-900 cursor-pointer"
 						title="Click to view on Creative Fabrica"
 					>
 						<img
@@ -91,15 +91,14 @@ const images = rawImages.map(img => ({
 		)}
 
 		<!-- Бейдж Лицензии -->
-		<span class="absolute top-3 left-3 bg-[#090A0C]/90 backdrop-blur-md text-[#F7F7F8] text-[9px] font-mono font-medium px-2.5 py-1 rounded-md uppercase tracking-wider border border-[#24262B] select-none pointer-events-none flex items-center gap-1.5">
-			<span class="w-1.5 h-1.5 rounded-full bg-[#FF4B26]"></span>
-			<span>Commercial License Included</span>
+		<span class="absolute top-3 left-3 bg-black/80 backdrop-blur-md text-white text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider border border-white/10 select-none pointer-events-none">
+			Commercial License Included ✓
 		</span>
 
 		<!-- Индикатор количества фото -->
 		{images.length > 1 && (
-			<div class="carousel-counter absolute bottom-3 right-3 bg-[#090A0C]/90 backdrop-blur-md text-[#8E929B] text-[10px] font-mono px-2 py-0.5 rounded border border-[#24262B] select-none pointer-events-none" data-total={images.length}>
-				<span class="carousel-current text-[#F7F7F8]">1</span> / {images.length}
+			<div class="carousel-counter absolute bottom-3 right-3 bg-black/80 backdrop-blur-md text-white text-[10px] font-mono px-2 py-0.5 rounded border border-white/10 select-none pointer-events-none" data-total={images.length}>
+				<span class="carousel-current">1</span> / {images.length} 📸
 			</div>
 		)}
 	</div>
@@ -109,24 +108,24 @@ const images = rawImages.map(img => ({
 		href={affiliateUrl}
 		target="_blank"
 		rel="nofollow sponsored"
-		class="p-5 flex flex-col justify-between flex-1 cursor-pointer group/link hover:bg-white/[0.015] transition"
+		class="p-5 flex flex-col justify-between flex-1 cursor-pointer group/link hover:bg-white/[0.02] transition"
 	>
 		<div>
-			<h3 class="text-base font-display font-bold text-[#F7F7F8] tracking-tight leading-snug group-hover/link:text-[#FF4B26] transition">
-				{product.title}
+			<h3 class="text-base font-bold text-white tracking-tight leading-snug group-hover/link:text-emerald-400 transition">
+				{product.title} • Creative Fabrica
 			</h3>
 
-			<p class="mt-2 text-xs text-[#8E929B] leading-relaxed line-clamp-3">
-				{product.description || "Curated asset for creative and commercial projects · Windows, Mac, iPad · Commercial license included ✓"}
+			<p class="mt-2 text-xs text-neutral-400 leading-relaxed line-clamp-3">
+				{product.description || "Click here and download font · Windows, Mac, Linux · Commercial licence included ✓"}
 			</p>
 		</div>
 
-		<!-- 3. ШВЕЙЦАРСКАЯ АКЦЕНТНАЯ КНОПКА (ВНУТРИ ССЫЛКИ ДЛЯ МАКСИМАЛЬНОЙ КОНВЕРСИИ) -->
+		<!-- 3. ЗЕЛЕНАЯ КНОПКА (ВНУТРИ ССЫЛКИ ДЛЯ МАКСИМАЛЬНОЙ КОНВЕРСИИ) -->
 		<div class="mt-5 relative">
 			<span
-				class="w-full bg-[#FF4B26] group-hover/link:bg-[#FF6647] text-white font-mono font-bold text-xs py-3 px-4 rounded-lg text-center tracking-wider uppercase transition-all duration-300 ease-out block shadow-lg shadow-[#FF4B26]/20 group-hover/link:shadow-[#FF4B26]/40 group-hover/link:scale-[1.01] relative overflow-hidden btn-sparkle"
+				class="w-full bg-[#22c55e] group-hover/link:bg-[#4ade80] text-black font-semibold text-sm py-3 px-4 rounded-xl text-center tracking-wider uppercase transition-all duration-300 ease-out block shadow-lg shadow-emerald-500/30 group-hover/link:shadow-emerald-400/80 group-hover/link:shadow-2xl group-hover/link:scale-[1.02] relative overflow-hidden btn-sparkle"
 			>
-				Download Asset
+				Free Download
 			</span>
 		</div>
 	</a>
