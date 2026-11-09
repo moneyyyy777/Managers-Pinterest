@@ -14,40 +14,46 @@ const categoryIcons: Record<string, string> = {
 };
 ---
 
-<header class="sticky top-0 z-50 border-b border-neutral-800/80 bg-[#09090b]/95 backdrop-blur-md">
+<header class="sticky top-0 z-50 border-b border-[#24262B] bg-[#090A0C]/95 backdrop-blur-md">
 	<div class="container mx-auto px-3 sm:px-6 max-w-7xl">
 
 		<!-- Единая строка: лого + категории в одном ряду со скроллом -->
 		<nav 
-			class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-2.5 sm:py-3 -mx-3 px-3 sm:mx-0 sm:px-0"
+			class="flex items-center gap-2 overflow-x-auto no-scrollbar py-2.5 sm:py-3 -mx-3 px-3 sm:mx-0 sm:px-0"
 			aria-label="Navigation"
 		>
 			<!-- Логотип — как элемент в том же ряду -->
 			<a 
 				href="/" 
-				class="flex items-center shrink-0 mr-2 sm:mr-4"
+				class="flex items-center gap-2 shrink-0 mr-2 sm:mr-3 text-[#F7F7F8] hover:opacity-90 transition font-display font-extrabold tracking-tight text-sm sm:text-base"
 			>
-				<img 
-					src="/images/logo.png" 
-					alt="Artify Studio" 
-					loading="eager"
-					fetchpriority="high"
-					decoding="async"
-					class="h-5 sm:h-6 w-auto object-contain transition duration-300 hover:opacity-80"
-				/>
+				<span class="w-6 h-6 rounded-md bg-[#141518] border border-[#24262B] flex items-center justify-center text-xs text-[#FF4B26] font-mono">✦</span>
+				<span>ARTIFY<span class="text-[#FF4B26] ml-0.5">.</span></span>
 			</a>
 
 			<!-- Категории -->
 			{categories.map((cat) => (
 				<a 
 					href={cat.href}
-					class="flex items-center gap-1.5 whitespace-nowrap shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-neutral-700/50 bg-neutral-800/40 text-neutral-300 hover:text-white hover:bg-neutral-700/60 hover:border-neutral-600 transition-all duration-200 text-xs sm:text-sm font-medium group"
+					class="flex items-center gap-1.5 whitespace-nowrap shrink-0 px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-lg border border-[#24262B] bg-[#141518]/60 text-[#8E929B] hover:text-[#F7F7F8] hover:border-[#FF4B26]/50 hover:bg-[#141518] transition-all text-xs sm:text-sm font-medium group"
 				>
-					<span class="text-sm leading-none">{categoryIcons[cat.id] || "✦"}</span>
+					<span class="text-xs leading-none opacity-80">{categoryIcons[cat.id] || "✦"}</span>
 					<span>{cat.title}</span>
-					<span class="text-[10px] text-neutral-500 group-hover:text-neutral-400 transition-colors hidden sm:inline">{cat.count}</span>
+					<span class="text-[10px] font-mono text-[#8E929B]/70 group-hover:text-[#8E929B] transition-colors hidden sm:inline">{cat.count}</span>
 				</a>
 			))}
+
+			<!-- Telegram VIP Archive Button -->
+			<a 
+				href="https://t.me/artify_archive" 
+				target="_blank" 
+				rel="noopener" 
+				class="flex items-center gap-1.5 whitespace-nowrap shrink-0 px-3 py-1.5 rounded-lg border border-[#FF4B26]/40 bg-[#FF4B26]/10 text-[#FF4B26] hover:bg-[#FF4B26] hover:text-white transition-all text-xs font-mono ml-auto font-medium"
+				title="Join Artify Studio Telegram Archive"
+			>
+				<span class="w-1.5 h-1.5 rounded-full bg-[#FF4B26] animate-pulse"></span>
+				<span class="tracking-tight">TG ARCHIVE</span>
+			</a>
 		</nav>
 
 	</div>

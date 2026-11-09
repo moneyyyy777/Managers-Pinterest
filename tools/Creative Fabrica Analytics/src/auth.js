@@ -9,9 +9,8 @@ import { CF_URLS } from './config.js';
 export async function checkAuthStatus(page) {
   try {
     const isLogged = await page.evaluate(() => {
-      // Common indicators of an authenticated CF session
       const hasLogoutLink = Boolean(document.querySelector('a[href*="logout"]'));
-      const hasAccountAvatar = Boolean(document.querySelector('.user-avatar, .account-menu, .header-user, a[href*="/my-account/"]'));
+      const hasAccountAvatar = Boolean(document.querySelector('.user-avatar, .account-menu, .header-user, a[href*="/my-account/"], a[href*="/affiliate-area/"]'));
       const isLoginUrl = window.location.pathname.includes('/login');
       return (hasLogoutLink || hasAccountAvatar) && !isLoginUrl;
     });
@@ -34,16 +33,16 @@ export async function runAuthFlow() {
   const { context, page } = await launchBrowser({ headless: false });
 
   try {
-    console.log(`[AUTH] Переход на страницу входа: ${CF_URLS.login}`);
-    await page.goto(CF_URLS.login, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    console.log(`[AUTH] Открытие страницы партнёрского кабинета: ${CF_URLS.affiliateOverview}`);
+    await page.goto(CF_URLS.affiliateOverview, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await randomDelay(1500, 2500);
 
     // Initial check
     const alreadyLogged = await checkAuthStatus(page);
-    if (alreadyLogged) {
-      console.log('✅ [AUTH] Вы уже авторизованы в этом профиле!');
+    if (alreadyLogged && !page.url().includes('/login')) {
+      console.log('✅ [AUTH] Вы уже авторизованы в партнёрском кабинете!');
     } else {
-      console.log('\n👉 Пожалуйста, войдите в аккаунт в открывшемся окне браузера.');
+      console.log('\n👉 Пожалуйста, войдите в аккаунт Creative Fabrica в открывшемся окне браузера.');
       console.log('👉 После успешного входа нажмите [ENTER] в этой консоли.\n');
 
       const rl = readline.createInterface({
@@ -51,7 +50,6 @@ export async function runAuthFlow() {
         output: process.stdout,
       });
 
-      // Wait for user confirmation or auto-detection
       await new Promise((resolve) => {
         let detectedInterval = null;
 
@@ -63,8 +61,8 @@ export async function runAuthFlow() {
         // Poll every 3s in background to see if user succeeded
         detectedInterval = setInterval(async () => {
           const ok = await checkAuthStatus(page);
-          if (ok) {
-            console.log('\n⚡ [AUTH] Автоматически обнаружен успешный вход!');
+          if (ok && !page.url().includes('/login')) {
+            console.log('\n⚡ [AUTH] Автоматически обнаружен успешный вход в кабинет!');
             cleanup();
             resolve();
           }
@@ -82,9 +80,9 @@ export async function runAuthFlow() {
 
     const finalCheck = await checkAuthStatus(page);
     if (finalCheck) {
-      console.log('🎉 [AUTH] Авторизация подтверждена и надежно сохранена!');
+      console.log('🎉 [AUTH] Авторизация подтверждена и надежно сохранена в .browser_profile!');
     } else {
-      console.log('⚠️ [AUTH] Не удалось подтвердить статус авторизации. Проверьте профиль перед автоматическим сбором.');
+      console.log('⚠️ [AUTH] Предупреждение: статус входа не определен однозначно. Проверьте окно браузера.');
     }
 
   } finally {

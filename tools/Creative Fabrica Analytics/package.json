@@ -7,8 +7,18 @@
   "scripts": {
     "auth": "node src/cli.js --auth",
     "stats": "node src/cli.js --stats",
-    "stats:headless": "node src/cli.js --stats --headless",
-    "sync": "node src/cli.js --stats --sync",
+    "stats:all": "node src/cli.js --stats --pages all",
+    "check": "node src/cli.js --stats --restart",
+    "recheck": "node src/cli.js --stats --pages all --restart",
+    "scrape": "node src/cli.js --stats --no-analyze",
+    "scrape:all": "node src/cli.js --stats --pages all --no-analyze",
+    "update": "node src/cli.js --stats --incremental",
+    "update:headless": "node src/cli.js --stats --incremental --headless",
+    "analyze": "node src/cli.js --analyze",
+    "analyzer": "node src/analyzer.js",
+    "dashboard": "open dashboard/index.html",
+    "build:dashboard": "node scripts/build-complete-dashboard.js",
+    "sync": "node src/cli.js --stats --incremental --sync",
     "verify-stealth": "node src/cli.js --verify-stealth"
   },
   "dependencies": {

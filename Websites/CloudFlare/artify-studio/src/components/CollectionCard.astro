@@ -25,11 +25,11 @@ const {
 
 <a 
 	href={href}
-	class="group block overflow-hidden rounded-2xl border border-neutral-800 bg-[#121212] transition duration-300 hover:-translate-y-1 hover:border-neutral-700 hover:shadow-2xl hover:shadow-emerald-950/20 flex flex-col justify-between"
+	class="group block overflow-hidden rounded-xl border border-[#24262B] bg-[#141518] transition duration-300 hover:-translate-y-1 hover:border-[#FF4B26]/60 hover:shadow-2xl hover:shadow-[#FF4B26]/5 flex flex-col justify-between"
 >
 	<div>
 		<!-- Обложка подборки -->
-		<div class="aspect-[16/10] overflow-hidden bg-neutral-900 relative">
+		<div class="aspect-[16/10] overflow-hidden bg-[#090A0C] relative">
 			<img
 				src={optimizeImageUrl(image)}
 				alt={title}
@@ -41,38 +41,41 @@ const {
 				class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
 			/>
 			<!-- Мягкий градиент -->
-			<div class="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-transparent opacity-80"></div>
+			<div class="absolute inset-0 bg-gradient-to-t from-[#141518] via-transparent to-transparent opacity-90"></div>
 		</div>
 
 		<!-- Контент подборки -->
 		<div class="p-6">
 			<div class="mb-3 flex items-center justify-between">
-				<span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-400 bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800/40">
+				<span class="text-[10px] font-mono font-bold uppercase tracking-wider text-[#FF4B26] bg-[#FF4B26]/10 px-2.5 py-0.5 rounded border border-[#FF4B26]/30">
 					{category}
 				</span>
 
 				{
 					count && (
-						<span class="text-xs text-neutral-400 font-medium">
+						<span class="text-xs font-mono text-[#8E929B] font-medium">
 							{typeof count === 'number' ? `${count}+ items` : count}
 						</span>
 					)
 				}
 			</div>
 
-			<h3 class="text-xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition">
+			<h3 class="text-xl font-display font-bold tracking-tight text-[#F7F7F8] group-hover:text-[#FF4B26] transition">
 				{title}
 			</h3>
 
-			<p class="mt-2.5 text-xs text-neutral-400 leading-relaxed line-clamp-2">
+			<p class="mt-2.5 text-xs text-[#8E929B] leading-relaxed line-clamp-2">
 				{description}
 			</p>
 		</div>
 	</div>
 
 	<!-- Безопасная стрелочка без сбоев кодировки -->
-	<div class="px-6 pb-6 pt-0 flex items-center text-xs font-bold text-emerald-400 group-hover:translate-x-1 transition duration-200">
+	<div class="px-6 pb-6 pt-0 flex items-center text-xs font-mono font-bold text-[#FF4B26] group-hover:translate-x-1 transition duration-200">
 		<span>Explore Section</span>
+		<span class="ml-1.5 font-sans">→</span>
+	</div>
+</a>
 		<span class="ml-1">&rarr;</span>
 	</div>
 </a>

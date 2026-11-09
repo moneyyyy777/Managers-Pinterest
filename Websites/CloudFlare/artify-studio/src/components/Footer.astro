@@ -3,31 +3,46 @@
 import categories from "../data/categories.json";
 ---
 
-<footer class="mt-20 border-t border-neutral-800 bg-[#09090b] text-neutral-400 text-xs sm:text-sm">
-	<div class="container mx-auto px-4 py-12 max-w-7xl">
-		<div class="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+<footer class="mt-20 border-t border-[#24262B] bg-[#090A0C] text-[#8E929B] text-xs sm:text-sm">
+	<div class="container mx-auto px-4 py-14 max-w-7xl">
+		<div class="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
 
-			<div>
-				<a href="/" class="text-base sm:text-lg font-extrabold text-white tracking-tight">
-					Artify Studio
+			<div class="max-w-md">
+				<a href="/" class="text-base sm:text-lg font-display font-black text-[#F7F7F8] tracking-tight flex items-center gap-2">
+					<span class="w-5 h-5 rounded bg-[#141518] border border-[#24262B] flex items-center justify-center text-[10px] text-[#FF4B26] font-mono">✦</span>
+					<span>ARTIFY STUDIO</span>
 				</a>
-				<p class="mt-2 text-neutral-500 max-w-sm leading-relaxed">
-					Curated discovery platform for digital designers, crafters & creators.
+				<p class="mt-2.5 text-[#8E929B] leading-relaxed text-xs sm:text-sm">
+					The Curated Design Intelligence & Digital Asset Archive. Precision-filtered resources with commercial licensing for designers, illustrators and craft entrepreneurs.
 				</p>
+				<div class="mt-4 flex items-center gap-3">
+					<a 
+						href="https://t.me/artify_archive" 
+						target="_blank" 
+						rel="noopener"
+						class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#24262B] bg-[#141518] text-xs font-mono text-[#F7F7F8] hover:border-[#FF4B26]/50 hover:text-[#FF4B26] transition-all"
+					>
+						<span>✦</span>
+						<span>Join Telegram Archive (~1k)</span>
+					</a>
+				</div>
 			</div>
 
 			<!-- Динамические ссылки подвала -->
-			<div class="flex flex-wrap gap-6 text-neutral-300 font-semibold">
-				{categories.map((cat) => (
-					<a href={cat.href} class="hover:text-[#22c55e] transition">{cat.title}</a>
-				))}
+			<div>
+				<span class="font-mono text-[10px] uppercase tracking-wider text-[#8E929B]/70 block mb-3">Archive Directory</span>
+				<div class="flex flex-wrap gap-x-6 gap-y-2.5 text-[#8E929B] font-medium text-xs sm:text-sm max-w-lg">
+					{categories.map((cat) => (
+						<a href={cat.href} class="hover:text-[#F7F7F8] hover:underline decoration-[#FF4B26] underline-offset-4 transition">{cat.title}</a>
+					))}
+				</div>
 			</div>
 
 		</div>
 
-		<div class="mt-10 pt-6 border-t border-neutral-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-neutral-600 text-xs">
-			<p>© {new Date().getFullYear()} Artify Studio. All rights reserved.</p>
-			<p>Powered by Creative Fabrica Affiliate Partner Program</p>
+		<div class="mt-12 pt-6 border-t border-[#24262B]/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-[#8E929B]/70 text-xs font-mono">
+			<p>© {new Date().getFullYear()} Artify Studio. Swiss-engineered curation.</p>
+			<p>Commercial License Partner: Creative Fabrica All Access</p>
 		</div>
 	</div>
 </footer>

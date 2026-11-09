@@ -18,15 +18,16 @@ export const PROFILE_DIR = path.join(TOOL_ROOT, '.browser_profile');
 export const DATA_DIR = path.join(TOOL_ROOT, 'data');
 export const REPORTS_DIR = path.join(DATA_DIR, 'reports');
 export const SCREENSHOTS_DIR = path.join(DATA_DIR, 'screenshots');
+export const MASTER_DB_PATH = path.join(REPORTS_DIR, 'master-database.json');
 
 // Creative Fabrica URLs
 export const CF_URLS = {
   home: 'https://www.creativefabrica.com/',
   login: 'https://www.creativefabrica.com/login/',
-  myAccount: 'https://www.creativefabrica.com/my-account/',
-  designerDashboard: 'https://www.creativefabrica.com/designer-dashboard/',
-  designerStats: 'https://www.creativefabrica.com/designer-dashboard/statistics/',
-  designerEarnings: 'https://www.creativefabrica.com/designer-dashboard/earnings/',
+  affiliateOverview: 'https://www.creativefabrica.com/affiliate-area/',
+  referrals: 'https://www.creativefabrica.com/affiliate-area/?tab=referrals',
+  visits: 'https://www.creativefabrica.com/affiliate-area/?tab=visits',
+  payouts: 'https://www.creativefabrica.com/affiliate-area/?tab=payouts',
 };
 
 // Default browser configuration
@@ -36,5 +37,5 @@ export const BROWSER_CONFIG = {
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
   locale: 'en-US',
   timezoneId: 'America/New_York',
-  defaultHeadless: false, // Default is false as requested for comfortable debugging & testing
+  defaultHeadless: false, // Default is false as requested
 };
