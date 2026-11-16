@@ -7,7 +7,7 @@ import Wordmark from './Wordmark.astro';
   Artify Studio on Telegram
 </button>
 
-<a class="telegram-float" href={telegram.url} target="_blank" rel="noopener noreferrer"
+<a class="telegram-float" href={telegram.mascotUrl} target="_blank" rel="noopener noreferrer"
   aria-label="Join Artify Studio on Telegram" data-telegram-float>
   <span class="float-art" aria-hidden="true">
     <img src="/images/telegram-mascot.webp" alt="" width="840" height="768" decoding="async" />
@@ -19,7 +19,7 @@ import Wordmark from './Wordmark.astro';
   <form method="dialog">
     <button class="promo-close" type="submit" aria-label="Close Telegram invitation" autofocus>×</button>
   </form>
-  <a class="promo-link" href={telegram.url} target="_blank" rel="noopener noreferrer" aria-label="Join on Telegram">
+  <a class="promo-link" href={telegram.popupUrl} target="_blank" rel="noopener noreferrer" aria-label="Join on Telegram">
     <div class="promo-copy">
       <div class="promo-brand"><Wordmark /></div>
       <h2 id="telegram-title">Everything<br class="promo-break" /> for <span>Designers</span></h2>
@@ -51,38 +51,45 @@ import Wordmark from './Wordmark.astro';
   const trigger = document.querySelector<HTMLButtonElement>('[data-telegram-open]');
   const link = dialog?.querySelector<HTMLAnchorElement>('.promo-link');
   const floatingLink = document.querySelector<HTMLAnchorElement>('[data-telegram-float]');
-  const storageKey = 'artify-telegram-shown-in-tab';
+  const shownKey = 'artify-telegram-shown-in-tab';
+  const clickedKey = 'artify-telegram-clicked-in-tab';
   const visitKey = 'artify-telegram-first-entry';
-  const autoOpenDelay = 8_000;
+  const firstShowDelay = 8_000;
+  const reloadShowDelay = 12_000;
+  const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+  const isReload = navigation?.type === 'reload';
   let shownThisPage = false;
+  let clickedThisPage = false;
   let delayElapsed = false;
 
-  function recentlyShown() {
+  function hasSessionFlag(key: string) {
     try {
-      return sessionStorage.getItem(storageKey) === '1';
+      return sessionStorage.getItem(key) === '1';
     } catch {
       return false;
     }
   }
 
   function remainingDelay() {
+    if (isReload) return Math.max(0, reloadShowDelay - performance.now());
+
     const now = Date.now();
     const currentEntry = now - performance.now();
 
     try {
       const firstEntry = Number(sessionStorage.getItem(visitKey)) || currentEntry;
       sessionStorage.setItem(visitKey, String(firstEntry));
-      return Math.max(0, firstEntry + autoOpenDelay - now);
+      return Math.max(0, firstEntry + firstShowDelay - now);
     } catch {
-      return Math.max(0, currentEntry + autoOpenDelay - now);
+      return Math.max(0, currentEntry + firstShowDelay - now);
     }
   }
 
-  function rememberShow() {
+  function setSessionFlag(key: string) {
     try {
-      sessionStorage.setItem(storageKey, '1');
+      sessionStorage.setItem(key, '1');
     } catch {
-      // shownThisPage still prevents another automatic opening in this document.
+      // The in-memory flags still apply when session storage is unavailable.
     }
   }
 
@@ -98,25 +105,32 @@ import Wordmark from './Wordmark.astro';
     if (!dialog || dialog.open) return;
     dialog.showModal();
     shownThisPage = true;
-    rememberShow();
+    setSessionFlag(shownKey);
     report('telegram_popup_view');
   }
 
   function maybeShow() {
-    if (!delayElapsed || shownThisPage || document.hidden || recentlyShown()) return;
+    if (!delayElapsed || shownThisPage || document.hidden || clickedThisPage) return;
+    if (hasSessionFlag(clickedKey) || (!isReload && hasSessionFlag(shownKey))) return;
     if (document.activeElement !== document.body) return;
     if (document.querySelector('dialog[open]')) return;
     openPromo();
   }
 
+  function rememberClick() {
+    clickedThisPage = true;
+    setSessionFlag(clickedKey);
+  }
+
   floatingLink?.addEventListener('click', () => {
-    rememberShow();
+    rememberClick();
     report('telegram_floating_click', 'floating_mascot');
   });
 
   if (dialog && trigger) {
     trigger.addEventListener('click', openPromo);
     link?.addEventListener('click', () => {
+      rememberClick();
       report('telegram_popup_click');
       dialog.close();
     });
@@ -201,8 +215,8 @@ import Wordmark from './Wordmark.astro';
     margin: auto;
     width: min(65rem, calc(100% - 2rem));
     max-height: calc(100dvh - 2rem);
-    padding: clamp(1.4rem, 5vw, 3.6rem);
-    overflow: auto;
+    padding: clamp(1rem, min(5vw, 7dvh), 3.6rem);
+    overflow: clip;
     border: 1px solid #fff7fa;
     border-radius: 2rem;
     background: radial-gradient(ellipse at 98% 2%, #ffcba6a8, transparent 52%),
@@ -212,6 +226,8 @@ import Wordmark from './Wordmark.astro';
     box-shadow: inset 0 1px 4px #fff9, 0 22px 72px #34214d65;
     color: #25182c;
   }
+
+  :global(html:has(.telegram-promo[open])) { overflow: hidden; }
 
   .telegram-promo[open] { animation: promo-entry 430ms cubic-bezier(0.16, 1, 0.3, 1) both; }
   .telegram-promo[open]::backdrop { animation: promo-backdrop 260ms ease-out both; }
@@ -231,7 +247,7 @@ import Wordmark from './Wordmark.astro';
     color: inherit;
     text-decoration: none;
     border-radius: 1rem;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: center;
     gap: clamp(1rem, 3vw, 2rem);
   }
@@ -322,6 +338,8 @@ import Wordmark from './Wordmark.astro';
 
   .promo-art {
     position: relative;
+    width: min(100%, max(8rem, calc((100dvh - 2rem - 2 * clamp(1rem, min(5vw, 7dvh), 3.6rem)) * 1.09)));
+    justify-self: center;
     isolation: isolate;
   }
 
@@ -406,12 +424,34 @@ import Wordmark from './Wordmark.astro';
   @media (max-width: 760px) {
     .promo-link { grid-template-columns: 1fr; gap: 0.9rem; }
     .telegram-promo { border-radius: 1.35rem; }
-    .promo-art { grid-row: 1; width: min(65%, 12rem); justify-self: center; }
+    .promo-art { grid-row: 1; width: min(65%, 12rem, 28dvh); }
     .promo-brand { --wordmark-width: 5.5rem; margin-bottom: 0.85rem; }
     .promo-break { display: none; }
     .promo-loop-top { top: 0; }
     .promo-loop-bottom { bottom: 0; }
     .promo-copy > p { margin: 0.8rem 0 1rem; }
     .promo-cta { width: 100%; }
+  }
+  @media (max-height: 580px) {
+    .telegram-promo { padding: clamp(1rem, 4dvh, 1.75rem); }
+    .promo-brand { --wordmark-width: 5.5rem; margin-bottom: 0.65rem; }
+    .promo-copy h2 { font-size: clamp(1.7rem, min(4.55vw, 8dvh), 3rem); }
+    .promo-copy > p { margin: 0.6rem 0 0.85rem; font-size: 0.9rem; }
+    .promo-cta { min-height: 2.75rem; padding: 0.5rem 0.8rem; }
+  }
+
+  @media (max-height: 480px) and (min-width: 520px) {
+    .promo-link { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .promo-art { grid-row: auto; width: min(80%, 48dvh); }
+  }
+
+  @media (max-height: 480px) and (max-width: 519px) {
+    .promo-link { gap: 0.5rem; }
+    .promo-art { width: min(50%, 22dvh); }
+  }
+
+  @media (max-height: 340px) and (max-width: 519px) {
+    .promo-art { display: none; }
+    .promo-copy { padding-right: 2.5rem; }
   }
 </style>
