@@ -1,0 +1,417 @@
+---
+import telegram from '../data/telegram.json';
+import Wordmark from './Wordmark.astro';
+---
+
+<button class="promo-trigger" type="button" data-telegram-open>
+  Artify Studio on Telegram
+</button>
+
+<a class="telegram-float" href={telegram.url} target="_blank" rel="noopener noreferrer"
+  aria-label="Join Artify Studio on Telegram" data-telegram-float>
+  <span class="float-art" aria-hidden="true">
+    <img src="/images/telegram-mascot.webp" alt="" width="840" height="768" decoding="async" />
+    <i class="float-spark"></i><i class="float-spark"></i><i class="float-spark"></i>
+  </span>
+</a>
+
+<dialog class="telegram-promo" aria-labelledby="telegram-title" aria-describedby="telegram-description">
+  <form method="dialog">
+    <button class="promo-close" type="submit" aria-label="Close Telegram invitation" autofocus>×</button>
+  </form>
+  <a class="promo-link" href={telegram.url} target="_blank" rel="noopener noreferrer" aria-label="Join on Telegram">
+    <div class="promo-copy">
+      <div class="promo-brand"><Wordmark /></div>
+      <h2 id="telegram-title">Everything<br class="promo-break" /> for <span>Designers</span></h2>
+      <p id="telegram-description">Discover handpicked fonts, mockups, and Procreate brushes in our Telegram channel.</p>
+      <span class="promo-cta">
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="23" height="23" fill="currentColor">
+          <path d="M21.6 3.6 2.9 10.8c-1 .4-.9 1 .2 1.3l4.8 1.5 1.9 5.7c.2.6.4.8.8.8.3 0 .5-.1.8-.4l2.7-2.6 5 3.7c.9.5 1.6.2 1.8-.8l3-15c.2-1.3-.5-1.8-1.3-1.4ZM9 13.3l10.6-6.7c.5-.3.8 0 .4.3L11.2 15l-.5 3.4L9 13.3Z"/>
+        </svg>
+        Join on Telegram
+      </span>
+    </div>
+    <div class="promo-art" aria-hidden="true">
+      <i class="promo-loop promo-loop-top"></i>
+      <i class="promo-loop promo-loop-bottom"></i>
+      <span class="promo-tile">
+        <svg viewBox="0 0 24 24" width="52" height="52" fill="currentColor">
+          <path d="M21.6 3.6 2.9 10.8c-1 .4-.9 1 .2 1.3l4.8 1.5 1.9 5.7c.2.6.4.8.8.8.3 0 .5-.1.8-.4l2.7-2.6 5 3.7c.9.5 1.6.2 1.8-.8l3-15c.2-1.3-.5-1.8-1.3-1.4ZM9 13.3l10.6-6.7c.5-.3.8 0 .4.3L11.2 15l-.5 3.4L9 13.3Z"/>
+        </svg>
+      </span>
+      <i class="promo-spark promo-spark-top"></i>
+      <i class="promo-spark promo-spark-bottom"></i>
+      <img src="/images/telegram-mascot.webp" alt="" width="840" height="768" loading="eager" fetchpriority="low" decoding="async" />
+    </div>
+  </a>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('.telegram-promo');
+  const trigger = document.querySelector<HTMLButtonElement>('[data-telegram-open]');
+  const link = dialog?.querySelector<HTMLAnchorElement>('.promo-link');
+  const floatingLink = document.querySelector<HTMLAnchorElement>('[data-telegram-float]');
+  const storageKey = 'artify-telegram-shown-in-tab';
+  const visitKey = 'artify-telegram-first-entry';
+  const autoOpenDelay = 8_000;
+  let shownThisPage = false;
+  let delayElapsed = false;
+
+  function recentlyShown() {
+    try {
+      return sessionStorage.getItem(storageKey) === '1';
+    } catch {
+      return false;
+    }
+  }
+
+  function remainingDelay() {
+    const now = Date.now();
+    const currentEntry = now - performance.now();
+
+    try {
+      const firstEntry = Number(sessionStorage.getItem(visitKey)) || currentEntry;
+      sessionStorage.setItem(visitKey, String(firstEntry));
+      return Math.max(0, firstEntry + autoOpenDelay - now);
+    } catch {
+      return Math.max(0, currentEntry + autoOpenDelay - now);
+    }
+  }
+
+  function rememberShow() {
+    try {
+      sessionStorage.setItem(storageKey, '1');
+    } catch {
+      // shownThisPage still prevents another automatic opening in this document.
+    }
+  }
+
+  function report(eventName: string, placement = 'telegram_popup') {
+    const analytics = window as Window & { dataLayer?: unknown[] };
+    function gtag(..._args: unknown[]) {
+      analytics.dataLayer?.push(arguments);
+    }
+    gtag('event', eventName, { placement });
+  }
+
+  function openPromo() {
+    if (!dialog || dialog.open) return;
+    dialog.showModal();
+    shownThisPage = true;
+    rememberShow();
+    report('telegram_popup_view');
+  }
+
+  function maybeShow() {
+    if (!delayElapsed || shownThisPage || document.hidden || recentlyShown()) return;
+    if (document.activeElement !== document.body) return;
+    if (document.querySelector('dialog[open]')) return;
+    openPromo();
+  }
+
+  floatingLink?.addEventListener('click', () => {
+    rememberShow();
+    report('telegram_floating_click', 'floating_mascot');
+  });
+
+  if (dialog && trigger) {
+    trigger.addEventListener('click', openPromo);
+    link?.addEventListener('click', () => {
+      report('telegram_popup_click');
+      dialog.close();
+    });
+    document.addEventListener('visibilitychange', maybeShow);
+    document.addEventListener('focusout', () => window.setTimeout(maybeShow, 0));
+    window.setTimeout(() => {
+      delayElapsed = true;
+      maybeShow();
+    }, remainingDelay());
+  }
+</script>
+
+<style>
+  .telegram-float {
+    position: fixed;
+    z-index: 40;
+    right: max(0.75rem, env(safe-area-inset-right));
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    display: grid;
+    justify-items: center;
+    width: clamp(8rem, 19vw, 13.5rem);
+    border-radius: 1rem;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .float-art {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0 0.18rem 0.1rem;
+  }
+
+  .float-art img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 4px 5px #0008);
+    transition: transform 180ms ease-out;
+  }
+
+  .telegram-float:hover img { transform: translateY(-4px) rotate(-5deg); }
+
+  .float-spark {
+    position: absolute;
+    left: 12%;
+    bottom: 5%;
+    width: 0.65rem;
+    aspect-ratio: 1;
+    background: #ffe37d;
+    clip-path: polygon(50% 0, 62% 36%, 100% 50%, 62% 63%, 50% 100%, 37% 63%, 0 50%, 37% 36%);
+    opacity: 0.7;
+    animation: spark-trail 2.8s ease-out infinite;
+  }
+
+  .float-spark:nth-of-type(2) { left: 20%; bottom: 10%; width: 0.48rem; animation-delay: 360ms; }
+  .float-spark:nth-of-type(3) { left: 53%; bottom: 18%; width: 0.4rem; animation-delay: 650ms; }
+
+  @keyframes spark-trail {
+    0%, 60%, 100% { transform: translate(0, 0) scale(0.3); opacity: 0; }
+    15% { opacity: 1; }
+    42% { transform: translate(-0.48rem, 0.35rem) scale(1); opacity: 0.5; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .float-art img { transition: none; }
+    .float-spark { animation: none; }
+  }
+
+  .promo-trigger {
+    align-self: center;
+    margin: 0.5rem 1rem 1.5rem;
+    color: #d9bfdc;
+    font-size: 0.875rem;
+    text-underline-offset: 0.2em;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .telegram-promo {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(65rem, calc(100% - 2rem));
+    max-height: calc(100dvh - 2rem);
+    padding: clamp(1.4rem, 5vw, 3.6rem);
+    overflow: auto;
+    border: 1px solid #fff7fa;
+    border-radius: 2rem;
+    background: radial-gradient(ellipse at 98% 2%, #ffcba6a8, transparent 52%),
+      radial-gradient(ellipse at 18% 84%, #ffe6edcc, transparent 65%),
+      linear-gradient(135deg, #e4d6ffed, #f9dde6c9 54%, #c596f696);
+    backdrop-filter: blur(20px) saturate(1.4);
+    box-shadow: inset 0 1px 4px #fff9, 0 22px 72px #34214d65;
+    color: #25182c;
+  }
+
+  .telegram-promo[open] { animation: promo-entry 430ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .telegram-promo[open]::backdrop { animation: promo-backdrop 260ms ease-out both; }
+
+  @keyframes promo-entry {
+    from { opacity: 0; transform: translateY(12px) scale(0.985); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes promo-backdrop {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .promo-link {
+    display: grid;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 1rem;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 2rem);
+  }
+
+  .telegram-promo::backdrop {
+    background: radial-gradient(ellipse at 15% 20%, #b69efb83, transparent 55%),
+      radial-gradient(ellipse at 86% 78%, #efaa8580, transparent 52%), #32224e70;
+    backdrop-filter: blur(10px);
+  }
+
+  .promo-copy {
+    position: relative;
+    z-index: 1;
+  }
+
+  .promo-close {
+    position: absolute;
+    z-index: 2;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: #fff8;
+    color: #25182c;
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .telegram-promo form { display: contents; }
+
+  .promo-brand {
+    --wordmark-width: clamp(6rem, 14vw, 10.25rem);
+    margin-bottom: clamp(1.1rem, 3vw, 2rem);
+  }
+
+  .promo-copy h2 {
+    margin: 0;
+    font-size: clamp(2.15rem, 4.55vw, 4rem);
+    font-weight: 900;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+  }
+
+  .promo-copy h2 span {
+    padding: 0 0.16em 0.07em;
+    background: linear-gradient(#fff098, #ffd01b 57%, #ffb111);
+    border-radius: 0.68em;
+    box-shadow: inset 0 2px 5px #fff9, 0 3px 0 #e89a1d;
+    box-decoration-break: clone;
+  }
+
+  .promo-copy > p {
+    margin: 1.15rem 0 1.35rem;
+    font-size: 1rem;
+    line-height: 1.45;
+    color: #493653;
+    max-width: 32ch;
+  }
+
+  .promo-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    min-height: 3.45rem;
+    padding: 0.7rem 1.25rem;
+    border-radius: 2rem;
+    background: linear-gradient(#59363a, #241318 78%);
+    color: white;
+    font-weight: 800;
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    min-width: min(100%, 17rem);
+    box-shadow: inset 0 2px 4px #fff4, 0 0.33rem 0 #ffd31a, 0 0.7rem 1.2rem #4d2d5940;
+  }
+
+  .promo-link:hover .promo-cta { background: linear-gradient(#754e57, #332029 78%); }
+  .promo-close:hover { background: #fff; }
+
+  .promo-close:focus-visible,
+  .promo-link:focus-visible,
+  .promo-trigger:focus-visible,
+  .telegram-float:focus-visible {
+    outline: 3px solid #7546a4;
+    outline-offset: 3px;
+  }
+
+  .promo-art {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .promo-art::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: 12% 3% 11% 5%;
+    border-radius: 44% 56% 48% 52% / 62% 36% 64% 38%;
+    background: radial-gradient(ellipse at 30% 20%, #fff8bc, #ffdc30 35%, #ffb400 71%, #ffce32);
+    box-shadow: inset 0 3px 8px #fff9, inset 0 -7px 14px #ed80055c;
+    transform: rotate(-16deg);
+  }
+
+  .promo-loop {
+    position: absolute;
+    z-index: -2;
+    width: 63%;
+    height: 27%;
+    border: clamp(0.55rem, 1.8vw, 1.25rem) solid #b258f5;
+    border-radius: 50%;
+    box-shadow: inset 0 4px 6px #fff9, 0 -3px 5px #fbdaf8, 0 7px 15px #923cde65;
+    transform: rotate(-32deg);
+  }
+
+  .promo-loop-top { top: -18%; left: -12%; }
+  .promo-loop-bottom { bottom: -12%; right: -5%; }
+
+  .promo-tile {
+    position: absolute;
+    z-index: 1;
+    top: -4%;
+    left: -5%;
+    display: grid;
+    place-items: center;
+    width: clamp(3rem, 8vw, 6.5rem);
+    aspect-ratio: 1;
+    color: #fff8ff;
+    transform: rotate(-16deg);
+    background: linear-gradient(145deg, #a2efff, #1294f8 52%, #086eec);
+    border: 1px solid #e4fbff;
+    border-radius: 29%;
+    box-shadow: inset 0 0 9px #fff9, 0 9px 18px #3f67b259;
+  }
+
+  .promo-tile svg { width: 55%; height: 55%; }
+
+  .promo-spark {
+    position: absolute;
+    z-index: 1;
+    width: 11%;
+    aspect-ratio: 1;
+    background: radial-gradient(at 35% 30%, white, #fff0a9 64%, #efab48);
+    clip-path: polygon(50% 0%, 61% 35%, 100% 50%, 61% 63%, 50% 100%, 38% 63%, 0% 50%, 38% 36%);
+  }
+
+  .telegram-promo[open] .promo-spark {
+    animation: promo-glint 2.9s var(--glint-delay, 0ms) ease-in-out infinite;
+  }
+
+  @keyframes promo-glint {
+    0%, 100% { opacity: 0.68; transform: scale(0.77); }
+    44% { opacity: 1; transform: scale(1.06); filter: brightness(1.14); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .telegram-promo[open],
+    .telegram-promo[open]::backdrop,
+    .telegram-promo[open] .promo-spark { animation: none; }
+    .telegram-float:hover img { transform: none; }
+  }
+
+  .promo-spark-top { top: 6%; right: 14%; }
+  .promo-spark-bottom { bottom: 18%; left: 3%; width: 8%; --glint-delay: 650ms; }
+
+  .promo-art img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0.7rem 0.75rem #6f314550);
+  }
+
+  @media (max-width: 760px) {
+    .promo-link { grid-template-columns: 1fr; gap: 0.9rem; }
+    .telegram-promo { border-radius: 1.35rem; }
+    .promo-art { grid-row: 1; width: min(65%, 12rem); justify-self: center; }
+    .promo-brand { --wordmark-width: 5.5rem; margin-bottom: 0.85rem; }
+    .promo-break { display: none; }
+    .promo-loop-top { top: 0; }
+    .promo-loop-bottom { bottom: 0; }
+    .promo-copy > p { margin: 0.8rem 0 1rem; }
+    .promo-cta { width: 100%; }
+  }
+</style>

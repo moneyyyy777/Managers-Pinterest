@@ -1,6 +1,7 @@
 ---
 // src/components/Header.astro
 import categories from "../data/categories.json";
+import Wordmark from "./Wordmark.astro";
 
 const categoryIcons: Record<string, string> = {
 	procreate: "🖌️",
@@ -27,14 +28,7 @@ const categoryIcons: Record<string, string> = {
 				href="/" 
 				class="flex items-center shrink-0 mr-2 sm:mr-4"
 			>
-				<img 
-					src="/images/logo.png" 
-					alt="Artify Studio" 
-					loading="eager"
-					fetchpriority="high"
-					decoding="async"
-					class="h-5 sm:h-6 w-auto object-contain transition duration-300 hover:opacity-80"
-				/>
+				<span class="block [--wordmark-width:4.75rem] sm:[--wordmark-width:5.25rem]"><Wordmark light /></span>
 			</a>
 
 			<!-- Категории -->
